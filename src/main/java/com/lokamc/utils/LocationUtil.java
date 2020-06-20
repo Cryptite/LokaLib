@@ -1,5 +1,6 @@
 package com.lokamc.utils;
 
+import com.lokamc.types.StringLocation;
 import com.sk89q.worldedit.bukkit.BukkitAdapter;
 import com.sk89q.worldedit.math.BlockVector3;
 import com.sk89q.worldedit.math.Vector3;
@@ -21,9 +22,68 @@ import org.bukkit.util.Vector;
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 
+import static java.lang.Double.parseDouble;
+import static java.lang.Float.parseFloat;
 import static org.bukkit.Material.AIR;
 
 public class LocationUtil {
+    public static Location parseCoord(String string) {
+        if (string == null) return null;
+
+        String[] elems = string.split(",");
+        World world = Bukkit.getWorld(elems[0]);
+        return new Location(world, parseDouble(elems[1]),
+                parseDouble(elems[2]), parseDouble(elems[3]),
+                elems.length > 4 ? parseFloat(elems[4]) : 0f,
+                elems.length > 5 ? parseFloat(elems[5]) : 0f);
+    }
+
+    public static String coordsToString(com.sk89q.worldedit.math.BlockVector3 point) {
+        if (point == null) return null;
+
+        return point.getX() + "," +
+                point.getY() + "," +
+                point.getZ();
+    }
+
+    public static String coordsToString(Location point) {
+        if (point == null) return null;
+
+        String coords = point.getWorld().getName() + "," +
+                point.getX() + "," +
+                point.getY() + "," +
+                point.getZ();
+
+        if (point.getYaw() > 0f || point.getPitch() > 0) {
+            coords += "," + point.getYaw();
+            coords += "," + point.getPitch();
+        }
+
+        return coords;
+    }
+
+    public static String coordsToStringBasic(Location point) {
+        if (point == null) return null;
+
+        return point.getWorld().getName() + "," +
+                point.getBlockX() + "," +
+                point.getBlockY() + "," +
+                point.getBlockZ();
+    }
+
+    public static String prettyCoords(StringLocation l) {
+        return (int) l.getX() + ", " + (int) l.getY() + ", " + (int) l.getZ();
+    }
+
+    public static String prettyCoords(Location l) {
+        return l.getBlockX() + ", " + l.getBlockY() + ", " + l.getBlockZ();
+    }
+
+    public static String prettyCoords(Location l, boolean showY) {
+        if (showY) return l.getBlockX() + ", " + l.getBlockY() + ", " + l.getBlockZ();
+        return l.getBlockX() + "x, " + l.getBlockZ() + "z";
+    }
+
     public static Location getLocationFromChest(Inventory i) {
         return i.getHolder() instanceof Chest ? ((Chest) i.getHolder()).getLocation() : null;
     }
