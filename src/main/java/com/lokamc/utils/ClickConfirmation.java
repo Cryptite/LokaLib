@@ -1,4 +1,4 @@
-package utils;
+package com.lokamc.utils;
 
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;

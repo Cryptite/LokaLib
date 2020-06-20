@@ -1,4 +1,4 @@
-package utils;
+package com.lokamc.utils;
 
 import com.destroystokyo.paper.MaterialTags;
 import org.bukkit.Material;

@@ -1,4 +1,4 @@
-package utils;
+package com.lokamc.utils;
 
 import com.destroystokyo.paper.profile.PlayerProfile;
 import com.destroystokyo.paper.profile.ProfileProperty;
@@ -24,7 +24,6 @@ import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 
 import static net.minecraft.server.v1_15_R1.PacketPlayOutPlayerInfo.EnumPlayerInfoAction.REMOVE_PLAYER;
-import static utils.MaterialSets.bypassLOSBlocks;
 
 public class PlayerUtil {
     public static boolean inValidGameMode(Player p) {
@@ -286,7 +285,7 @@ public class PlayerUtil {
         while (itr.hasNext()) {
             Block block = itr.next();
 
-            if (!bypassLOSBlocks.contains(block.getType())) {
+            if (!MaterialSets.bypassLOSBlocks.contains(block.getType())) {
                 RayTraceResult result = BoundingBox.of(block)
                         .rayTrace(player.getEyeLocation().toVector(), player.getEyeLocation().getDirection(), maxDistance);
                 return result.getHitBlock();
@@ -314,7 +313,7 @@ public class PlayerUtil {
             //If this block is THE block the target is in, then they have LOS, so return no blocking block
             if (target.getBlock().equals(block)) return true;
 
-            if (!bypassLOSBlocks.contains(block.getType())
+            if (!MaterialSets.bypassLOSBlocks.contains(block.getType())
                     && (excludeBlocks == null || !excludeBlocks.contains(block.getLocation()))) {
 //                Effects.effect(block.getLocation().add(.5f, .5f, .5f), Particle.SMOKE_NORMAL, 2, .05f, 5);
                 return false;

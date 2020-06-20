@@ -1,0 +1,4 @@
+name: LokaLib
+main: io.github.cryptite.LokaLib
+version: 1.0
+api-version: 1.15

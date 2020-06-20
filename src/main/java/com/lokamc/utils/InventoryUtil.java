@@ -1,4 +1,4 @@
-package utils;
+package com.lokamc.utils;
 
 import org.bukkit.Bukkit;
 import org.bukkit.block.ShulkerBox;

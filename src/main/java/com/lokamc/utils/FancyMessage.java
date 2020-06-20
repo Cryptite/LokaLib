@@ -1,4 +1,4 @@
-package utils;
+package com.lokamc.utils;
 
 import net.md_5.bungee.api.chat.*;
 import net.md_5.bungee.chat.ComponentSerializer;

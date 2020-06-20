@@ -1,4 +1,4 @@
-package utils;
+package com.lokamc.utils;
 
 import com.sk89q.worldedit.bukkit.BukkitAdapter;
 import com.sk89q.worldedit.math.BlockVector3;

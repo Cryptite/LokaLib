@@ -1,4 +1,4 @@
-package utils;
+package com.lokamc.utils;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;

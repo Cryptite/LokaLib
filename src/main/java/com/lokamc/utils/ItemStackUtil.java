@@ -1,4 +1,4 @@
-package utils;
+package com.lokamc.utils;
 
 import com.destroystokyo.paper.profile.PlayerProfile;
 import com.google.common.base.Strings;

@@ -1,4 +1,4 @@
-package utils;
+package com.lokamc.utils;
 
 import org.bukkit.ChatColor;
 import org.bukkit.map.MinecraftFont;
