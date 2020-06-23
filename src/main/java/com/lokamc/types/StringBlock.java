@@ -410,7 +410,7 @@ public class StringBlock extends StringLocation implements Comparable<StringBloc
 
     @Override
     public String toString() {
-        return getType().toString() + "-" + LocationUtil.coordsToString(this);
+        return LocationUtil.coordsToStringBasic(this);
     }
 
     public Integer getPriority() {
