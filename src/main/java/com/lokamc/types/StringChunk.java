@@ -71,6 +71,6 @@ public class StringChunk {
 
     @Override
     public String toString() {
-        return world + "," + x + "," + z;
+        return world.getName() + "," + x + "," + z;
     }
 }
