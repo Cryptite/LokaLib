@@ -151,7 +151,7 @@ public class LocationUtil {
         // given loc as the centre of the area you want, r as the max radius...
         double a = ThreadLocalRandom.current().nextDouble() * 2 * Math.PI;
         double dist = min + ThreadLocalRandom.current().nextDouble() * r;
-        return loc.clone().add(dist * Math.sin(a), loc.getBlockY(), dist * Math.cos(a));
+        return loc.clone().add(dist * Math.sin(a), 0, dist * Math.cos(a));
     }
 
     public static ProtectedRegion getWGRegion(World world, String region) {
