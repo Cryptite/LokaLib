@@ -102,12 +102,17 @@ public class BlockUtil {
     }
 
     public static void dropItemTypeFromBlock(Player p, Block b, Material type) {
+        dropItemTypeFromBlock(p, b, b.getLocation(), type);
+    }
+
+    public static void dropItemTypeFromBlock(Player p, Block b, Location l, Material type) {
         ItemStack holding = p.getInventory().getItemInMainHand().clone();
         net.minecraft.server.v1_15_R1.World world = ((CraftWorld) b.getWorld()).getHandle();
         net.minecraft.server.v1_15_R1.ItemStack nmsItem = CraftItemStack.asNMSCopy(holding);
+
         net.minecraft.server.v1_15_R1.Block.dropItems(CraftMagicNumbers.getBlock(type).getBlockData(),
                 world,
-                new net.minecraft.server.v1_15_R1.BlockPosition(b.getX(), b.getY(), b.getZ()),
+                new net.minecraft.server.v1_15_R1.BlockPosition(l.getX(), l.getY(), l.getZ()),
                 null, ((CraftPlayer) p).getHandle(), nmsItem);
     }
 }
