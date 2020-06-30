@@ -7,6 +7,11 @@ import java.util.concurrent.Executors;
 
 public class LokaLib extends JavaPlugin {
     public static ExecutorService configFileExecutor = Executors.newSingleThreadExecutor();
+    public static LokaLib instance;
+
+    public static LokaLib getInstance() {
+        return instance;
+    }
 
     @Override
     public void onEnable() {
