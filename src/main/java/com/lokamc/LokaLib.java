@@ -20,7 +20,7 @@ public class LokaLib extends JavaPlugin {
         super.onEnable();
 
         getCommand("confirm").setExecutor((commandSender, command, s, args) -> {
-            if (commandSender instanceof Player && args[0].equalsIgnoreCase("confirm")) {
+            if (commandSender instanceof Player && s.equalsIgnoreCase("confirm")) {
                 ClickConfirmation.getInstance().respondConsumer((Player) commandSender, args);
             }
             return true;
