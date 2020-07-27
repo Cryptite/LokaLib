@@ -260,6 +260,10 @@ public class FancyMessage {
         return componentList.get(componentList.size() - 1);
     }
 
+    public List<TextComponent> getComponents() {
+        return componentList;
+    }
+
     public String toOldMessageFormat() {
         return build(null).toLegacyText();
     }
