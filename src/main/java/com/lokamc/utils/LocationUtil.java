@@ -6,10 +6,14 @@ import com.sk89q.worldedit.math.BlockVector3;
 import com.sk89q.worldedit.math.Vector3;
 import com.sk89q.worldedit.regions.CuboidRegion;
 import com.sk89q.worldedit.regions.Region;
+import com.sk89q.worldguard.LocalPlayer;
 import com.sk89q.worldguard.WorldGuard;
+import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import com.sk89q.worldguard.protection.ApplicableRegionSet;
+import com.sk89q.worldguard.protection.flags.Flags;
 import com.sk89q.worldguard.protection.managers.RegionManager;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
+import com.sk89q.worldguard.protection.regions.RegionContainer;
 import com.sk89q.worldguard.protection.regions.RegionQuery;
 import org.bukkit.*;
 import org.bukkit.block.*;
@@ -99,6 +103,12 @@ public class LocationUtil {
         } else {
             return null;
         }
+    }
+
+    public static boolean hasWGBuildPerms(Player p, Location l) {
+        LocalPlayer localPlayer = WorldGuardPlugin.inst().wrapPlayer(p);
+        RegionContainer container = WorldGuard.getInstance().getPlatform().getRegionContainer();
+        return container.createQuery().testState(BukkitAdapter.adapt(l), localPlayer, Flags.BUILD);
     }
 
     public static boolean inWGRegion(String region, String player) {
