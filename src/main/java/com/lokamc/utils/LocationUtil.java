@@ -502,9 +502,9 @@ public class LocationUtil {
         Block current = b;
 
         int count = 0;
-        while (current.getType() == AIR) {
+        while (!current.getType().isSolid()) {
             Block below = current.getRelative(BlockFace.DOWN);
-            if (below.getType() != AIR) return below;
+            if (below.getType().isSolid()) return below;
 
             if (++count >= max) break;
             current = below;
