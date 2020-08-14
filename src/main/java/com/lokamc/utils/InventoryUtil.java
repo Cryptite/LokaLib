@@ -136,4 +136,29 @@ public class InventoryUtil {
 
         return false;
     }
+
+    /**
+     * @return Take a given amount of an itemstack from an inventory, returning false if it could not remove the amount given.
+     */
+    public static boolean takeFromInventory(Inventory inv, ItemStack itemStack, int amount) {
+        int taken = amount;
+        for (int i = 0; i < inv.getSize(); i++) {
+            ItemStack item = inv.getItem(i);
+            if (!itemStack.equals(item)) continue;
+
+            if (item.getAmount() > taken) {
+                item.setAmount(item.getAmount() - taken);
+                return true;
+            } else {
+                taken -= item.getAmount();
+                inv.setItem(i, null);
+            }
+
+            if (taken <= 0) {
+                return true;
+            }
+        }
+
+        return false;
+    }
 }
