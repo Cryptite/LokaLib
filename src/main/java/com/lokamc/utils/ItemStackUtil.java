@@ -51,7 +51,7 @@ public class ItemStackUtil {
     }
 
     public static ItemStack createItemStack(ItemStack itemStack, String displayName) {
-        setDisplayName(itemStack, displayName);
+        setDisplayName(itemStack.clone(), displayName);
         return itemStack;
     }
 
