@@ -1,9 +1,15 @@
 package com.lokamc.utils;
 
+import org.bukkit.entity.Player;
+
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
+import static net.md_5.bungee.api.ChatColor.GRAY;
+import static org.apache.commons.lang.StringUtils.isNumeric;
 import static org.apache.commons.lang.StringUtils.join;
 import static org.bukkit.ChatColor.stripColor;
 
@@ -118,5 +124,43 @@ public class StringUtils {
         }
 
         return "";
+    }
+
+    public static Date getFutureDate(Player p, String text) {
+        String time;
+
+        switch (text) {
+            case "-1":
+            case "0":
+                break;
+            default:
+                time = text.substring(text.length() - 1);
+                if (!time.equals("d") && !time.equals("m") && !time.equals("h") && !time.equals("s")) {
+                    p.sendMessage(GRAY + "Must end in s (seconds), m (minutes), h (hours), or d (days). Eg: 24h or 0 for "
+                            + "non-repeatable.");
+                    return null;
+                } else {
+                    String number = text.split(time)[0];
+                    if (!isNumeric(number)) {
+                        p.sendMessage(GRAY + "Provide a number of seconds, minutes, hours, or " +
+                                "days (eg: 24h or 0 for non-repeatable)");
+                        return null;
+                    }
+                }
+                break;
+        }
+
+        Calendar calendar = Calendar.getInstance();
+        int amount = Integer.parseInt(text.substring(0, text.length() - 1));
+        if (text.endsWith("h")) {
+            calendar.add(Calendar.HOUR, amount);
+        } else if (text.endsWith("d")) {
+            calendar.add(Calendar.HOUR, amount * 24);
+        } else if (text.endsWith("m")) {
+            calendar.add(Calendar.MINUTE, amount);
+        } else {
+            calendar.add(Calendar.SECOND, amount);
+        }
+        return calendar.getTime();
     }
 }
