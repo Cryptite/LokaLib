@@ -136,7 +136,7 @@ public class BookUtil {
         List<String> lines = new ArrayList<>();
         try {
             //Each 'section' is separated by a line break (\n)
-            for (String section : rawText.split("\n")) {
+            for (String section : rawText.split("\\\\n")) {
                 //If the section is blank, that means we had a double line break there
                 if (section.isEmpty())
                     lines.add("\n\n");
