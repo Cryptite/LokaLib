@@ -13,10 +13,10 @@ import java.util.function.Consumer;
 import java.util.logging.Level;
 
 public class FancyMessage {
-    private final List<TextComponent> componentList;
+    private List<TextComponent> componentList;
     private List<TextComponent> lastThenSet;
     private UUID setId;
-    private final Map<UUID, Consumer<Player>> commandsMap = new HashMap<>();
+    private Map<UUID, Consumer<Player>> commandsMap = new HashMap<>();
     private net.md_5.bungee.api.ChatColor currentColor = net.md_5.bungee.api.ChatColor.WHITE;
     private boolean expires = true;
 
@@ -27,6 +27,17 @@ public class FancyMessage {
     public FancyMessage(String text) {
         componentList = new ArrayList<>();
         then(text);
+    }
+
+    public FancyMessage clone() {
+        FancyMessage clone = new FancyMessage();
+        clone.componentList = componentList;
+        clone.lastThenSet = lastThenSet;
+        clone.setId = setId;
+        clone.commandsMap = commandsMap;
+        clone.currentColor = currentColor;
+        clone.expires = expires;
+        return clone;
     }
 
     public FancyMessage setExpires(boolean expires) {
