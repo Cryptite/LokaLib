@@ -11,6 +11,7 @@ import java.lang.reflect.Method;
 import java.util.*;
 import java.util.function.Consumer;
 import java.util.logging.Level;
+import java.util.stream.Collectors;
 
 public class FancyMessage {
     private List<TextComponent> componentList;
@@ -31,10 +32,10 @@ public class FancyMessage {
 
     public FancyMessage clone() {
         FancyMessage clone = new FancyMessage();
-        clone.componentList = componentList;
-        clone.lastThenSet = lastThenSet;
+        clone.componentList = componentList.stream().map(TextComponent::duplicate).collect(Collectors.toList());
+        clone.lastThenSet = lastThenSet.stream().map(TextComponent::duplicate).collect(Collectors.toList());
         clone.setId = setId;
-        clone.commandsMap = commandsMap;
+        clone.commandsMap = new HashMap<>(commandsMap);
         clone.currentColor = currentColor;
         clone.expires = expires;
         return clone;
