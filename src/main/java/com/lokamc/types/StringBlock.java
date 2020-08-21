@@ -360,6 +360,7 @@ public class StringBlock extends StringLocation implements Comparable<StringBloc
         return ItemStackUtil.getFriendlyName(getType());
     }
 
+    @Override
     public Inventory getInventory() {
         try {
             if (getBlock().getState(false) instanceof Container) {
