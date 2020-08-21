@@ -361,9 +361,13 @@ public class StringBlock extends StringLocation implements Comparable<StringBloc
     }
 
     public Inventory getInventory() {
-        if (getBlock().getState(false) instanceof Container) {
-            Container c = (Container) getBlock().getState();
-            return c.getInventory();
+        try {
+            if (getBlock().getState(false) instanceof Container) {
+                Container c = (Container) getBlock().getState();
+                return c.getInventory();
+            }
+        } catch (Exception ignored) {
+            //Sometimes you can just fail to read a blockstate..?
         }
 
         return null;
