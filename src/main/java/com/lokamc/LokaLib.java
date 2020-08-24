@@ -9,7 +9,7 @@ import java.util.concurrent.Executors;
 
 public class LokaLib extends JavaPlugin {
     public static final ExecutorService configFileExecutor = Executors.newSingleThreadExecutor();
-    public static final LokaLib instance = new LokaLib();
+    public static LokaLib instance;
 
     public static LokaLib getInstance() {
         return instance;
@@ -18,6 +18,7 @@ public class LokaLib extends JavaPlugin {
     @Override
     public void onEnable() {
         super.onEnable();
+        instance = this;
 
         getCommand("confirm").setExecutor((commandSender, command, s, args) -> {
             if (commandSender instanceof Player && s.equalsIgnoreCase("confirm")) {
