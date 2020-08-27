@@ -8,6 +8,7 @@ import org.bukkit.Material;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.craftbukkit.v1_15_R1.entity.CraftPlayer;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
@@ -30,32 +31,32 @@ public class PlayerUtil {
         return p.getGameMode() == GameMode.SURVIVAL || p.getGameMode() == GameMode.ADVENTURE;
     }
 
-    public static boolean hasPotionEffect(Player p, PotionEffectType type) {
-        for (PotionEffect potion : p.getActivePotionEffects()) {
+    public static boolean hasPotionEffect(LivingEntity e, PotionEffectType type) {
+        for (PotionEffect potion : e.getActivePotionEffects()) {
             if (potion.getType().equals(type)) return true;
         }
 
         return false;
     }
 
-    public static boolean hasPotionEffect(Player p, PotionEffectType type, int level) {
-        for (PotionEffect potion : p.getActivePotionEffects()) {
+    public static boolean hasPotionEffect(LivingEntity e, PotionEffectType type, int level) {
+        for (PotionEffect potion : e.getActivePotionEffects()) {
             if (potion.getType().equals(type) && potion.getAmplifier() == level) return true;
         }
 
         return false;
     }
 
-    public static boolean hasAtLeastPotionEffect(Player p, PotionEffectType type, int level) {
-        for (PotionEffect potion : p.getActivePotionEffects()) {
+    public static boolean hasAtLeastPotionEffect(LivingEntity e, PotionEffectType type, int level) {
+        for (PotionEffect potion : e.getActivePotionEffects()) {
             if (potion.getType().equals(type) && potion.getAmplifier() >= level) return true;
         }
 
         return false;
     }
 
-    public static boolean hasGreaterPotionEffect(Player p, PotionEffect effect) {
-        for (PotionEffect potion : p.getActivePotionEffects()) {
+    public static boolean hasGreaterPotionEffect(LivingEntity e, PotionEffect effect) {
+        for (PotionEffect potion : e.getActivePotionEffects()) {
             //If the current effect is strong or has more of a duration left, don't do it.
             if (potion.getType().equals(effect.getType())
                     && (potion.getAmplifier() > effect.getAmplifier() || potion.getDuration() > effect.getDuration()))
@@ -72,8 +73,8 @@ public class PlayerUtil {
                 && (old.getAmplifier() > effect.getAmplifier() || old.getDuration() > effect.getDuration());
     }
 
-    private static boolean hasGreaterPotionEffect(Player p, PotionEffectType type, int level, int seconds) {
-        for (PotionEffect potion : p.getActivePotionEffects()) {
+    private static boolean hasGreaterPotionEffect(LivingEntity e, PotionEffectType type, int level, int seconds) {
+        for (PotionEffect potion : e.getActivePotionEffects()) {
             //If the current effect is strong or has more of a duration left, don't do it.
             if (potion.getType().equals(type) && (potion.getAmplifier() > level || potion.getDuration() > seconds * 20))
                 return true;
@@ -83,40 +84,40 @@ public class PlayerUtil {
     }
 
     /**
-     * @param p
+     * @param e
      * @param type
      * @param seconds
      * @param level   0 is a level I potion effect.
      */
-    public static void givePotionEffect(Player p, PotionEffectType type, int seconds, int level) {
-        if (p == null || type == null) return;
+    public static void givePotionEffect(LivingEntity e, PotionEffectType type, int seconds, int level) {
+        if (e == null || type == null) return;
 
-        if (!hasGreaterPotionEffect(p, type, level, seconds)) {
-            p.removePotionEffect(type);
-            p.addPotionEffect(new PotionEffect(type, 20 * seconds, level));
+        if (!hasGreaterPotionEffect(e, type, level, seconds)) {
+            e.removePotionEffect(type);
+            e.addPotionEffect(new PotionEffect(type, 20 * seconds, level));
         }
     }
 
-    public static Boolean hasPotionSpeed(Player p) {
+    public static Boolean hasPotionSpeed(LivingEntity e) {
         //If they have speed with a duration less than 120, it's from a from roads, not speed pots
-        for (PotionEffect pot : p.getActivePotionEffects()) {
+        for (PotionEffect pot : e.getActivePotionEffects()) {
             if (pot.getType().equals(PotionEffectType.SPEED) && pot.getDuration() >= 121) return true;
         }
 
         return false;
     }
 
-    public static void removePotionEffects(Player p) {
+    public static void removePotionEffects(LivingEntity e) {
         //Remove potion effects
-        for (PotionEffect effect : p.getActivePotionEffects()) {
-            p.removePotionEffect(effect.getType());
+        for (PotionEffect effect : e.getActivePotionEffects()) {
+            e.removePotionEffect(effect.getType());
         }
     }
 
-    public static void removePotionEffects(Player p, PotionEffectType... potionEffectTypes) {
+    public static void removePotionEffects(LivingEntity e, PotionEffectType... potionEffectTypes) {
         //Remove potion effects
         for (PotionEffectType type : potionEffectTypes) {
-            p.removePotionEffect(type);
+            e.removePotionEffect(type);
         }
     }
 
