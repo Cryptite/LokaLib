@@ -244,6 +244,10 @@ public class StringBlock extends StringLocation implements Comparable<StringBloc
     }
 
     public StringBlock getSurface(ChunkSnapshot snapshot) {
+        return getSurface(snapshot, -1);
+    }
+
+    public StringBlock getSurface(ChunkSnapshot snapshot, int maxLightLevel) {
         int x = IntMath.mod(getBlockX(), 16);
         int z = IntMath.mod(getBlockZ(), 16);
 
@@ -254,7 +258,10 @@ public class StringBlock extends StringLocation implements Comparable<StringBloc
             Material type = snapshot.getBlockData(x, currentY, z).getMaterial();
             Material above = snapshot.getBlockData(x, currentY + 1, z).getMaterial();
             int blockLightLevel = snapshot.getBlockSkyLight(x, currentY, z);
-            if (below.isSolid() && type == Material.AIR && above == Material.AIR && blockLightLevel <= 6) {
+            if (below.isSolid()
+                    && type == Material.AIR
+                    && above == Material.AIR
+                    && (maxLightLevel == -1 || blockLightLevel <= maxLightLevel)) {
                 break;
             } else if (currentY < 5) {
                 return null;
