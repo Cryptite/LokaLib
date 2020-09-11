@@ -96,24 +96,17 @@ public class FancyMessage {
                         next.setText(nextPart);
 
                     net.md_5.bungee.api.ChatColor colorChar = net.md_5.bungee.api.ChatColor.getByChar(color.getChar());
-                    switch (colorChar) {
-                        case BOLD:
-                            next.setBold(true);
-                            break;
-                        case STRIKETHROUGH:
-                            next.setStrikethrough(true);
-                            break;
-                        case UNDERLINE:
-                            next.setUnderlined(true);
-                            break;
-                        case ITALIC:
-                            next.setItalic(true);
-                            break;
-                        case RESET:
-                            break;
-                        default:
-                            next.setColor(colorChar);
-                            break;
+                    if (net.md_5.bungee.api.ChatColor.BOLD.equals(colorChar)) {
+                        next.setBold(true);
+                    } else if (net.md_5.bungee.api.ChatColor.STRIKETHROUGH.equals(colorChar)) {
+                        next.setStrikethrough(true);
+                    } else if (net.md_5.bungee.api.ChatColor.UNDERLINE.equals(colorChar)) {
+                        next.setUnderlined(true);
+                    } else if (net.md_5.bungee.api.ChatColor.ITALIC.equals(colorChar)) {
+                        next.setItalic(true);
+                    } else if (net.md_5.bungee.api.ChatColor.RESET.equals(colorChar)) {
+                    } else {
+                        next.setColor(colorChar);
                     }
                     if (!nextPart.equalsIgnoreCase("")) {
                         lastThenSet.add(next);

@@ -3,11 +3,12 @@ package com.lokamc.utils;
 import com.destroystokyo.paper.profile.PlayerProfile;
 import com.destroystokyo.paper.profile.ProfileProperty;
 import com.mojang.authlib.GameProfile;
-import net.minecraft.server.v1_15_R1.*;
+import net.minecraft.server.v1_16_R2.World;
+import net.minecraft.server.v1_16_R2.*;
 import org.bukkit.Material;
 import org.bukkit.*;
 import org.bukkit.block.Block;
-import org.bukkit.craftbukkit.v1_15_R1.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_16_R2.entity.CraftPlayer;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.EquipmentSlot;
@@ -24,7 +25,7 @@ import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 
-import static net.minecraft.server.v1_15_R1.PacketPlayOutPlayerInfo.EnumPlayerInfoAction.REMOVE_PLAYER;
+import static net.minecraft.server.v1_16_R2.PacketPlayOutPlayerInfo.EnumPlayerInfoAction.REMOVE_PLAYER;
 
 public class PlayerUtil {
     public static boolean inValidGameMode(Player p) {
@@ -150,10 +151,8 @@ public class PlayerUtil {
         OfflinePlayer player = Bukkit.getOfflinePlayer(uuid);
         MinecraftServer minecraftserver = MinecraftServer.getServer();
         GameProfile gameprofile = new GameProfile(player.getUniqueId(), player.getName());
-        EntityPlayer entity = new EntityPlayer(minecraftserver,
-                minecraftserver.getWorldServer(DimensionManager.OVERWORLD),
-                gameprofile,
-                new PlayerInteractManager(minecraftserver.getWorldServer(DimensionManager.OVERWORLD)));
+        WorldServer worldServer = minecraftserver.getWorldServer(World.OVERWORLD);
+        EntityPlayer entity = new EntityPlayer(minecraftserver, worldServer, gameprofile, new PlayerInteractManager(worldServer));
 
         final Player target = entity.getBukkitEntity();
         if (target != null)
