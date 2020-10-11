@@ -15,6 +15,7 @@ import org.bukkit.plugin.Plugin;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 
 public class StringLocation extends Location {
@@ -70,6 +71,10 @@ public class StringLocation extends Location {
 
     public void getBlockAsync(Plugin plugin, Consumer<Block> consumer) {
         FutureUtils.thenRunSync(plugin, getWorld().getChunkAtAsync(this, false), () -> consumer.accept(getBlock()));
+    }
+
+    public CompletableFuture<Chunk> getChunkAsync() {
+        return getWorld().getChunkAtAsync(this);
     }
 
     public Chunk getChunk() {

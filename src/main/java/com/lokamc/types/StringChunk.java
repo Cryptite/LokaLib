@@ -52,7 +52,7 @@ public class StringChunk {
         return Objects.hash(world, getChunkKey());
     }
 
-    long getChunkKey() {
+    public long getChunkKey() {
         return (long) x & 4294967295L | ((long) z & 4294967295L) << 32;
     }
 
