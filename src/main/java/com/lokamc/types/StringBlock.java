@@ -11,7 +11,6 @@ import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
-import org.bukkit.block.BlockState;
 import org.bukkit.block.Container;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.type.Slab;
@@ -34,7 +33,7 @@ public class StringBlock extends StringLocation implements Comparable<StringBloc
     private Boolean doBlockUpdate;
     private Block block;
     private BlockData blockData;
-    private BlockState blockState;
+//    private BlockState blockState;
     private BlockStateHolder blockStateHolder;
     private Runnable onSetRunnable;
 
@@ -49,7 +48,7 @@ public class StringBlock extends StringLocation implements Comparable<StringBloc
     public StringBlock(Block b) {
         super(b);
         this.block = b;
-        this.blockState = b.getState();
+//        this.blockState = b.getState();
         this.blockData = b.getBlockData();
     }
 
@@ -60,7 +59,7 @@ public class StringBlock extends StringLocation implements Comparable<StringBloc
     public StringBlock(Block b, BlockData blockData) {
         super(b);
         this.block = b;
-        this.blockState = b.getState();
+//        this.blockState = b.getState();
         this.blockData = blockData;
     }
 
@@ -69,7 +68,7 @@ public class StringBlock extends StringLocation implements Comparable<StringBloc
         Block b = l.getBlock();
         this.block = b;
         this.blockData = b.getBlockData();
-        this.blockState = b.getState();
+//        this.blockState = b.getState();
         this.priority = priority;
     }
 
@@ -77,7 +76,7 @@ public class StringBlock extends StringLocation implements Comparable<StringBloc
         super(b);
         this.block = b;
         this.blockData = b.getBlockData();
-        this.blockState = b.getState();
+//        this.blockState = b.getState();
         this.priority = priority;
     }
 
