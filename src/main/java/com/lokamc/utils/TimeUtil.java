@@ -60,7 +60,7 @@ public class TimeUtil {
     }
 
     public static String minutesUntil(Long time, int start, boolean showSecondsOver1Minute) {
-        float seconds = Math.max(0, (start * 60) - secondsSince(time));
+        int seconds = (int) Math.max(0, (start * 60) - secondsSince(time));
         if (seconds <= 60) {
             return seconds + "s";
         }
@@ -124,6 +124,7 @@ public class TimeUtil {
 
     public static String getTimeFromSeconds(float seconds, boolean fullWord) {
         String time;
+        seconds = (int) seconds;
         if (seconds < 120) {
             if (seconds <= 60) {
                 time = "" + GREEN + seconds + (fullWord ? " " + "second" + (seconds > 1 ? "s" : "") : "s");
