@@ -6,6 +6,7 @@ import org.bukkit.Location;
 import org.bukkit.World;
 
 import java.util.Objects;
+import java.util.concurrent.CompletableFuture;
 
 public class StringChunk {
     private World world;
@@ -36,6 +37,10 @@ public class StringChunk {
 
     public Chunk getChunk() {
         return world.getChunkAt(x, z);
+    }
+
+    public CompletableFuture<Chunk> getChunkAsync() {
+        return world.getChunkAtAsync(x, z);
     }
 
     public Location getCenter() {
