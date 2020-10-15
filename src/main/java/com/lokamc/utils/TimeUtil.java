@@ -107,11 +107,11 @@ public class TimeUtil {
         return getTimeUntil(c.getTimeInMillis());
     }
 
-    public static String getTimeUntil(float time) {
+    public static String getTimeUntil(long time) {
         return getTimeUntil(time, false);
     }
 
-    public static String getTimeUntil(float time, boolean fullWord) {
+    public static String getTimeUntil(long time, boolean fullWord) {
         float date = time - System.currentTimeMillis();
         if (date <= 0) return "shortly";
 
