@@ -19,14 +19,14 @@ public class TimeUtil {
     public static final DateFormat monthDayFormat = new SimpleDateFormat("M/d h:mm a", Locale.ENGLISH);
     public static final SimpleDateFormat timeStampFormat = new SimpleDateFormat("HH:mm:ss.SSS");
 
-    public static int secondsSince(Long time) {
+    public static float secondsSince(Long time) {
         return secondsSince(time, false);
     }
 
-    public static int secondsSince(Long time, boolean zeroMax) {
-        if (time == 0) return zeroMax ? Integer.MAX_VALUE : 0;
+    public static float secondsSince(Long time, boolean zeroMax) {
+        if (time == 0) return zeroMax ? Float.MAX_VALUE : 0;
 
-        return (int) MILLISECONDS.toSeconds(currentTimeMillis() - time);
+        return MILLISECONDS.toSeconds(currentTimeMillis() - time);
     }
 
     public static int minutesSince(Long time) {
@@ -60,7 +60,7 @@ public class TimeUtil {
     }
 
     public static String minutesUntil(Long time, int start, boolean showSecondsOver1Minute) {
-        int seconds = Math.max(0, (start * 60) - secondsSince(time));
+        float seconds = Math.max(0, (start * 60) - secondsSince(time));
         if (seconds <= 60) {
             return seconds + "s";
         }
@@ -107,22 +107,22 @@ public class TimeUtil {
         return getTimeUntil(c.getTimeInMillis());
     }
 
-    public static String getTimeUntil(long time) {
+    public static String getTimeUntil(float time) {
         return getTimeUntil(time, false);
     }
 
-    public static String getTimeUntil(long time, boolean fullWord) {
-        long date = time - System.currentTimeMillis();
+    public static String getTimeUntil(float time, boolean fullWord) {
+        float date = time - System.currentTimeMillis();
         if (date <= 0) return "shortly";
 
         return getTimeFromSeconds(date / 1000, fullWord);
     }
 
-    public static String getTimeFromSeconds(long seconds) {
+    public static String getTimeFromSeconds(float seconds) {
         return getTimeFromSeconds(seconds, false);
     }
 
-    public static String getTimeFromSeconds(long seconds, boolean fullWord) {
+    public static String getTimeFromSeconds(float seconds, boolean fullWord) {
         String time;
         if (seconds < 120) {
             if (seconds <= 60) {
@@ -143,7 +143,7 @@ public class TimeUtil {
                 time = "" + GREEN + hours + (fullWord ? " hour " + minutes + " minutes" : "h " + minutes + "m");
             }
         } else {
-            int days = (int) TimeUnit.SECONDS.toDays(seconds);
+            int days = (int) TimeUnit.SECONDS.toDays((long) seconds);
             time = "" + GREEN + days + (fullWord ? " " + "day" + (days > 1 ? "s" : "") : "d");
         }
         return time;

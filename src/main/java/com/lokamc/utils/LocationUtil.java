@@ -1,5 +1,6 @@
 package com.lokamc.utils;
 
+import com.lokamc.types.StringChunk;
 import com.lokamc.types.StringLocation;
 import com.sk89q.worldedit.bukkit.BukkitAdapter;
 import com.sk89q.worldedit.math.BlockVector3;
@@ -270,6 +271,22 @@ public class LocationUtil {
         }
 
         return blocks;
+    }
+
+    public static List<StringChunk> getStringChunksFromRegion(Location p1, Location p2) {
+        int minX = Math.min(p1.getBlockX(), p2.getBlockX()) >> 4;
+        int maxX = Math.max(p1.getBlockX(), p2.getBlockX()) >> 4;
+        int minZ = Math.min(p1.getBlockZ(), p2.getBlockZ()) >> 4;
+        int maxZ = Math.max(p1.getBlockZ(), p2.getBlockZ()) >> 4;
+
+        List<StringChunk> chunks = new ArrayList<>();
+        for (int x = minX; x <= maxX; x++) {
+            for (int z = minZ; z <= maxZ; z++) {
+                chunks.add(new StringChunk(p1.getWorld(), x, z));
+            }
+        }
+
+        return chunks;
     }
 
     public static List<Chunk> getChunksFromRegion(Location p1, Location p2) {
