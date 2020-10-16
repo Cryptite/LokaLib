@@ -391,7 +391,7 @@ public class PlayerUtil {
         return head;
     }
 
-    private static GameProfile getGameProfile(String url) {
+    public static GameProfile getGameProfile(String url) {
         GameProfile profile = new GameProfile(UUID.randomUUID(), null);
         profile.getProperties().put("textures", new Property("textures", url));
         return profile;
