@@ -3,6 +3,7 @@ package com.lokamc.utils;
 import com.destroystokyo.paper.profile.PlayerProfile;
 import com.destroystokyo.paper.profile.ProfileProperty;
 import com.mojang.authlib.GameProfile;
+import com.mojang.authlib.properties.Property;
 import net.minecraft.server.v1_16_R2.World;
 import net.minecraft.server.v1_16_R2.*;
 import org.bukkit.Material;
@@ -14,6 +15,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
+import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.BlockIterator;
@@ -21,6 +23,7 @@ import org.bukkit.util.BoundingBox;
 import org.bukkit.util.RayTraceResult;
 import org.bukkit.util.Vector;
 
+import java.lang.reflect.Field;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
@@ -341,5 +344,56 @@ public class PlayerUtil {
                 .map(ProfileProperty::getValue)
                 .findFirst()
                 .orElse(null);
+    }
+
+    public static ItemStack getHeadByUrl(String url) {
+        if (url == null) return new ItemStack(Material.BARRIER);
+
+        ItemStack head = new ItemStack(Material.PLAYER_HEAD, 1);
+        if (url.isEmpty()) return head;
+
+        head.setItemMeta(getSkullMeta(url));
+        return head;
+    }
+
+    public static SkullMeta getSkullMeta(String url) {
+        if (url == null || url.isEmpty()) return null;
+
+        ItemStack head = new ItemStack(Material.PLAYER_HEAD);
+        SkullMeta headMeta = (SkullMeta) head.getItemMeta();
+        GameProfile profile = getGameProfile(url);
+        Field profileField;
+        try {
+            profileField = headMeta.getClass().getDeclaredField("profile");
+            profileField.setAccessible(true);
+            profileField.set(headMeta, profile);
+        } catch (NoSuchFieldException | IllegalArgumentException | IllegalAccessException e1) {
+            e1.printStackTrace();
+        }
+        head.setItemMeta(headMeta);
+        return headMeta;
+    }
+
+    public static ItemStack getHeadByProfile(GameProfile profile) {
+        if (profile == null) return new ItemStack(Material.BARRIER);
+
+        ItemStack head = new ItemStack(Material.PLAYER_HEAD, 1);
+        SkullMeta headMeta = (SkullMeta) head.getItemMeta();
+        Field profileField;
+        try {
+            profileField = headMeta.getClass().getDeclaredField("profile");
+            profileField.setAccessible(true);
+            profileField.set(headMeta, profile);
+        } catch (NoSuchFieldException | IllegalArgumentException | IllegalAccessException e1) {
+            e1.printStackTrace();
+        }
+        head.setItemMeta(headMeta);
+        return head;
+    }
+
+    private static GameProfile getGameProfile(String url) {
+        GameProfile profile = new GameProfile(UUID.randomUUID(), null);
+        profile.getProperties().put("textures", new Property("textures", url));
+        return profile;
     }
 }
