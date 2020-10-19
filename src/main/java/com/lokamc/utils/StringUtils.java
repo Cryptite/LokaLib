@@ -135,8 +135,8 @@ public class StringUtils {
                 break;
             default:
                 time = text.substring(text.length() - 1);
-                if (!time.equals("d") && !time.equals("m") && !time.equals("h") && !time.equals("s")) {
-                    p.sendMessage(GRAY + "Must end in s (seconds), m (minutes), h (hours), or d (days). Eg: 24h or 0 for "
+                if (!time.equals("d") && !time.equals("m") && !time.equals("h") && !time.equals("s") && !time.equals("w")) {
+                    p.sendMessage(GRAY + "Must end in s (seconds), m (minutes), h (hours), or d (days), or w (weeks). Eg: 24h or 0 for "
                             + "non-repeatable.");
                     return null;
                 } else {
@@ -158,6 +158,8 @@ public class StringUtils {
             calendar.add(Calendar.HOUR, amount * 24);
         } else if (text.endsWith("m")) {
             calendar.add(Calendar.MINUTE, amount);
+        } else if (text.endsWith("w")) {
+            calendar.add(Calendar.HOUR, amount * 24 * 7);
         } else {
             calendar.add(Calendar.SECOND, amount);
         }
