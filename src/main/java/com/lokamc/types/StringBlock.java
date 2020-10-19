@@ -31,6 +31,7 @@ import static com.sk89q.worldedit.bukkit.BukkitAdapter.asBlockVector;
 public class StringBlock extends StringLocation implements Comparable<StringBlock> {
     public int priority = 1;
     private Boolean doBlockUpdate;
+    private boolean doLightUpdate;
     private Block block;
     private BlockData blockData;
 //    private BlockState blockState;
@@ -164,7 +165,7 @@ public class StringBlock extends StringLocation implements Comparable<StringBloc
         if (block == null) block = getBlock();
 
         if (!block.getBlockData().matches(blockData)) {
-            block.setBlockData(blockData, update, false);
+            block.setBlockData(blockData, update, doLightUpdate);
         }
     }
 
@@ -348,6 +349,10 @@ public class StringBlock extends StringLocation implements Comparable<StringBloc
         if (doBlockUpdate != null) return doBlockUpdate;
 
         return false;
+    }
+
+    public void setDoLightUpdate(boolean doLightUpdate) {
+        this.doLightUpdate = doLightUpdate;
     }
 
     public void update() {
