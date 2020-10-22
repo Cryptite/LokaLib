@@ -30,6 +30,16 @@ public class FancyMessage {
         then(text);
     }
 
+    public FancyMessage(BaseComponent[] baseComponents) {
+        componentList = new ArrayList<>();
+        for (BaseComponent baseComponent : baseComponents) {
+            if (baseComponent instanceof TextComponent) {
+                TextComponent txt = (TextComponent) baseComponent;
+                componentList.addAll(txt.getExtra().stream().map(baseComponent1 -> (TextComponent) baseComponent1).collect(Collectors.toList()));
+            }
+        }
+    }
+
     public FancyMessage clone() {
         FancyMessage clone = new FancyMessage();
         clone.componentList = componentList.stream().map(TextComponent::duplicate).collect(Collectors.toList());
