@@ -1,9 +1,9 @@
 package com.lokamc.utils;
 
+import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.*;
 import net.md_5.bungee.chat.ComponentSerializer;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
@@ -12,6 +12,8 @@ import java.util.*;
 import java.util.function.Consumer;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
+
+import static net.md_5.bungee.api.ChatColor.*;
 
 public class FancyMessage {
     private List<TextComponent> componentList;
@@ -100,23 +102,22 @@ public class FancyMessage {
                 do {
                     int nextIndex = text.indexOf("§", index + 1);
 
-                    ChatColor color = ChatColor.getByChar(text.substring(index + 1, index + 2));
+                    ChatColor color = ChatColor.getByChar(text.charAt(index + 1));
                     String nextPart = text.substring(index + 2, nextIndex == -1 ? text.length() : nextIndex);
                     if (!nextPart.equalsIgnoreCase(""))
                         next.setText(nextPart);
 
-                    net.md_5.bungee.api.ChatColor colorChar = net.md_5.bungee.api.ChatColor.getByChar(color.getChar());
-                    if (net.md_5.bungee.api.ChatColor.BOLD.equals(colorChar)) {
+                    if (BOLD.equals(color)) {
                         next.setBold(true);
-                    } else if (net.md_5.bungee.api.ChatColor.STRIKETHROUGH.equals(colorChar)) {
+                    } else if (STRIKETHROUGH.equals(color)) {
                         next.setStrikethrough(true);
-                    } else if (net.md_5.bungee.api.ChatColor.UNDERLINE.equals(colorChar)) {
+                    } else if (UNDERLINE.equals(color)) {
                         next.setUnderlined(true);
-                    } else if (net.md_5.bungee.api.ChatColor.ITALIC.equals(colorChar)) {
+                    } else if (ITALIC.equals(color)) {
                         next.setItalic(true);
-                    } else if (net.md_5.bungee.api.ChatColor.RESET.equals(colorChar)) {
+                    } else if (RESET.equals(color)) {
                     } else {
-                        next.setColor(colorChar);
+                        next.setColor(color);
                     }
                     if (!nextPart.equalsIgnoreCase("")) {
                         lastThenSet.add(next);
@@ -139,27 +140,39 @@ public class FancyMessage {
         return this;
     }
 
-    public FancyMessage color(ChatColor color) {
-        net.md_5.bungee.api.ChatColor bColor = net.md_5.bungee.api.ChatColor.getByChar(color.getChar());
+    public FancyMessage color(org.bukkit.ChatColor color) {
+        net.md_5.bungee.api.ChatColor bColor = ChatColor.getByChar(color.getChar());
         latest().setColor(bColor);
         currentColor = bColor;
         return this;
     }
 
+    public FancyMessage color(ChatColor color) {
+        latest().setColor(color);
+        currentColor = color;
+        return this;
+    }
+
+    public FancyMessage color(String color) {
+        ChatColor newColor = of(color);
+        latest().setColor(newColor);
+        currentColor = newColor;
+        return this;
+    }
+
+    public FancyMessage style(org.bukkit.ChatColor style) {
+        return style(ChatColor.getByChar(style.getChar()));
+    }
+
     public FancyMessage style(ChatColor style) {
-        switch (style) {
-            case BOLD:
-                latest().setBold(true);
-                break;
-            case STRIKETHROUGH:
-                latest().setStrikethrough(true);
-                break;
-            case UNDERLINE:
-                latest().setUnderlined(true);
-                break;
-            case ITALIC:
-                latest().setItalic(true);
-                break;
+        if (BOLD.equals(style)) {
+            latest().setBold(true);
+        } else if (STRIKETHROUGH.equals(style)) {
+            latest().setStrikethrough(true);
+        } else if (UNDERLINE.equals(style)) {
+            latest().setUnderlined(true);
+        } else if (ITALIC.equals(style)) {
+            latest().setItalic(true);
         }
         return this;
     }
