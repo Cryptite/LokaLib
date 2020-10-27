@@ -127,10 +127,10 @@ public class TimeUtil {
         seconds = (int) seconds;
         if (seconds < 120) {
             if (seconds <= 60) {
-                time = "" + GREEN + seconds + (fullWord ? " " + "second" + (seconds > 1 ? "s" : "") : "s");
+                time = "" + GREEN + (int) seconds + (fullWord ? " " + "second" + (seconds > 1 ? "s" : "") : "s");
             } else {
                 seconds = seconds % 60;
-                time = "" + GREEN + "1" + (fullWord ? " minutes" : "m " + seconds + "s");
+                time = "" + GREEN + "1" + (fullWord ? " minutes" : "m " + (int) seconds + "s");
             }
         } else if (seconds < 3600) {
             int minutes = (int) Math.ceil(seconds / 60f);
