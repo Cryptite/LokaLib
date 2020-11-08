@@ -1,7 +1,7 @@
 package com.lokamc.utils;
 
 import org.bukkit.Bukkit;
-import org.bukkit.craftbukkit.v1_16_R2.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.v1_16_R3.inventory.CraftItemStack;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.io.BukkitObjectInputStream;
@@ -118,7 +118,7 @@ public class SerializeInventory {
         }
     }
 
-    private static net.minecraft.server.v1_16_R2.ItemStack getCraftVersion(ItemStack stack) {
+    private static net.minecraft.server.v1_16_R3.ItemStack getCraftVersion(ItemStack stack) {
         if (stack != null)
             return CraftItemStack.asNMSCopy(stack);
 
