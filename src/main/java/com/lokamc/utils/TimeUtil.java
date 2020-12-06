@@ -137,7 +137,7 @@ public class TimeUtil {
             time = "" + GREEN + minutes + (fullWord ? " " + "minute" + (minutes > 1 ? "s" : "") : "m");
         } else if (seconds < 86400) {
             int minutes = (int) ((seconds % 3600) / 60);
-            int hours = (int) (Math.ceil(seconds / 3600));
+            int hours = (int) (Math.floor(seconds / 3600));
             if (hours > 2) {
                 time = "" + GREEN + hours + (fullWord ? " hours" : "h");
             } else {
