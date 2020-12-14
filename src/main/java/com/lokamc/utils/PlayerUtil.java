@@ -246,8 +246,18 @@ public class PlayerUtil {
     }
 
     public static boolean isHolding(Player p, ItemStack item) {
+        return isHolding(p, item, true);
+    }
+
+    public static boolean isHolding(Player p, ItemStack item, boolean ignoreCount) {
         ItemStack inHand = p.getInventory().getItemInMainHand();
         ItemStack offHand = p.getInventory().getItemInOffHand();
+
+        if (ignoreCount) {
+            inHand = inHand.asOne();
+            offHand = offHand.asOne();
+        }
+
         return (inHand != null && inHand.equals(item))
                 || offHand != null && offHand.equals(item);
     }
