@@ -442,6 +442,10 @@ public class LocationUtil {
     }
 
     public static List<Block> getOutset(Location l, int radius, boolean wallsOnly) {
+        return getOutset(l, radius, wallsOnly, false);
+    }
+
+    public static List<Block> getOutset(Location l, int radius, boolean wallsOnly, boolean hollow) {
         List<Block> blocks = new ArrayList<>();
 
         Location l1 = l.clone().add(radius, radius, radius);
@@ -458,7 +462,7 @@ public class LocationUtil {
         if (wallsOnly) {
             for (Block b : getBlocksFromRegion(l1, l2)) {
                 if (b.getX() == maxX || b.getX() == minX
-                        || b.getY() == maxY || b.getY() == minY
+                        || (!hollow && (b.getY() == maxY || b.getY() == minY))
                         || b.getZ() == maxZ || b.getZ() == minZ) blocks.add(b);
             }
         } else {
