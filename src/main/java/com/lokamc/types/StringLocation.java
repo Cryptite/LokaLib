@@ -40,14 +40,19 @@ public class StringLocation extends Location {
     }
 
     public static StringLocation fromArgs(String string) {
-        String[] elems = string.split(",");
-        World world = Bukkit.getWorld(elems[0]);
-        double x = Double.parseDouble(elems[1]);
-        double y = Double.parseDouble(elems[2]);
-        double z = Double.parseDouble(elems[3]);
-        float yaw = elems.length > 4 ? Float.parseFloat(elems[4]) : 0f;
-        float pitch = elems.length > 5 ? Float.parseFloat(elems[5]) : 0f;
-        return new StringLocation(world, x, y, z, yaw, pitch);
+        try {
+            String[] elems = string.split(",");
+            World world = Bukkit.getWorld(elems[0]);
+            double x = Double.parseDouble(elems[1]);
+            double y = Double.parseDouble(elems[2]);
+            double z = Double.parseDouble(elems[3]);
+            float yaw = elems.length > 4 ? Float.parseFloat(elems[4]) : 0f;
+            float pitch = elems.length > 5 ? Float.parseFloat(elems[5]) : 0f;
+            return new StringLocation(world, x, y, z, yaw, pitch);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     public StringLocation(World world, BlockVector3 vector3) {
