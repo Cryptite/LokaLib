@@ -51,6 +51,24 @@ public class LocationUtil {
                 point.getZ();
     }
 
+    public static String coordsToString(StringLocation point) {
+        if (point == null) return null;
+
+        World w = point.getWorld();
+        String worldName = w != null ? w.getName() : point.getWorldName();
+        String coords = worldName + "," +
+                point.getX() + "," +
+                point.getY() + "," +
+                point.getZ();
+
+        if (point.getYaw() > 0f || point.getPitch() > 0) {
+            coords += "," + point.getYaw();
+            coords += "," + point.getPitch();
+        }
+
+        return coords;
+    }
+
     public static String coordsToString(Location point) {
         if (point == null) return null;
 

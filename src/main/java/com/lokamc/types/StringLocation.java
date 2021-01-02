@@ -19,36 +19,49 @@ import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 
 public class StringLocation extends Location {
+    private String worldName;
+
     public StringLocation(Block b) {
         super(b.getWorld(), b.getX(), b.getY(), b.getZ());
+        this.worldName = b.getWorld().getName();
     }
 
     public StringLocation(World w, double x, double y, double z) {
         super(w, x, y, z);
+        this.worldName = w.getName();
     }
 
     public StringLocation(World w, double x, double y, double z, float yaw, float pitch) {
         super(w, x, y, z, yaw, pitch);
+        this.worldName = w.getName();
+    }
+
+    public StringLocation(String worldName, World w, double x, double y, double z, float yaw, float pitch) {
+        super(w, x, y, z, yaw, pitch);
+        this.worldName = worldName;
     }
 
     public StringLocation(Location l) {
         super(l.getWorld(), l.getX(), l.getY(), l.getZ(), l.getYaw(), l.getPitch());
+        this.worldName = l.getWorld().getName();
     }
 
     public StringLocation(StringLocation l) {
         super(l.getWorld(), l.getX(), l.getY(), l.getZ(), l.getYaw(), l.getPitch());
+        this.worldName = l.getWorldName();
     }
 
     public static StringLocation fromArgs(String string) {
         try {
             String[] elems = string.split(",");
-            World world = Bukkit.getWorld(elems[0]);
+            String worldName = elems[0];
+            World world = Bukkit.getWorld(worldName);
             double x = Double.parseDouble(elems[1]);
             double y = Double.parseDouble(elems[2]);
             double z = Double.parseDouble(elems[3]);
             float yaw = elems.length > 4 ? Float.parseFloat(elems[4]) : 0f;
             float pitch = elems.length > 5 ? Float.parseFloat(elems[5]) : 0f;
-            return new StringLocation(world, x, y, z, yaw, pitch);
+            return new StringLocation(worldName, world, x, y, z, yaw, pitch);
         } catch (Exception e) {
             e.printStackTrace();
             return null;
@@ -57,6 +70,11 @@ public class StringLocation extends Location {
 
     public StringLocation(World world, BlockVector3 vector3) {
         super(world, vector3.getX(), vector3.getY(), vector3.getZ());
+        this.worldName = world.getName();
+    }
+
+    public String getWorldName() {
+        return worldName;
     }
 
     public boolean inChunk(Chunk c) {
@@ -133,6 +151,7 @@ public class StringLocation extends Location {
 
     public void setLocation(Location l) {
         setWorld(l.getWorld());
+        worldName = l.getWorld().getName();
         setX(l.getX());
         setY(l.getY());
         setZ(l.getZ());
