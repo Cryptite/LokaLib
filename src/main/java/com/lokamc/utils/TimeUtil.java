@@ -123,18 +123,31 @@ public class TimeUtil {
     }
 
     public static String getTimeFromSeconds(float seconds, boolean fullWord) {
+        return getTimeFromSeconds(seconds, false, fullWord);
+    }
+
+    public static String getTimeFromSeconds(float seconds, boolean includeMinuteSeconds, boolean fullWord) {
         String time;
         seconds = (int) seconds;
         if (seconds < 120) {
             if (seconds <= 60) {
-                time = "" + GREEN + (int) seconds + (fullWord ? " " + "second" + (seconds > 1 ? "s" : "") : "s");
+                time = "" + GREEN + (int) seconds + (fullWord ? " second" + (seconds > 1 ? "s" : "") : "s");
             } else {
                 seconds = seconds % 60;
                 time = "" + GREEN + "1" + (fullWord ? " minutes" : "m " + (int) seconds + "s");
             }
         } else if (seconds < 3600) {
             int minutes = (int) Math.ceil(seconds / 60f);
-            time = "" + GREEN + minutes + (fullWord ? " " + "minute" + (minutes > 1 ? "s" : "") : "m");
+            int secs = (int) seconds % 60;
+            if (includeMinuteSeconds && secs > 0) {
+                time = GREEN + String.format("%s%s %s%s",
+                        minutes,
+                        (fullWord ? " minute" + (minutes > 1 ? "s" : "") : "m"),
+                        secs,
+                        (fullWord ? " second" + (secs > 1 ? "s" : "") : "s"));
+            } else {
+                time = "" + GREEN + minutes + (fullWord ? " minute" + (minutes > 1 ? "s" : "") : "m");
+            }
         } else if (seconds < 86400) {
             int minutes = (int) ((seconds % 3600) / 60);
             int hours = (int) (Math.floor(seconds / 3600));
