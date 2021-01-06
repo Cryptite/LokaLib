@@ -5,6 +5,7 @@ import org.ocpsoft.prettytime.PrettyTime;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.time.Duration;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
@@ -12,7 +13,6 @@ import java.util.concurrent.TimeUnit;
 
 import static java.lang.System.currentTimeMillis;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
-import static org.bukkit.ChatColor.GREEN;
 
 public class TimeUtil {
     public static final DateFormat fullDateFormat = new SimpleDateFormat("MM/dd/yy H:mm a", Locale.ENGLISH);
@@ -126,41 +126,37 @@ public class TimeUtil {
         return getTimeFromSeconds(seconds, false, fullWord);
     }
 
-    public static String getTimeFromSeconds(float seconds, boolean includeMinuteSeconds, boolean fullWord) {
-        String time;
-        seconds = (int) seconds;
-        if (seconds < 120) {
-            if (seconds <= 60) {
-                time = "" + GREEN + (int) seconds + (fullWord ? " second" + (seconds > 1 ? "s" : "") : "s");
-            } else {
-                seconds = seconds % 60;
-                time = "" + GREEN + "1" + (fullWord ? " minutes" : "m " + (int) seconds + "s");
-            }
-        } else if (seconds < 3600) {
-            int minutes = (int) Math.ceil(seconds / 60f);
-            int secs = (int) seconds % 60;
-            if (includeMinuteSeconds && secs > 0) {
-                time = GREEN + String.format("%s%s %s%s",
-                        minutes,
-                        (fullWord ? " minute" + (minutes > 1 ? "s" : "") : "m"),
-                        secs,
-                        (fullWord ? " second" + (secs > 1 ? "s" : "") : "s"));
-            } else {
-                time = "" + GREEN + minutes + (fullWord ? " minute" + (minutes > 1 ? "s" : "") : "m");
-            }
-        } else if (seconds < 86400) {
-            int minutes = (int) ((seconds % 3600) / 60);
-            int hours = (int) (Math.floor(seconds / 3600));
-            if (hours > 2) {
-                time = "" + GREEN + hours + (fullWord ? " hours" : "h");
-            } else {
-                time = "" + GREEN + hours + (fullWord ? " hour " + minutes + " minutes" : "h " + minutes + "m");
-            }
-        } else {
-            int days = (int) TimeUnit.SECONDS.toDays((long) seconds);
-            time = "" + GREEN + days + (fullWord ? " " + "day" + (days > 1 ? "s" : "") : "d");
+    public static String getTimeFromSeconds(float secs, boolean includeMinuteSeconds, boolean fullWord) {
+        Duration duration = Duration.ofSeconds((long) secs);
+        long seconds = duration.getSeconds();
+        long absSeconds = Math.abs(seconds);
+
+        long d = absSeconds / 86400;
+        long h = absSeconds / 3600;
+        long m = (absSeconds % 3600) / 60;
+        long s = absSeconds % 60;
+
+        StringBuilder builder = new StringBuilder();
+        if (d > 0) {
+            builder.append(String.format("%d", d))
+                    .append(fullWord ? (d > 1 ? "days " : "day ") : "d ");
         }
-        return time;
+
+        if (h > 0) {
+            builder.append(String.format("%d", h))
+                    .append(fullWord ? (h > 1 ? "hours " : "hour ") : "h ");
+        }
+
+        if (m > 0) {
+            builder.append(String.format("%d", m))
+                    .append(fullWord ? (m > 1 ? "minutes " : "minute ") : "m ");
+        }
+
+        if (s > 0) {
+            builder.append(String.format("%02d", s))
+                    .append(fullWord ? (s > 1 ? "seconds " : "second ") : "s");
+        }
+        return builder.toString();
     }
 
     public static String getMillisPassedFromNanos(long start) {
