@@ -139,22 +139,22 @@ public class TimeUtil {
         StringBuilder builder = new StringBuilder();
         if (d > 0) {
             builder.append(String.format("%d", d))
-                    .append(fullWord ? (d > 1 ? "days " : "day ") : "d ");
+                    .append(fullWord ? (d > 1 ? " days " : "day ") : "d ");
         }
 
         if (h > 0) {
             builder.append(String.format("%d", h))
-                    .append(fullWord ? (h > 1 ? "hours " : "hour ") : "h ");
+                    .append(fullWord ? (h > 1 ? " hours " : "hour ") : "h ");
         }
 
-        if (m > 0) {
+        if (h < 3 && m > 0) {
             builder.append(String.format("%d", m))
-                    .append(fullWord ? (m > 1 ? "minutes " : "minute ") : "m ");
+                    .append(fullWord ? (m > 1 ? " minutes " : "minute ") : "m ");
         }
 
-        if (s > 0) {
+        if (h < 3 && m < 5 && s > 0) {
             builder.append(String.format("%02d", s))
-                    .append(fullWord ? (s > 1 ? "seconds " : "second ") : "s");
+                    .append(fullWord ? (s > 1 ? " seconds " : "second ") : "s");
         }
         return builder.toString();
     }
