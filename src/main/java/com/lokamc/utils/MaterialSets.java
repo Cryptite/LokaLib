@@ -2,6 +2,7 @@ package com.lokamc.utils;
 
 import com.destroystokyo.paper.MaterialTags;
 import org.bukkit.Material;
+import org.bukkit.Tag;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -52,6 +53,8 @@ public class MaterialSets {
             GRASS_PATH));
 
     static {
+        bypassLOSBlocks.addAll(MaterialTags.PRESSURE_PLATES.getValues());
+        bypassLOSBlocks.addAll(Tag.CARPETS.getValues());
         bypassLOSBlocks.addAll(MaterialTags.SIGNS.getValues());
         bypassLOSBlocks.addAll(crops);
         bypassLOSBlocks.addAll(plants);
