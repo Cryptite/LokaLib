@@ -80,6 +80,21 @@ public class BlockUtil {
         return null;
     }
 
+    public static ItemFrame getItemFrameExact(Location l) {
+        l.getChunk().load();
+        for (Entity entity : l.getNearbyEntities(1, 1, 1)) {
+            if (entity instanceof CraftItemFrame) {
+                ItemFrame frame = (ItemFrame) entity;
+                Block frameBlock = frame.getLocation().getBlock();
+                if (frameBlock.equals(l.getBlock()) || frameBlock.getRelative(frame.getFacing().getOppositeFace()).equals(l.getBlock())) {
+                    return frame;
+                }
+            }
+        }
+
+        return null;
+    }
+
     public static ItemFrame getItemFrame(Location l, Block against) {
         l.getChunk().load();
         for (Entity entity : l.getNearbyEntities(2, 2, 2)) {
