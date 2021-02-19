@@ -300,6 +300,10 @@ public class FancyMessage {
         return ComponentSerializer.toString(build(null));
     }
 
+    public static FancyMessage fromJson(String json) {
+        return new FancyMessage(ComponentSerializer.parse(json));
+    }
+
     public void send(Player p) {
         if (p == null) return;
 
