@@ -169,6 +169,21 @@ public class StringBlock extends StringLocation implements Comparable<StringBloc
         }
     }
 
+    public void setBlockAsync(BlockData blockData) {
+        setBlockAsync(blockData, false);
+    }
+
+    public void setBlockAsync(BlockData blockData, boolean update) {
+        getWorld().getChunkAtAsync(this)
+                .thenRun(() -> {
+                    if (block == null) block = getBlock();
+
+                    if (!block.getBlockData().matches(blockData)) {
+                        block.setBlockData(blockData, update, doLightUpdate);
+                    }
+                });
+    }
+
     public void setTypeAndData(Material m) {
         setTypeAndData(m, true);
     }
