@@ -142,7 +142,7 @@ public class TimeUtil {
                     .append(fullWord ? (d > 1 ? " days " : " day ") : "d ");
         }
 
-        if (h > 0) {
+        if (h > 0 && h < 24) {
             builder.append(String.format("%d", h))
                     .append(fullWord ? (h > 1 ? " hours " : " hour ") : "h ");
         }
