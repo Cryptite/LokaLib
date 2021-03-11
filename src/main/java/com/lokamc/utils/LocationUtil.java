@@ -267,6 +267,13 @@ public class LocationUtil {
         return getBlocksFromRegion(b1.getLocation(), b2.getLocation(), 0);
     }
 
+    public static List<Block> getBlocksFromRegion(Location l, int outset) {
+        Location p1 = l.clone().add(outset, outset, outset);
+        Location p2 = l.clone().subtract(outset, outset, outset);
+        return getBlocksFromRegion(p1, p2, 0);
+
+    }
+
     public static List<Block> getBlocksFromRegion(Location p1, Location p2) {
         return getBlocksFromRegion(p1, p2, 0);
     }
