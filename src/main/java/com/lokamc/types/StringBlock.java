@@ -14,6 +14,7 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.block.Container;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.type.Slab;
+import org.bukkit.craftbukkit.v1_16_R3.block.impl.CraftFluids;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
@@ -34,7 +35,7 @@ public class StringBlock extends StringLocation implements Comparable<StringBloc
     private boolean doLightUpdate;
     private Block block;
     private BlockData blockData;
-//    private BlockState blockState;
+    //    private BlockState blockState;
     private BlockStateHolder blockStateHolder;
     private Runnable onSetRunnable;
 
@@ -164,7 +165,7 @@ public class StringBlock extends StringLocation implements Comparable<StringBloc
     public void setBlock(BlockData blockData, boolean update) {
         if (block == null) block = getBlock();
 
-        if (!block.getBlockData().matches(blockData)) {
+        if (!statesMatch(block.getBlockData(), blockData)) {
             block.setBlockData(blockData, update, doLightUpdate);
         }
     }
@@ -178,10 +179,22 @@ public class StringBlock extends StringLocation implements Comparable<StringBloc
                 .thenRun(() -> {
                     if (block == null) block = getBlock();
 
-                    if (!block.getBlockData().matches(blockData)) {
+                    if (!statesMatch(block.getBlockData(), blockData)) {
                         block.setBlockData(blockData, update, doLightUpdate);
                     }
                 });
+    }
+
+    private boolean statesMatch(BlockData b1, BlockData b2) {
+        if (b1.matches(b2)) {
+            if (b1 instanceof CraftFluids f1 && b2 instanceof CraftFluids f2) {
+                return f1.getLevel() == f2.getLevel();
+            }
+
+            return true;
+        }
+
+        return false;
     }
 
     public void setTypeAndData(Material m) {
