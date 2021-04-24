@@ -255,7 +255,7 @@ public class LocationUtil {
         return getBlocksFromRegion(getRegionMinimum(region), getRegionMaximum(region));
     }
 
-    public static List<Block> getBlocksFromRegion(World world, ProtectedRegion region) {
+    public static List<Block> getBlocksFromRegion(World world, CuboidRegion region) {
         BlockVector3 minimumPoint = region.getMinimumPoint();
         BlockVector3 maximumPoint = region.getMaximumPoint();
         Location l1 = new Location(world, minimumPoint.getX(), minimumPoint.getY(), minimumPoint.getZ());
