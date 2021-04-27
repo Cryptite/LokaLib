@@ -10,6 +10,13 @@
     <name>LokaLib</name>
     <description>Collection of useful methods used by Loka Minecraft.</description>
 
+    <distributionManagement>
+        <repository>
+            <id>com.lokamc</id>
+            <url>http://ysera.dyndns.org:8090/releases</url>
+        </repository>
+    </distributionManagement>
+
     <developers>
         <developer>
             <name>Tom Miller</name>
@@ -24,11 +31,6 @@
             <distribution>repo</distribution>
         </license>
     </licenses>
-    <scm>
-        <url>https://github.com/Cryptite/LokaLib</url>
-        <connection>scm:git:git@github.com:Cryptite/LokaLib.git</connection>
-        <developerConnection>scm:git:git@github.com:Cryptite/LokaLib.git</developerConnection>
-    </scm>
 
     <build>
         <plugins>
@@ -54,20 +56,6 @@
                     </execution>
                 </executions>
             </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-gpg-plugin</artifactId>
-                <version>1.5</version>
-                <executions>
-                    <execution>
-                        <id>sign-artifacts</id>
-                        <phase>verify</phase>
-                        <goals>
-                            <goal>sign</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
         </plugins>
     </build>
 
@@ -79,6 +67,13 @@
     </repositories>
 
     <dependencies>
+        <dependency>
+            <groupId>com.lokamc</groupId>
+            <artifactId>LokaCore</artifactId>
+            <version>1.0-SNAPSHOT</version>
+            <scope>provided</scope>
+        </dependency>
+
         <dependency>
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
