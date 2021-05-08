@@ -140,8 +140,17 @@ public class StringBlock extends StringLocation implements Comparable<StringBloc
     }
 
     public void setBlockTypeAsync(Material m) {
+        setBlockTypeAsync(m, null);
+    }
+
+    public void setBlockTypeAsync(Material m, Runnable runnable) {
         getWorld().getChunkAtAsync(this)
-                .thenRun(() -> setBlockType(m));
+                .thenRun(() -> {
+                    setBlockType(m);
+                    if (runnable != null) {
+                        runnable.run();
+                    }
+                });
     }
 
     public void setBlockType(Material m) {
