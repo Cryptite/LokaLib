@@ -6,7 +6,7 @@
 
     <groupId>io.github.cryptite</groupId>
     <artifactId>LokaLib</artifactId>
-    <version>1.0</version>
+    <version>1.0-SNAPSHOT</version>
     <name>LokaLib</name>
     <description>Collection of useful methods used by Loka Minecraft.</description>
 

@@ -11,7 +11,9 @@ import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 
-import static org.bukkit.ChatColor.*;
+import static net.kyori.adventure.text.format.NamedTextColor.GREEN;
+import static net.kyori.adventure.text.format.NamedTextColor.RED;
+import static net.kyori.adventure.text.format.TextDecoration.BOLD;
 
 public class ClickConfirmation {
     private static final ClickConfirmation instance = new ClickConfirmation();
