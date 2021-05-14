@@ -33,22 +33,20 @@ public class FancyMessage {
         then(text);
     }
 
-    public FancyMessage(Component[] baseComponents) {
-        component = Component.empty();
-        for (Component baseComponent : baseComponents) {
-            component.append(baseComponent);
-        }
+    public FancyMessage(Component component) {
+        this.component = component;
     }
 
     public FancyMessage clone() {
-        FancyMessage clone = new FancyMessage();
-//        clone.componentList = componentList.stream().map(TextComponent::duplicate).collect(Collectors.toList());
-//        clone.lastThenSet = lastThenSet.stream().map(TextComponent::duplicate).collect(Collectors.toList());
+        FancyMessage clone = new FancyMessage(component);
         clone.setId = setId;
         clone.commandsMap = new HashMap<>(commandsMap);
-//        clone.currentColor = currentColor;
         clone.expires = expires;
         return clone;
+    }
+
+    public Component getComponent() {
+        return component;
     }
 
     public FancyMessage setExpires(boolean expires) {

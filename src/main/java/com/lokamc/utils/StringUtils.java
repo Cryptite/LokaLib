@@ -1,6 +1,9 @@
 package com.lokamc.utils;
 
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
+import net.kyori.adventure.text.serializer.plain.PlainComponentSerializer;
 import org.bukkit.entity.Player;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -11,7 +14,6 @@ import java.util.List;
 import static net.md_5.bungee.api.ChatColor.GRAY;
 import static org.apache.commons.lang.StringUtils.isNumeric;
 import static org.apache.commons.lang.StringUtils.join;
-import static org.bukkit.ChatColor.stripColor;
 
 public class StringUtils {
     private static final DecimalFormat numberFormat = new DecimalFormat("#,###,###");
@@ -164,5 +166,17 @@ public class StringUtils {
             calendar.add(Calendar.SECOND, amount);
         }
         return calendar.getTime();
+    }
+
+    public static @NonNull String stripColor(String text) {
+        return PlainComponentSerializer.plain().serialize(LegacyComponentSerializer.legacySection().deserialize(text));
+    }
+
+    public static @NonNull String translateAlternateColorCodes(String text) {
+        return translateAlternateColorCodes('&', text);
+    }
+
+    public static @NonNull String translateAlternateColorCodes(char altChar, String text) {
+        return LegacyComponentSerializer.legacy(altChar).deserialize(text).content();
     }
 }

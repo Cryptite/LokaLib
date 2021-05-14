@@ -2,6 +2,7 @@ package com.lokamc.utils;
 
 import com.destroystokyo.paper.profile.PlayerProfile;
 import com.google.common.base.Strings;
+import net.kyori.adventure.text.format.NamedTextColor;
 import net.minecraft.server.v1_16_R3.NBTTagCompound;
 import org.bukkit.*;
 import org.bukkit.block.Banner;
@@ -423,41 +424,36 @@ public class ItemStackUtil {
         return Material.BLACK_WOOL;
     }
 
-    public static Material getStainedGlass(ChatColor color) {
-        switch (color) {
-
-            case BLACK:
-                return Material.BLACK_STAINED_GLASS;
-            case DARK_BLUE:
-            case BLUE:
-                return Material.BLUE_STAINED_GLASS;
-            case DARK_GREEN:
-                return Material.GREEN_STAINED_GLASS;
-            case DARK_AQUA:
-                return Material.CYAN_STAINED_GLASS;
-            case AQUA:
-                return Material.LIGHT_BLUE_STAINED_GLASS;
-            case DARK_RED:
-            case RED:
-                return Material.RED_STAINED_GLASS;
-            case DARK_PURPLE:
-                return Material.PURPLE_STAINED_GLASS;
-            case GOLD:
-            case YELLOW:
-                return Material.YELLOW_STAINED_GLASS;
-            case GRAY:
-                return Material.LIGHT_GRAY_STAINED_GLASS;
-            case DARK_GRAY:
-                return Material.GRAY_STAINED_GLASS;
-            case GREEN:
-                return Material.LIME_STAINED_GLASS;
-            case LIGHT_PURPLE:
-                return Material.MAGENTA_STAINED_GLASS;
-            case WHITE:
-                return Material.WHITE_STAINED_GLASS;
+    public static Material getStainedGlass(NamedTextColor color) {
+        if (NamedTextColor.BLACK.equals(color)) {
+            return Material.BLACK_STAINED_GLASS;
+        } else if (NamedTextColor.DARK_BLUE.equals(color) || NamedTextColor.BLUE.equals(color)) {
+            return Material.BLUE_STAINED_GLASS;
+        } else if (NamedTextColor.DARK_GREEN.equals(color)) {
+            return Material.GREEN_STAINED_GLASS;
+        } else if (NamedTextColor.DARK_AQUA.equals(color)) {
+            return Material.CYAN_STAINED_GLASS;
+        } else if (NamedTextColor.AQUA.equals(color)) {
+            return Material.LIGHT_BLUE_STAINED_GLASS;
+        } else if (NamedTextColor.DARK_RED.equals(color) || NamedTextColor.RED.equals(color)) {
+            return Material.RED_STAINED_GLASS;
+        } else if (NamedTextColor.DARK_PURPLE.equals(color)) {
+            return Material.PURPLE_STAINED_GLASS;
+        } else if (NamedTextColor.GOLD.equals(color) || NamedTextColor.YELLOW.equals(color)) {
+            return Material.YELLOW_STAINED_GLASS;
+        } else if (NamedTextColor.GRAY.equals(color)) {
+            return Material.LIGHT_GRAY_STAINED_GLASS;
+        } else if (NamedTextColor.DARK_GRAY.equals(color)) {
+            return Material.GRAY_STAINED_GLASS;
+        } else if (NamedTextColor.GREEN.equals(color)) {
+            return Material.LIME_STAINED_GLASS;
+        } else if (NamedTextColor.LIGHT_PURPLE.equals(color)) {
+            return Material.MAGENTA_STAINED_GLASS;
+        } else if (NamedTextColor.WHITE.equals(color)) {
+            return Material.WHITE_STAINED_GLASS;
         }
-
         return Material.BLACK_STAINED_GLASS;
+
     }
 
     public static Material getStainedGlass(DyeColor color) {
@@ -500,42 +496,38 @@ public class ItemStackUtil {
         return Material.BLACK_STAINED_GLASS;
     }
 
-    public static DyeColor getDyeColorFromChatColor(ChatColor color) {
-        return getDyeColorFromChatColor(net.md_5.bungee.api.ChatColor.getByChar(color.getChar()));
-    }
-
-    public static DyeColor getDyeColorFromChatColor(net.md_5.bungee.api.ChatColor color) {
-        if (net.md_5.bungee.api.ChatColor.BLACK.equals(color)) {
+    public static DyeColor getDyeColorFromChatColor(NamedTextColor color) {
+        if (NamedTextColor.BLACK.equals(color)) {
             return BLACK;
-        } else if (net.md_5.bungee.api.ChatColor.DARK_BLUE.equals(color)) {
+        } else if (NamedTextColor.DARK_BLUE.equals(color)) {
             return BLUE;
-        } else if (net.md_5.bungee.api.ChatColor.DARK_GREEN.equals(color)) {
+        } else if (NamedTextColor.DARK_GREEN.equals(color)) {
             return GREEN;
-        } else if (net.md_5.bungee.api.ChatColor.DARK_AQUA.equals(color)) {
+        } else if (NamedTextColor.DARK_AQUA.equals(color)) {
             return CYAN;
-        } else if (net.md_5.bungee.api.ChatColor.DARK_RED.equals(color)) {
+        } else if (NamedTextColor.DARK_RED.equals(color)) {
             return BROWN;
-        } else if (net.md_5.bungee.api.ChatColor.DARK_PURPLE.equals(color)) {
+        } else if (NamedTextColor.DARK_PURPLE.equals(color)) {
             return PURPLE;
-        } else if (net.md_5.bungee.api.ChatColor.GOLD.equals(color)) {
+        } else if (NamedTextColor.GOLD.equals(color)) {
             return ORANGE;
-        } else if (net.md_5.bungee.api.ChatColor.GRAY.equals(color)) {
+        } else if (NamedTextColor.GRAY.equals(color)) {
             return LIGHT_GRAY;
-        } else if (net.md_5.bungee.api.ChatColor.DARK_GRAY.equals(color)) {
+        } else if (NamedTextColor.DARK_GRAY.equals(color)) {
             return GRAY;
-        } else if (net.md_5.bungee.api.ChatColor.BLUE.equals(color)) {
+        } else if (NamedTextColor.BLUE.equals(color)) {
             return LIGHT_BLUE;
-        } else if (net.md_5.bungee.api.ChatColor.GREEN.equals(color)) {
+        } else if (NamedTextColor.GREEN.equals(color)) {
             return LIME;
-        } else if (net.md_5.bungee.api.ChatColor.AQUA.equals(color)) {
+        } else if (NamedTextColor.AQUA.equals(color)) {
             return CYAN;
-        } else if (net.md_5.bungee.api.ChatColor.RED.equals(color)) {
+        } else if (NamedTextColor.RED.equals(color)) {
             return RED;
-        } else if (net.md_5.bungee.api.ChatColor.LIGHT_PURPLE.equals(color)) {
+        } else if (NamedTextColor.LIGHT_PURPLE.equals(color)) {
             return MAGENTA;
-        } else if (net.md_5.bungee.api.ChatColor.YELLOW.equals(color)) {
+        } else if (NamedTextColor.YELLOW.equals(color)) {
             return YELLOW;
-        } else if (net.md_5.bungee.api.ChatColor.WHITE.equals(color)) {
+        } else if (NamedTextColor.WHITE.equals(color)) {
             return WHITE;
         }
         return WHITE;
