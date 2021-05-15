@@ -29,6 +29,7 @@ import java.util.concurrent.ThreadLocalRandom;
 
 import static java.lang.Double.parseDouble;
 import static java.lang.Float.parseFloat;
+import static net.minecraft.server.v1_16_R3.MathHelper.clamp;
 import static org.bukkit.Material.AIR;
 
 public class LocationUtil {
@@ -282,8 +283,8 @@ public class LocationUtil {
         List<Block> blocks = new ArrayList<>();
         int minX = Math.min(p1.getBlockX(), p2.getBlockX()) - outset;
         int maxX = Math.max(p1.getBlockX(), p2.getBlockX()) + outset;
-        int minY = Math.min(p1.getBlockY(), p2.getBlockY()) - outset;
-        int maxY = Math.max(p1.getBlockY(), p2.getBlockY()) + outset;
+        int minY = clamp(Math.min(p1.getBlockY(), p2.getBlockY()) - outset, 0, 255);
+        int maxY = clamp(Math.max(p1.getBlockY(), p2.getBlockY()) + outset, 0, 255);
         int minZ = Math.min(p1.getBlockZ(), p2.getBlockZ()) - outset;
         int maxZ = Math.max(p1.getBlockZ(), p2.getBlockZ()) + outset;
 
