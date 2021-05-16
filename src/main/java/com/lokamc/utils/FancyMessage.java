@@ -18,7 +18,7 @@ import java.util.function.Consumer;
 import static net.kyori.adventure.text.format.TextDecoration.ITALIC;
 
 public class FancyMessage {
-    private final Component component;
+    private Component component;
     private Component lastThenSet;
     private UUID setId;
     private Map<UUID, Consumer<Player>> commandsMap = new HashMap<>();
@@ -55,6 +55,14 @@ public class FancyMessage {
     }
 
     public FancyMessage then(String text) {
+        return then(text, null, null);
+    }
+
+    public FancyMessage then(String text, TextColor color) {
+        return then(text, color, null);
+    }
+
+    public FancyMessage then(String text, TextColor color, TextDecoration style) {
         if (text.contains("http")) {
             if (text.contains("http")) {
                 int index = text.indexOf("http");
@@ -65,7 +73,7 @@ public class FancyMessage {
                     String link = text.substring(index, nextIndex == -1 ? text.length() : nextIndex);
                     TextComponent linkPart = Component.text(link, component.color(), ITALIC)
                             .clickEvent(ClickEvent.clickEvent(ClickEvent.Action.OPEN_URL, link));
-                    component.append(linkPart);
+                    component = component.append(linkPart);
 
                     text = text.substring(nextIndex == -1 ? text.length() : nextIndex);
                     index = text.indexOf("http");
@@ -79,55 +87,68 @@ public class FancyMessage {
             }
         }
 
-        component.append(Component.text(text));
+        Component component;
+        if (color != null) {
+            if (style != null) {
+                component = Component.text(text, color, style);
+            } else {
+                component = Component.text(text, color);
+            }
+        } else if (style != null) {
+            component = Component.text(text).style(Style.style(style));
+        } else {
+            component = Component.text(text);
+        }
+
+        this.component = this.component.append(component);
         return this;
     }
 
     public FancyMessage color(TextColor color) {
-        component.color(color);
+        component = component.color(color);
         return this;
     }
 
     public FancyMessage color(String color) {
         TextColor newColor = TextColor.fromHexString(color);
-        component.color(newColor);
+        component = component.color(newColor);
         return this;
     }
 
     public FancyMessage style(TextDecoration style) {
-        component.style(Style.style(style));
+        component = component.style(Style.style(style));
         return this;
     }
 
     public FancyMessage itemTooltip(ItemStack itemStack) {
-        component.hoverEvent(itemStack);
+        component = component.hoverEvent(itemStack);
         return this;
     }
 
     public FancyMessage tooltip(List<String> tooltip) {
         ComponentLike[] components = tooltip.stream().map(PaperComponents.plainSerializer()::deserialize).toArray(ComponentLike[]::new);
-        component.hoverEvent(TextComponent.ofChildren(components));
+        component = component.hoverEvent(TextComponent.ofChildren(components));
         return this;
     }
 
     public FancyMessage tooltip(String... tooltip) {
         ComponentLike[] components = Arrays.stream(tooltip).map(PaperComponents.plainSerializer()::deserialize).toArray(ComponentLike[]::new);
-        component.hoverEvent(TextComponent.ofChildren(components));
+        component = component.hoverEvent(TextComponent.ofChildren(components));
         return this;
     }
 
     public FancyMessage link(String url) {
-        component.clickEvent(ClickEvent.clickEvent(ClickEvent.Action.OPEN_URL, url));
+        component = component.clickEvent(ClickEvent.clickEvent(ClickEvent.Action.OPEN_URL, url));
         return this;
     }
 
     public FancyMessage suggest(String text) {
-        component.clickEvent(ClickEvent.clickEvent(ClickEvent.Action.SUGGEST_COMMAND, text));
+        component = component.clickEvent(ClickEvent.clickEvent(ClickEvent.Action.SUGGEST_COMMAND, text));
         return this;
     }
 
     public FancyMessage command(String command) {
-        component.clickEvent(ClickEvent.clickEvent(ClickEvent.Action.RUN_COMMAND, command));
+        component = component.clickEvent(ClickEvent.clickEvent(ClickEvent.Action.RUN_COMMAND, command));
         return this;
     }
 
@@ -138,7 +159,7 @@ public class FancyMessage {
 
         UUID commandId = UUID.randomUUID();
         commandsMap.put(commandId, command);
-        component.clickEvent(ClickEvent.clickEvent(ClickEvent.Action.RUN_COMMAND, "/confirm " + setId + " " + commandId));
+        component = component.clickEvent(ClickEvent.clickEvent(ClickEvent.Action.RUN_COMMAND, "/confirm " + setId + " " + commandId));
         return this;
     }
 
