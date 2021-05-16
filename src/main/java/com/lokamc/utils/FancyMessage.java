@@ -54,6 +54,11 @@ public class FancyMessage {
         return this;
     }
 
+    public FancyMessage then(Component component) {
+        this.component = this.component.append(component);
+        return this;
+    }
+
     public FancyMessage then(String text) {
         return then(text, null, null);
     }
