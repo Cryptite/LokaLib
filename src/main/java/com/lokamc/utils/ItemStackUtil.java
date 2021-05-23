@@ -2,6 +2,8 @@ package com.lokamc.utils;
 
 import com.destroystokyo.paper.profile.PlayerProfile;
 import com.google.common.base.Strings;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.minecraft.server.v1_16_R3.NBTTagCompound;
 import org.bukkit.*;
@@ -25,7 +27,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 
-import static org.bukkit.ChatColor.GOLD;
+import static net.kyori.adventure.text.format.NamedTextColor.GOLD;
 import static org.bukkit.DyeColor.*;
 
 public class ItemStackUtil {
@@ -52,6 +54,16 @@ public class ItemStackUtil {
     }
 
     public static ItemStack createItemStack(ItemStack itemStack, String displayName) {
+        itemStack = itemStack.clone();
+        setDisplayName(itemStack, displayName);
+        return itemStack;
+    }
+
+    public static ItemStack createItemStack(Material material, TextComponent displayName) {
+        return createItemStack(new ItemStack(material), displayName);
+    }
+
+    public static ItemStack createItemStack(ItemStack itemStack, TextComponent displayName) {
         itemStack = itemStack.clone();
         setDisplayName(itemStack, displayName);
         return itemStack;
@@ -111,78 +123,43 @@ public class ItemStackUtil {
     }
 
     public static String getEnchantmentName(Enchantment ench) {
-        switch (ench.getName()) {
-            case "DAMAGE_ALL":
-                return "Sharpness";
-            case "DAMAGE_ARTHROPODS":
-                return "Bane Of Arthropods";
-            case "DAMAGE_UNDEAD":
-                return "Smite";
-            case "DIG_SPEED":
-                return "Efficiency";
-            case "DURABILITY":
-                return "Unbreaking";
-            case "FIRE_ASPECT":
-                return "Fire Aspect";
-            case "KNOCKBACK":
-                return "Knockback";
-            case "LOOT_BONUS_BLOCKS":
-                return "Fortune";
-            case "LOOT_BONUS_MOBS":
-                return "Looting";
-            case "OXYGEN":
-                return "Respiration";
-            case "PROTECTION_ENVIRONMENTAL":
-                return "Protection";
-            case "PROTECTION_EXPLOSIONS":
-                return "Blast Protection";
-            case "PROTECTION_FALL":
-                return "Feather Falling";
-            case "PROTECTION_FIRE":
-                return "Fire Protection";
-            case "PROTECTION_PROJECTILE":
-                return "Projectile Protection";
-            case "SILK_TOUCH":
-                return "Silk Touch";
-            case "WATER_WORKER":
-                return "Aqua Affinity";
-            case "ARROW_FIRE":
-                return "Flame";
-            case "ARROW_DAMAGE":
-                return "Power";
-            case "ARROW_KNOCKBACK":
-                return "Punch";
-            case "ARROW_INFINITE":
-                return "Infinity";
-            case "MENDING":
-                return "Mending";
-            case "SWEEPING_EDGE":
-                return "Sweeping Edge";
-            case "VANISHING_CURSE":
-                return "Curse of Vanishing";
-            case "BINDING_CURSE":
-                return "Curse of Binding";
-            case "THORNS":
-                return "Thorns";
-            case "DEPTH_STRIDER":
-                return "Depth Strider";
-            case "FROST_WALKER":
-                return "Frost Walker";
-            case "LUCK":
-                return "Luck of the Sea";
-            case "LURE":
-                return "Lure";
-            case "LOYALTY":
-                return "Loyalty";
-            case "IMPALING":
-                return "Impaling";
-            case "RIPTIDE":
-                return "Riptide";
-            case "CHANNELING":
-                return "Channeling";
-            default:
-                return "Unknown";
-        }
+        return switch (ench.getName()) {
+            case "DAMAGE_ALL" -> "Sharpness";
+            case "DAMAGE_ARTHROPODS" -> "Bane Of Arthropods";
+            case "DAMAGE_UNDEAD" -> "Smite";
+            case "DIG_SPEED" -> "Efficiency";
+            case "DURABILITY" -> "Unbreaking";
+            case "FIRE_ASPECT" -> "Fire Aspect";
+            case "KNOCKBACK" -> "Knockback";
+            case "LOOT_BONUS_BLOCKS" -> "Fortune";
+            case "LOOT_BONUS_MOBS" -> "Looting";
+            case "OXYGEN" -> "Respiration";
+            case "PROTECTION_ENVIRONMENTAL" -> "Protection";
+            case "PROTECTION_EXPLOSIONS" -> "Blast Protection";
+            case "PROTECTION_FALL" -> "Feather Falling";
+            case "PROTECTION_FIRE" -> "Fire Protection";
+            case "PROTECTION_PROJECTILE" -> "Projectile Protection";
+            case "SILK_TOUCH" -> "Silk Touch";
+            case "WATER_WORKER" -> "Aqua Affinity";
+            case "ARROW_FIRE" -> "Flame";
+            case "ARROW_DAMAGE" -> "Power";
+            case "ARROW_KNOCKBACK" -> "Punch";
+            case "ARROW_INFINITE" -> "Infinity";
+            case "MENDING" -> "Mending";
+            case "SWEEPING_EDGE" -> "Sweeping Edge";
+            case "VANISHING_CURSE" -> "Curse of Vanishing";
+            case "BINDING_CURSE" -> "Curse of Binding";
+            case "THORNS" -> "Thorns";
+            case "DEPTH_STRIDER" -> "Depth Strider";
+            case "FROST_WALKER" -> "Frost Walker";
+            case "LUCK" -> "Luck of the Sea";
+            case "LURE" -> "Lure";
+            case "LOYALTY" -> "Loyalty";
+            case "IMPALING" -> "Impaling";
+            case "RIPTIDE" -> "Riptide";
+            case "CHANNELING" -> "Channeling";
+            default -> "Unknown";
+        };
     }
 
     public static String toRoman(int number) {
@@ -196,10 +173,14 @@ public class ItemStackUtil {
     }
 
     public static void setDisplayName(ItemStack item, String name) {
+        setDisplayName(item, Component.text(name));
+    }
+
+    public static void setDisplayName(ItemStack item, TextComponent name) {
         if (item == null || item.getItemMeta() == null) return;
 
         ItemMeta meta = item.getItemMeta();
-        meta.setDisplayName(name);
+        meta.displayName(name);
         item.setItemMeta(meta);
     }
 
@@ -228,9 +209,10 @@ public class ItemStackUtil {
     }
 
     public static boolean containsLore(ItemStack item, String lore) {
-        if (item.getItemMeta() != null && item.getItemMeta().getLore() != null) {
-            for (String loreLine : item.getItemMeta().getLore()) {
-                if (loreLine.contains(lore)) return true;
+        ItemMeta meta = item.getItemMeta();
+        if (meta != null && meta.lore() != null) {
+            for (Component loreLine : meta.lore()) {
+                if (loreLine instanceof TextComponent text && text.content().contains(lore)) return true;
             }
         }
 
@@ -241,13 +223,13 @@ public class ItemStackUtil {
         ItemMeta meta = item.getItemMeta();
         if (meta == null) return;
 
-        meta.setLore(new ArrayList<>());
+        meta.lore(new ArrayList<>());
         item.setItemMeta(meta);
     }
 
-    public static List<String> getLore(ItemStack item) {
+    public static List<Component> getLore(ItemStack item) {
         ItemMeta meta = item.getItemMeta();
-        return meta != null && meta.getLore() != null ? meta.getLore() : new ArrayList<>();
+        return meta != null && meta.lore() != null ? meta.lore() : new ArrayList<>();
     }
 
     /**
@@ -258,66 +240,66 @@ public class ItemStackUtil {
      */
     public static void clearLore(ItemStack item, int startingIndex) {
         ItemMeta meta = item.getItemMeta();
-        List<String> lore = meta.getLore() != null ? meta.getLore() : new ArrayList<>();
-        if (startingIndex < 0 || startingIndex >= lore.size()) return;
+        List<Component> lore = meta.lore();
+        if (startingIndex < 0 || lore == null || startingIndex >= lore.size()) return;
 
-        meta.setLore(lore.subList(0, startingIndex));
+        meta.lore(lore.subList(0, startingIndex));
         item.setItemMeta(meta);
     }
 
-    public static void insertLore(ItemStack item, int index, String lore) {
+    public static void insertLore(ItemStack item, int index, Component lore) {
         ItemMeta meta = item.getItemMeta();
-        List<String> currentLore = meta.getLore() != null ? meta.getLore() : new ArrayList<>();
+        List<Component> currentLore = meta.lore() != null ? meta.lore() : new ArrayList<>();
         currentLore.add(index, lore);
-        meta.setLore(currentLore);
+        meta.lore(currentLore);
         item.setItemMeta(meta);
     }
 
-    public static void insertLore(ItemStack item, int index, String... lore) {
+    public static void insertLore(ItemStack item, int index, Component... lore) {
         ItemMeta meta = item.getItemMeta();
-        List<String> currentLore = meta.getLore() != null ? meta.getLore() : new ArrayList<>();
+        List<Component> currentLore = meta.lore() != null ? meta.lore() : new ArrayList<>();
         for (int i = lore.length - 1; i >= 0; i--) {
             currentLore.add(index, lore[i]);
         }
-        meta.setLore(currentLore);
+        meta.lore(currentLore);
         item.setItemMeta(meta);
     }
 
-    public static void addLore(ItemStack item, String... lore) {
+    public static void addLore(ItemStack item, Component... lore) {
         if (item == null || lore == null) return;
 
         ItemMeta meta = item.getItemMeta();
-        List<String> currentLore = new ArrayList<>();
+        List<Component> currentLore = new ArrayList<>();
         try {
-            if (meta != null && meta.getLore() != null) currentLore.addAll(meta.getLore());
+            if (meta != null && meta.lore() != null) currentLore.addAll(meta.lore());
         } catch (Exception e) {
             e.printStackTrace();
         }
         Collections.addAll(currentLore, lore);
         if (meta != null) {
-            meta.setLore(currentLore);
+            meta.lore(currentLore);
             item.setItemMeta(meta);
         }
     }
 
-    public static void addLore(ItemStack item, List<String> lore) {
+    public static void addLore(ItemStack item, List<Component> lore) {
         if (item == null || lore == null) return;
 
         ItemMeta meta = item.getItemMeta();
         if (meta == null) return;
 
-        List<String> currentLore = new ArrayList<>();
-        if (meta.getLore() != null) currentLore.addAll(meta.getLore());
+        List<Component> currentLore = new ArrayList<>();
+        if (meta.lore() != null) currentLore.addAll(meta.lore());
         currentLore.addAll(lore);
-        meta.setLore(currentLore);
+        meta.lore(currentLore);
         item.setItemMeta(meta);
     }
 
-    public static void setLore(ItemStack item, List<String> lore) {
+    public static void setLore(ItemStack item, List<Component> lore) {
         if (item == null || lore == null) return;
 
         ItemMeta meta = item.getItemMeta();
-        meta.setLore(lore);
+        meta.lore(lore);
         item.setItemMeta(meta);
     }
 
@@ -439,7 +421,7 @@ public class ItemStackUtil {
             return Material.RED_STAINED_GLASS;
         } else if (NamedTextColor.DARK_PURPLE.equals(color)) {
             return Material.PURPLE_STAINED_GLASS;
-        } else if (NamedTextColor.GOLD.equals(color) || NamedTextColor.YELLOW.equals(color)) {
+        } else if (GOLD.equals(color) || NamedTextColor.YELLOW.equals(color)) {
             return Material.YELLOW_STAINED_GLASS;
         } else if (NamedTextColor.GRAY.equals(color)) {
             return Material.LIGHT_GRAY_STAINED_GLASS;
@@ -509,7 +491,7 @@ public class ItemStackUtil {
             return BROWN;
         } else if (NamedTextColor.DARK_PURPLE.equals(color)) {
             return PURPLE;
-        } else if (NamedTextColor.GOLD.equals(color)) {
+        } else if (GOLD.equals(color)) {
             return ORANGE;
         } else if (NamedTextColor.GRAY.equals(color)) {
             return LIGHT_GRAY;
@@ -674,7 +656,7 @@ public class ItemStackUtil {
     }
 
     public static ItemStack setSoulbound(UUID id, ItemStack item) {
-        addLore(item, "", "" + GOLD + "◆ Soulbound");
+        addLore(item, Component.empty(), Component.text("◆ Soulbound", GOLD));
         item = addNBTTag(item, "soulbound", id.toString());
         return item;
     }
@@ -683,7 +665,7 @@ public class ItemStackUtil {
         ItemStack skull = new ItemStack(Material.PLAYER_HEAD);
         SkullMeta skullMeta = (SkullMeta) skull.getItemMeta();
         skullMeta.setOwningPlayer(skullOwner);
-        skullMeta.setDisplayName(ChatColor.RESET + displayName);
+        skullMeta.displayName(Component.text(displayName));
         skull.setItemMeta(skullMeta);
         return skull;
     }
@@ -692,7 +674,7 @@ public class ItemStackUtil {
         ItemStack skull = new ItemStack(Material.PLAYER_HEAD);
         SkullMeta skullMeta = (SkullMeta) skull.getItemMeta();
         skullMeta.setPlayerProfile(profile);
-        skullMeta.setDisplayName(ChatColor.RESET + displayName);
+        skullMeta.displayName(Component.text(displayName));
         skull.setItemMeta(skullMeta);
         return skull;
     }

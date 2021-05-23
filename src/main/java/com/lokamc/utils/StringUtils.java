@@ -1,5 +1,6 @@
 package com.lokamc.utils;
 
+import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import net.kyori.adventure.text.serializer.plain.PlainComponentSerializer;
 import org.bukkit.entity.Player;
@@ -172,11 +173,11 @@ public class StringUtils {
         return PlainComponentSerializer.plain().serialize(LegacyComponentSerializer.legacySection().deserialize(text));
     }
 
-    public static @NonNull String translateAlternateColorCodes(String text) {
+    public static @NonNull TextComponent translateAlternateColorCodes(String text) {
         return translateAlternateColorCodes('&', text);
     }
 
-    public static @NonNull String translateAlternateColorCodes(char altChar, String text) {
-        return LegacyComponentSerializer.legacy(altChar).deserialize(text).content();
+    public static @NonNull TextComponent translateAlternateColorCodes(char altChar, String text) {
+        return LegacyComponentSerializer.legacy(altChar).deserialize(text);
     }
 }
