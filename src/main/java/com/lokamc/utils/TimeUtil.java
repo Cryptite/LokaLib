@@ -132,9 +132,9 @@ public class TimeUtil {
         long absSeconds = Math.abs(seconds);
 
         long d = absSeconds / 86400;
-        long h = absSeconds / 3600;
-        long m = (absSeconds % 3600) / 60;
-        long s = absSeconds % 60;
+        long h = (absSeconds % 86400) / 3600;
+        long m = ((absSeconds % 86400) % 3600) / 60;
+        long s = ((absSeconds % 86400) % 3600) % 60;
 
         StringBuilder builder = new StringBuilder();
         if (d > 0) {
@@ -143,9 +143,6 @@ public class TimeUtil {
         }
 
         if (h > 0) {
-            if (h > 24) {
-                h -= 24;
-            }
             builder.append(String.format("%d", h))
                     .append(fullWord ? (h > 1 ? " hours " : " hour ") : "h ");
         }
