@@ -59,6 +59,8 @@ public class FancyMessage {
     }
 
     public FancyMessage then(String text) {
+        if (text == null) return this;
+
         lastThenSet = new ArrayList<>();
         if (text.contains("§") || text.contains("http")) {
             if (text.contains("http")) {
