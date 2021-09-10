@@ -77,6 +77,10 @@ public class StringLocation extends Location {
         return worldName;
     }
 
+    public void setWorldName(String worldName) {
+        this.worldName = worldName;
+    }
+
     public boolean inChunk(Chunk c) {
         return c.getWorld().equals(getWorld())
                 && c.getX() == getBlockX() >> 4

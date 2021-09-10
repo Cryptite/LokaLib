@@ -515,6 +515,44 @@ public class ItemStackUtil {
         return WHITE;
     }
 
+    public static Color getColorFromChatColor(net.md_5.bungee.api.ChatColor color) {
+        if (net.md_5.bungee.api.ChatColor.AQUA.equals(color)) {
+            return Color.AQUA;
+        } else if (net.md_5.bungee.api.ChatColor.BLACK.equals(color)) {
+            return Color.BLACK;
+        } else if (net.md_5.bungee.api.ChatColor.BLUE.equals(color)) {
+            return Color.BLUE;
+        } else if (net.md_5.bungee.api.ChatColor.DARK_AQUA.equals(color)) {
+            return Color.BLUE;
+        } else if (net.md_5.bungee.api.ChatColor.DARK_BLUE.equals(color)) {
+            return Color.BLUE;
+        } else if (net.md_5.bungee.api.ChatColor.DARK_GRAY.equals(color)) {
+            return Color.GRAY;
+        } else if (net.md_5.bungee.api.ChatColor.DARK_GREEN.equals(color)) {
+            return Color.GREEN;
+        } else if (net.md_5.bungee.api.ChatColor.DARK_PURPLE.equals(color)) {
+            return Color.PURPLE;
+        } else if (net.md_5.bungee.api.ChatColor.DARK_RED.equals(color)) {
+            return Color.RED;
+        } else if (net.md_5.bungee.api.ChatColor.GOLD.equals(color)) {
+            return Color.YELLOW;
+        } else if (net.md_5.bungee.api.ChatColor.GRAY.equals(color)) {
+            return Color.GRAY;
+        } else if (net.md_5.bungee.api.ChatColor.GREEN.equals(color)) {
+            return Color.GREEN;
+        } else if (net.md_5.bungee.api.ChatColor.LIGHT_PURPLE.equals(color)) {
+            return Color.PURPLE;
+        } else if (net.md_5.bungee.api.ChatColor.RED.equals(color)) {
+            return Color.RED;
+        } else if (net.md_5.bungee.api.ChatColor.WHITE.equals(color)) {
+            return Color.WHITE;
+        } else if (net.md_5.bungee.api.ChatColor.YELLOW.equals(color)) {
+            return Color.YELLOW;
+        }
+
+        return null;
+    }
+
     public static boolean hasNBTData(ItemStack item, String data) {
         net.minecraft.server.v1_16_R3.ItemStack dataItemStack = CraftItemStack.asNMSCopy(item);
         if (item == null || dataItemStack == null) return false;

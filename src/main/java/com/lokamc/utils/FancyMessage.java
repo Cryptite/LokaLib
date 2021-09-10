@@ -68,6 +68,8 @@ public class FancyMessage {
     }
 
     public FancyMessage then(String text, TextColor color, TextDecoration style) {
+        if (text == null) return this;
+
         if (text.contains("http")) {
             if (text.contains("http")) {
                 int index = text.indexOf("http");

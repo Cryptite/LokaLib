@@ -1,22 +1,22 @@
 package com.lokamc.utils;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
 public class PagedList<T> {
     private final List<T> list;
     private final int itemsPerPage;
+    private final int extra;
 
     public PagedList(List<T> list, int itemsPerPage) {
-        this.list = new ArrayList<>(list);
-        this.itemsPerPage = itemsPerPage;
+        this(list, itemsPerPage, 0);
     }
 
-    public PagedList(Collection<T> list, int itemsPerPage) {
+    public PagedList(List<T> list, int itemsPerPage, int extra) {
         this.list = new ArrayList<>(list);
         this.itemsPerPage = itemsPerPage;
+        this.extra = extra;
     }
 
     public List<T> getList() {
@@ -24,7 +24,7 @@ public class PagedList<T> {
     }
 
     public int getTotalPages() {
-        double ceil = Math.ceil((float) list.size() / (float) itemsPerPage);
+        double ceil = Math.ceil(((float) list.size() + extra) / (float) itemsPerPage);
         double max = Math.max(1f, ceil);
         return (int) max;
     }

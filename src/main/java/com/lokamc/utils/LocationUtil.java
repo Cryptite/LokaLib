@@ -661,7 +661,7 @@ public class LocationUtil {
     }
 
     public static String getRegionFile(Location l) {
-        return getRegionFile(l.getChunk().getX(), l.getChunk().getZ());
+        return getRegionFile(l.getBlockX() >> 4, l.getBlockZ() >> 4);
     }
 
     /**
