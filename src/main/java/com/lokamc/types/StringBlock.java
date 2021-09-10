@@ -47,6 +47,11 @@ public class StringBlock extends StringLocation implements Comparable<StringBloc
         super(l);
     }
 
+    public StringBlock(StringLocation l, Material material) {
+        super(l);
+        this.blockData = material.createBlockData();
+    }
+
     public StringBlock(Block b) {
         super(b);
         this.block = b;
