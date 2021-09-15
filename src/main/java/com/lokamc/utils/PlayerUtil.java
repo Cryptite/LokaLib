@@ -4,12 +4,13 @@ import com.destroystokyo.paper.profile.PlayerProfile;
 import com.destroystokyo.paper.profile.ProfileProperty;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
-import net.minecraft.server.v1_16_R3.World;
-import net.minecraft.server.v1_16_R3.*;
-import org.bukkit.Material;
+import net.minecraft.network.protocol.game.ClientboundPlayerInfoPacket;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.network.ServerGamePacketListenerImpl;
 import org.bukkit.*;
 import org.bukkit.block.Block;
-import org.bukkit.craftbukkit.v1_16_R3.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_17_R1.entity.CraftPlayer;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.EquipmentSlot;
@@ -27,8 +28,6 @@ import java.lang.reflect.Field;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
-
-import static net.minecraft.server.v1_16_R3.PacketPlayOutPlayerInfo.EnumPlayerInfoAction.REMOVE_PLAYER;
 
 public class PlayerUtil {
     public static boolean inValidGameMode(Player p) {
@@ -136,9 +135,9 @@ public class PlayerUtil {
 
     public static void togglePlayerInTabList(Player p) {
         CraftPlayer cp = (CraftPlayer) p;
-        PlayerConnection con = cp.getHandle().playerConnection;
-        PacketPlayOutPlayerInfo packet3 = new PacketPlayOutPlayerInfo(REMOVE_PLAYER, cp.getHandle());
-        con.sendPacket(packet3);
+        ServerGamePacketListenerImpl con = cp.getHandle().connection;
+        ClientboundPlayerInfoPacket packet3 = new ClientboundPlayerInfoPacket(ClientboundPlayerInfoPacket.Action.REMOVE_PLAYER, cp.getHandle());
+        con.send(packet3);
     }
 
     public static void loadPlayer(UUID uuid, Consumer<Player> consumer) {
@@ -154,13 +153,13 @@ public class PlayerUtil {
         OfflinePlayer player = Bukkit.getOfflinePlayer(uuid);
         MinecraftServer minecraftserver = MinecraftServer.getServer();
         GameProfile gameprofile = new GameProfile(player.getUniqueId(), player.getName());
-        WorldServer worldServer = minecraftserver.getWorldServer(World.OVERWORLD);
-        EntityPlayer entity = new EntityPlayer(minecraftserver, worldServer, gameprofile, new PlayerInteractManager(worldServer));
-
-        final Player target = entity.getBukkitEntity();
-        if (target != null)
-            target.loadData();
-        return target;
+        ServerLevel worldServer = minecraftserver.overworld();
+//        net.minecraft.world.entity.player.Player entity = new net.minecraft.world.entity.player.Player(worldServer, new BlockPos(0, 0, 0), 0, gameprofile);
+//
+//        final Player target = entity.getBukkitEntity();
+//        if (target != null)
+//            target.loadData();
+        return null;
     }
 
     public static boolean hasEmptyInventory(Player p) {

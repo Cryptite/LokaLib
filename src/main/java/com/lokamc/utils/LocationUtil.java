@@ -29,7 +29,7 @@ import java.util.concurrent.ThreadLocalRandom;
 
 import static java.lang.Double.parseDouble;
 import static java.lang.Float.parseFloat;
-import static net.minecraft.server.v1_16_R3.MathHelper.clamp;
+import static net.minecraft.util.Mth.clamp;
 import static org.bukkit.Material.AIR;
 
 public class LocationUtil {
