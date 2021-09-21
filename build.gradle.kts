@@ -63,8 +63,7 @@ publishing {
 
     repositories {
         maven {
-            url = uri("http://ysera.dyndns.org:8090/releases")
-            isAllowInsecureProtocol = true
+            url = uri("https://ysera.dyndns.org:444/releases")
             // https://docs.gradle.org/current/samples/sample_publishing_credentials.html
             credentials(PasswordCredentials::class)
         }
