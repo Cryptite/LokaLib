@@ -15,10 +15,11 @@ description = "LokaLib helpful utilities"
 repositories {
     mavenCentral()
     maven("https://maven.enginehub.org/repo/")
+    maven("https://ysera.dyndns.org:444/releases")
 }
 
 dependencies {
-    paperDevBundle("1.17.1-R0.1-SNAPSHOT")
+    paperDevBundle("1.17.1-R0.1-SNAPSHOT", "com.lokamc.slice")
     implementation("commons-io:commons-io:2.7")
     implementation("com.github.ben-manes.caffeine:caffeine:3.0.3")
     implementation("org.ocpsoft.prettytime:prettytime:5.0.1.Final")

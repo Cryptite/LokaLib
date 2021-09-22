@@ -180,7 +180,7 @@ public class StringBlock extends StringLocation implements Comparable<StringBloc
         if (block == null) block = getBlock();
 
         if (!statesMatch(block.getBlockData(), blockData)) {
-            block.setBlockData(blockData, update);//, doLightUpdate);
+            block.setBlockData(blockData, update, doLightUpdate);
         }
     }
 
@@ -194,7 +194,7 @@ public class StringBlock extends StringLocation implements Comparable<StringBloc
                     if (block == null) block = getBlock();
 
                     if (!statesMatch(block.getBlockData(), blockData)) {
-                        block.setBlockData(blockData, update);//, doLightUpdate);
+                        block.setBlockData(blockData, update, doLightUpdate);
                     }
                 });
     }
