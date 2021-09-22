@@ -3,14 +3,12 @@ package com.lokamc.utils;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.*;
 import net.md_5.bungee.chat.ComponentSerializer;
-import org.bukkit.Bukkit;
+import net.minecraft.nbt.CompoundTag;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-import java.lang.reflect.Method;
 import java.util.*;
 import java.util.function.Consumer;
-import java.util.logging.Level;
 import java.util.stream.Collectors;
 
 import static net.md_5.bungee.api.ChatColor.*;
@@ -180,48 +178,16 @@ public class FancyMessage {
     }
 
     public FancyMessage itemTooltip(ItemStack itemStack) {
+        net.minecraft.world.item.ItemStack nmsItemStack = net.minecraft.world.item.ItemStack.fromBukkitCopy(itemStack);
+        CompoundTag tag = nmsItemStack.save(new CompoundTag());//nmsItemStack.getTag();
         HoverEvent hoverEvent = new HoverEvent(HoverEvent.Action.SHOW_ITEM,
-                new BaseComponent[]{new TextComponent(convertItemStackToJson(itemStack))});
+                new BaseComponent[]{new TextComponent(tag.toString())});
         for (TextComponent component : componentList) {
             if (lastThenSet.contains(component))
                 component.setHoverEvent(hoverEvent);
         }
 //        latest().setHoverEvent(hoverEvent);
         return this;
-    }
-
-    /**
-     * Converts an {@link ItemStack} to a Json string
-     * for sending with {@link BaseComponent}'s.
-     *
-     * @param itemStack the item to convert
-     * @return the Json string representation of the item
-     */
-    private String convertItemStackToJson(ItemStack itemStack) {
-        // ItemStack methods to get a net.minecraft.server.ItemStack object for serialization
-        Class<?> craftItemStackClazz = ReflectionUtil.getOBCClass("inventory.CraftItemStack");
-        Method asNMSCopyMethod = ReflectionUtil.getMethod(craftItemStackClazz, "asNMSCopy", ItemStack.class);
-
-        // NMS Method to serialize a net.minecraft.server.ItemStack to a valid Json string
-        Class<?> nmsItemStackClazz = ReflectionUtil.getNMSClass("ItemStack");
-        Class<?> nbtTagCompoundClazz = ReflectionUtil.getNMSClass("NBTTagCompound");
-        Method saveNmsItemStackMethod = ReflectionUtil.getMethod(nmsItemStackClazz, "save", nbtTagCompoundClazz);
-
-        Object nmsNbtTagCompoundObj; // This will just be an empty NBTTagCompound instance to invoke the saveNms method
-        Object nmsItemStackObj; // This is the net.minecraft.server.ItemStack object received from the asNMSCopy method
-        Object itemAsJsonObject; // This is the net.minecraft.server.ItemStack after being put through saveNmsItem method
-
-        try {
-            nmsNbtTagCompoundObj = nbtTagCompoundClazz.newInstance();
-            nmsItemStackObj = asNMSCopyMethod.invoke(null, itemStack);
-            itemAsJsonObject = saveNmsItemStackMethod.invoke(nmsItemStackObj, nmsNbtTagCompoundObj);
-        } catch (Throwable t) {
-            Bukkit.getLogger().log(Level.SEVERE, "failed to serialize itemstack to nms item", t);
-            return null;
-        }
-
-        // Return a string representation of the serialized object
-        return itemAsJsonObject.toString();
     }
 
     public FancyMessage tooltip(List<String> tooltip) {
