@@ -6,10 +6,11 @@ import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
 import net.minecraft.network.protocol.game.ClientboundPlayerInfoPacket;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.network.ServerGamePacketListenerImpl;
 import org.bukkit.*;
 import org.bukkit.block.Block;
+import org.bukkit.craftbukkit.v1_17_R1.CraftServer;
 import org.bukkit.craftbukkit.v1_17_R1.entity.CraftPlayer;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -151,15 +152,12 @@ public class PlayerUtil {
 
     public static Player loadOfflinePlayer(UUID uuid) {
         OfflinePlayer player = Bukkit.getOfflinePlayer(uuid);
-        MinecraftServer minecraftserver = MinecraftServer.getServer();
-        GameProfile gameprofile = new GameProfile(player.getUniqueId(), player.getName());
-        ServerLevel worldServer = minecraftserver.overworld();
-//        net.minecraft.world.entity.player.Player entity = new net.minecraft.world.entity.player.Player(worldServer, new BlockPos(0, 0, 0), 0, gameprofile);
-//
-//        final Player target = entity.getBukkitEntity();
-//        if (target != null)
-//            target.loadData();
-        return null;
+        GameProfile profile = new GameProfile(player.getUniqueId(), player.getName());
+        MinecraftServer server = ((CraftServer) Bukkit.getServer()).getServer();
+        ServerPlayer entity = new ServerPlayer(server, server.overworld(), profile);
+        CraftPlayer craftPlayer = new CraftPlayer((CraftServer) Bukkit.getServer(), entity);
+        craftPlayer.loadData();
+        return craftPlayer;
     }
 
     public static boolean hasEmptyInventory(Player p) {
