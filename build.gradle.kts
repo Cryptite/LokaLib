@@ -23,7 +23,7 @@ dependencies {
     implementation("commons-io:commons-io:2.7")
     implementation("com.github.ben-manes.caffeine:caffeine:3.0.3")
     implementation("org.ocpsoft.prettytime:prettytime:5.0.1.Final")
-    compileOnly("com.sk89q.worldguard:worldguard-bukkit:7.0.5")
+    compileOnly("com.sk89q.worldguard:worldguard-bukkit:7.0.6")
     compileOnly("com.sk89q.worldedit:worldedit-bukkit:7.3.0-SNAPSHOT")
 }
 
