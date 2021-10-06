@@ -122,6 +122,12 @@ public class StringLocation extends Location {
                 && getBlockZ() == l.getBlockZ();
     }
 
+    public boolean equalsCoords(Location l) {
+        return getBlockX() == l.getBlockX()
+                && getBlockY() == l.getBlockY()
+                && getBlockZ() == l.getBlockZ();
+    }
+
     public StringLocation getRelative(BlockFace face) {
         return getRelative(face, 1);
     }

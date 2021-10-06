@@ -4,7 +4,7 @@ import org.gradle.api.publish.PublishingExtension
 plugins {
   `java-library`
   `maven-publish`
-  id("io.papermc.paperweight.userdev") version "1.1.11"
+  id("io.papermc.paperweight.userdev") version "1.1.12"
   id("xyz.jpenilla.run-paper") version "1.0.4" // Adds runServer and runMojangMappedServer tasks for testing
 }
 
