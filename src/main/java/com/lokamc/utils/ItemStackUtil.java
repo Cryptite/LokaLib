@@ -580,8 +580,10 @@ public class ItemStackUtil {
     }
 
     public static boolean hasNBTData(ItemStack item, String data) {
+        if (item == null || item.getType() == Material.AIR) return false;
+
         net.minecraft.world.item.ItemStack dataItemStack = CraftItemStack.asNMSCopy(item);
-        if (item == null || dataItemStack == null) return false;
+        if (dataItemStack == null) return false;
 
         return hasNBTData(dataItemStack.getTag(), data);
     }
@@ -685,8 +687,11 @@ public class ItemStackUtil {
     }
 
     private static CompoundTag getOrCreateNBTTagCompound(ItemStack item) {
+        if (item == null) return null;
+
         net.minecraft.world.item.ItemStack dataItemStack = CraftItemStack.asNMSCopy(item);
         if (dataItemStack == null) return null;
+
         CompoundTag comp = dataItemStack.getTag();
         if (comp == null) comp = new CompoundTag();
         return comp;
