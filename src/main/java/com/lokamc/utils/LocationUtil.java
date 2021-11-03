@@ -62,7 +62,7 @@ public class LocationUtil {
                 point.getY() + "," +
                 point.getZ();
 
-        if (point.getYaw() > 0f || point.getPitch() > 0) {
+        if (point.getYaw() != 0f || point.getPitch() != 0) {
             coords += "," + point.getYaw();
             coords += "," + point.getPitch();
         }
@@ -78,7 +78,7 @@ public class LocationUtil {
                 point.getY() + "," +
                 point.getZ();
 
-        if (point.getYaw() > 0f || point.getPitch() > 0) {
+        if (point.getYaw() != 0f || point.getPitch() != 0) {
             coords += "," + point.getYaw();
             coords += "," + point.getPitch();
         }
