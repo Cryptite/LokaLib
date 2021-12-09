@@ -27,8 +27,9 @@ import org.bukkit.util.Vector;
 
 import java.lang.reflect.Field;
 import java.util.*;
-import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
+
+import static com.lokamc.utils.FutureUtils.tryAsync;
 
 public class PlayerUtil {
     public static boolean inValidGameMode(Player p) {
@@ -146,7 +147,7 @@ public class PlayerUtil {
         if (p != null && p.isOnline()) {
             consumer.accept(p);
         } else {
-            CompletableFuture.runAsync(() -> consumer.accept(loadOfflinePlayer(uuid)));
+            tryAsync(() -> consumer.accept(loadOfflinePlayer(uuid)));
         }
     }
 
