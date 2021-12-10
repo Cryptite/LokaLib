@@ -4,6 +4,7 @@ import com.destroystokyo.paper.profile.PlayerProfile;
 import com.destroystokyo.paper.profile.ProfileProperty;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.game.ClientboundPlayerInfoPacket;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
@@ -18,6 +19,7 @@ import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.SkullMeta;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.BlockIterator;
@@ -27,9 +29,8 @@ import org.bukkit.util.Vector;
 
 import java.lang.reflect.Field;
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
-
-import static com.lokamc.utils.FutureUtils.tryAsync;
 
 public class PlayerUtil {
     public static boolean inValidGameMode(Player p) {
@@ -142,12 +143,12 @@ public class PlayerUtil {
         con.send(packet3);
     }
 
-    public static void loadPlayer(UUID uuid, Consumer<Player> consumer) {
+    public static void loadPlayer(Plugin plugin, UUID uuid, Consumer<Player> consumer) {
         Player p = Bukkit.getPlayer(uuid);
         if (p != null && p.isOnline()) {
             consumer.accept(p);
         } else {
-            tryAsync(() -> consumer.accept(loadOfflinePlayer(uuid)));
+            CompletableFuture.runAsync(() -> consumer.accept(loadOfflinePlayer(uuid)), Bukkit.getScheduler().getMainThreadExecutor(plugin));
         }
     }
 
@@ -156,8 +157,9 @@ public class PlayerUtil {
         GameProfile profile = new GameProfile(player.getUniqueId(), player.getName());
         MinecraftServer server = ((CraftServer) Bukkit.getServer()).getServer();
         ServerPlayer entity = new ServerPlayer(server, server.overworld(), profile);
-        CraftPlayer craftPlayer = new CraftPlayer((CraftServer) Bukkit.getServer(), entity);
-        craftPlayer.loadData();
+        CompoundTag load = server.getPlayerList().playerIo.load(entity);
+        CraftPlayer craftPlayer = entity.getBukkitEntity();
+        entity.load(load);
         return craftPlayer;
     }
 
