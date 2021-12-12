@@ -145,6 +145,11 @@ public class FancyMessage {
         return this;
     }
 
+    public FancyMessage then(TextComponent component) {
+        componentList.add(component);
+        return this;
+    }
+
     public FancyMessage color(org.bukkit.ChatColor color) {
         net.md_5.bungee.api.ChatColor bColor = ChatColor.getByChar(color.getChar());
         latest().setColor(bColor);
@@ -251,6 +256,18 @@ public class FancyMessage {
             if (lastThenSet.contains(component))
                 component.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/confirm " + setId + " " + commandId));
         }
+        return this;
+    }
+
+    public FancyMessage command(TextComponent component, Consumer<Player> command) {
+        if (setId == null) {
+            setId = UUID.randomUUID();
+        }
+
+        UUID commandId = UUID.randomUUID();
+        commandsMap.put(commandId, command);
+
+        component.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/confirm " + setId + " " + commandId));
         return this;
     }
 
