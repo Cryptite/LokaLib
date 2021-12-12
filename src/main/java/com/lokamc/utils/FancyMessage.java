@@ -56,6 +56,11 @@ public class FancyMessage {
         return this;
     }
 
+    public FancyMessage insert(int index, TextComponent component) {
+        componentList.add(index, component);
+        return this;
+    }
+
     public FancyMessage then(String text) {
         if (text == null) return this;
 
