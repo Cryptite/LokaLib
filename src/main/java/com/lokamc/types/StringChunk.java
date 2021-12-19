@@ -11,6 +11,7 @@ import java.util.concurrent.CompletableFuture;
 public class StringChunk {
     private World world;
     public int x, z;
+    private boolean biome;
 
     public StringChunk(Chunk c) {
         this.world = c.getWorld();
@@ -41,6 +42,14 @@ public class StringChunk {
 
     public CompletableFuture<Chunk> getChunkAsync() {
         return world.getChunkAtAsync(x, z);
+    }
+
+    public boolean useBiome() {
+        return biome;
+    }
+
+    public void setBiome(boolean biome) {
+        this.biome = biome;
     }
 
     public Location getCenter() {
