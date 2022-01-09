@@ -1,6 +1,3 @@
-import org.gradle.api.publish.PublishingExtension
-
-
 plugins {
   `java-library`
   `maven-publish`
@@ -21,10 +18,10 @@ repositories {
 dependencies {
     paperDevBundle("1.17.1-R0.1-SNAPSHOT", "com.lokamc.slice")
     implementation("commons-io:commons-io:2.7")
-    implementation("com.github.ben-manes.caffeine:caffeine:3.0.3")
-    implementation("org.ocpsoft.prettytime:prettytime:5.0.1.Final")
+    implementation("com.github.ben-manes.caffeine:caffeine:3.0.5")
+    implementation("org.ocpsoft.prettytime:prettytime:5.0.2.Final")
     compileOnly("com.sk89q.worldguard:worldguard-bukkit:7.0.6")
-    compileOnly("com.sk89q.worldedit:worldedit-bukkit:7.3.0-SNAPSHOT")
+    compileOnly("com.sk89q.worldedit:worldedit-bukkit:7.2.8")
 }
 
 tasks {
