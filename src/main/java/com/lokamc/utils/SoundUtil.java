@@ -6,7 +6,6 @@ import net.kyori.adventure.sound.Sound;
 import net.kyori.adventure.sound.Sound.Source;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.SoundCategory;
 import org.bukkit.World;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -18,9 +17,10 @@ import static net.kyori.adventure.sound.Sound.Source.AMBIENT;
 import static net.kyori.adventure.sound.Sound.Source.MASTER;
 
 public class SoundUtil {
-    public static void playCustomSound(Player p, Location l, String sound, SoundCategory category, float volume) {
+    public static void playCustomSound(Player p, Location l, String sound, Source source, float volume) {
         //Also play for the player
-        p.playSound(l, sound, category, volume, 1);
+        Sound adventureSound = Sound.sound(Key.key(sound), source, volume, 1);
+        p.playSound(adventureSound, l.getX(), l.getY(), l.getZ());
     }
 
     public static void playCustomSound(Player p, String sound, Source source) {
