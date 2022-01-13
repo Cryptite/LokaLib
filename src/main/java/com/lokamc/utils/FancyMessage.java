@@ -3,6 +3,7 @@ package com.lokamc.utils;
 import io.papermc.paper.text.PaperComponents;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.ComponentLike;
+import net.kyori.adventure.text.JoinConfiguration;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.format.Style;
@@ -139,13 +140,13 @@ public class FancyMessage {
 
     public FancyMessage tooltip(List<String> tooltip) {
         ComponentLike[] components = tooltip.stream().map(PaperComponents.plainSerializer()::deserialize).toArray(ComponentLike[]::new);
-        component = component.hoverEvent(TextComponent.ofChildren(components));
+        component = component.hoverEvent(Component.join(JoinConfiguration.noSeparators(), components));
         return this;
     }
 
     public FancyMessage tooltip(String... tooltip) {
         ComponentLike[] components = Arrays.stream(tooltip).map(PaperComponents.plainSerializer()::deserialize).toArray(ComponentLike[]::new);
-        component = component.hoverEvent(TextComponent.ofChildren(components));
+        component = component.hoverEvent(Component.join(JoinConfiguration.noSeparators(), components));
         return this;
     }
 
