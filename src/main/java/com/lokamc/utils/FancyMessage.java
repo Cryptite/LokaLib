@@ -55,8 +55,10 @@ public class FancyMessage {
         return this;
     }
 
-    public FancyMessage insert(int index, net.md_5.bungee.api.chat.TextComponent component) {
-//        componentList.add(index, component);
+    public FancyMessage insert(int index, Component component) {
+        List<Component> children = this.component.children();
+        children.add(index, component);
+        this.component = Component.join(JoinConfiguration.noSeparators(), children);
         return this;
     }
 
@@ -147,6 +149,11 @@ public class FancyMessage {
     public FancyMessage tooltip(String... tooltip) {
         ComponentLike[] components = Arrays.stream(tooltip).map(PaperComponents.plainSerializer()::deserialize).toArray(ComponentLike[]::new);
         component = component.hoverEvent(Component.join(JoinConfiguration.noSeparators(), components));
+        return this;
+    }
+
+    public FancyMessage tooltip(Component... tooltip) {
+        component = component.hoverEvent(Component.join(JoinConfiguration.noSeparators(), tooltip));
         return this;
     }
 
