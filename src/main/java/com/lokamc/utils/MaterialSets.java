@@ -50,7 +50,7 @@ public class MaterialSets {
             LAVA,
             FIRE,
             TALL_GRASS,
-            GRASS_PATH));
+            DIRT_PATH));
 
     static {
         bypassLOSBlocks.addAll(MaterialTags.PRESSURE_PLATES.getValues());

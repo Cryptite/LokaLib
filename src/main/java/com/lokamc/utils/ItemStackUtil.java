@@ -2,6 +2,7 @@ package com.lokamc.utils;
 
 import com.destroystokyo.paper.profile.PlayerProfile;
 import com.google.common.base.Strings;
+import net.minecraft.nbt.CompoundTag;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -11,7 +12,7 @@ import org.bukkit.block.Banner;
 import org.bukkit.block.Block;
 import org.bukkit.block.Skull;
 import org.bukkit.block.data.Rotatable;
-import org.bukkit.craftbukkit.v1_16_R3.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.v1_17_R1.inventory.CraftItemStack;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.ThrownPotion;
@@ -554,56 +555,58 @@ public class ItemStackUtil {
     }
 
     public static boolean hasNBTData(ItemStack item, String data) {
-        net.minecraft.server.v1_16_R3.ItemStack dataItemStack = CraftItemStack.asNMSCopy(item);
-        if (item == null || dataItemStack == null) return false;
+        if (item == null || item.getType() == Material.AIR) return false;
+
+        net.minecraft.world.item.ItemStack dataItemStack = CraftItemStack.asNMSCopy(item);
+        if (dataItemStack == null) return false;
 
         return hasNBTData(dataItemStack.getTag(), data);
     }
 
-    public static boolean hasNBTData(NBTTagCompound comp, String data) {
-        return comp != null && comp.hasKey(data);
+    public static boolean hasNBTData(CompoundTag comp, String data) {
+        return comp != null && comp.contains(data);
     }
 
     public static boolean getNBTBoolean(ItemStack item, String data) {
-        net.minecraft.server.v1_16_R3.ItemStack dataItemStack = CraftItemStack.asNMSCopy(item);
-        NBTTagCompound comp = dataItemStack.getTag();
-        return (comp != null && comp.hasKey(data)) && comp.getBoolean(data);
+        net.minecraft.world.item.ItemStack dataItemStack = CraftItemStack.asNMSCopy(item);
+        CompoundTag comp = dataItemStack.getTag();
+        return (comp != null && comp.contains(data)) && comp.getBoolean(data);
     }
 
     public static UUID getNBTUUID(ItemStack item, String data) {
-        net.minecraft.server.v1_16_R3.ItemStack dataItemStack = CraftItemStack.asNMSCopy(item);
-        NBTTagCompound comp = dataItemStack.getTag();
-        return (comp != null && comp.hasKey(data)) ? UUID.fromString(comp.getString(data)) : null;
+        net.minecraft.world.item.ItemStack dataItemStack = CraftItemStack.asNMSCopy(item);
+        CompoundTag comp = dataItemStack.getTag();
+        return (comp != null && comp.contains(data)) ? UUID.fromString(comp.getString(data)) : null;
     }
 
     public static String getNBTString(ItemStack item, String data) {
-        net.minecraft.server.v1_16_R3.ItemStack dataItemStack = CraftItemStack.asNMSCopy(item);
-        NBTTagCompound comp = dataItemStack.getTag();
-        return comp != null && comp.hasKey(data) ? comp.getString(data) : "";
+        net.minecraft.world.item.ItemStack dataItemStack = CraftItemStack.asNMSCopy(item);
+        CompoundTag comp = dataItemStack.getTag();
+        return comp != null && comp.contains(data) ? comp.getString(data) : "";
     }
 
-    public static String getNBTString(NBTTagCompound comp, String data) {
-        return comp != null && comp.hasKey(data) ? comp.getString(data) : null;
+    public static String getNBTString(CompoundTag comp, String data) {
+        return comp != null && comp.contains(data) ? comp.getString(data) : null;
     }
 
     public static int getNBTInt(ItemStack item, String data) {
-        net.minecraft.server.v1_16_R3.ItemStack dataItemStack = CraftItemStack.asNMSCopy(item);
-        NBTTagCompound comp = dataItemStack.getTag();
-        return comp != null && comp.hasKey(data) ? comp.getInt(data) : 0;
+        net.minecraft.world.item.ItemStack dataItemStack = CraftItemStack.asNMSCopy(item);
+        CompoundTag comp = dataItemStack.getTag();
+        return comp != null && comp.contains(data) ? comp.getInt(data) : 0;
     }
 
     public static long getNBTLong(ItemStack item, String data) {
-        net.minecraft.server.v1_16_R3.ItemStack dataItemStack = CraftItemStack.asNMSCopy(item);
-        NBTTagCompound comp = dataItemStack.getTag();
-        return comp != null && comp.hasKey(data) ? comp.getLong(data) : 0;
+        net.minecraft.world.item.ItemStack dataItemStack = CraftItemStack.asNMSCopy(item);
+        CompoundTag comp = dataItemStack.getTag();
+        return comp != null && comp.contains(data) ? comp.getLong(data) : 0;
     }
 
     public static ItemStack addNBTTag(ItemStack item, String key, String data) {
-        net.minecraft.server.v1_16_R3.ItemStack dataItemStack = CraftItemStack.asNMSCopy(item);
-        NBTTagCompound comp = getOrCreateNBTTagCompound(item);
+        net.minecraft.world.item.ItemStack dataItemStack = CraftItemStack.asNMSCopy(item);
+        CompoundTag comp = getOrCreateNBTTagCompound(item);
         if (comp == null) return item;
 
-        comp.setString(key, data);
+        comp.putString(key, data);
         dataItemStack.setTag(comp);
         return CraftItemStack.asBukkitCopy(dataItemStack);
     }
@@ -613,56 +616,59 @@ public class ItemStackUtil {
     }
 
     public static ItemStack addNBTTag(ItemStack item, String key, boolean data) {
-        net.minecraft.server.v1_16_R3.ItemStack dataItemStack = CraftItemStack.asNMSCopy(item);
-        NBTTagCompound comp = getOrCreateNBTTagCompound(item);
+        net.minecraft.world.item.ItemStack dataItemStack = CraftItemStack.asNMSCopy(item);
+        CompoundTag comp = getOrCreateNBTTagCompound(item);
         if (comp == null) return item;
 
-        comp.setBoolean(key, data);
+        comp.putBoolean(key, data);
         dataItemStack.setTag(comp);
         return CraftItemStack.asBukkitCopy(dataItemStack);
     }
 
     public static ItemStack addNBTTag(ItemStack item, String key, int data) {
-        net.minecraft.server.v1_16_R3.ItemStack dataItemStack = CraftItemStack.asNMSCopy(item);
-        NBTTagCompound comp = getOrCreateNBTTagCompound(item);
+        net.minecraft.world.item.ItemStack dataItemStack = CraftItemStack.asNMSCopy(item);
+        CompoundTag comp = getOrCreateNBTTagCompound(item);
         if (comp == null) return item;
 
-        comp.setInt(key, data);
+        comp.putInt(key, data);
         dataItemStack.setTag(comp);
         return CraftItemStack.asBukkitCopy(dataItemStack);
     }
 
     public static ItemStack addNBTTag(ItemStack item, String key, long data) {
-        net.minecraft.server.v1_16_R3.ItemStack dataItemStack = CraftItemStack.asNMSCopy(item);
-        NBTTagCompound comp = getOrCreateNBTTagCompound(item);
+        net.minecraft.world.item.ItemStack dataItemStack = CraftItemStack.asNMSCopy(item);
+        CompoundTag comp = getOrCreateNBTTagCompound(item);
         if (comp == null) return item;
 
-        comp.setLong(key, data);
+        comp.putLong(key, data);
         dataItemStack.setTag(comp);
         return CraftItemStack.asBukkitCopy(dataItemStack);
     }
 
     public static ItemStack removeNBTTag(ItemStack item, String key) {
-        NBTTagCompound comp = getNBTTagCompound(item);
+        CompoundTag comp = getNBTTagCompound(item);
         if (comp == null) return item;
 
-        net.minecraft.server.v1_16_R3.ItemStack dataItemStack = CraftItemStack.asNMSCopy(item);
+        net.minecraft.world.item.ItemStack dataItemStack = CraftItemStack.asNMSCopy(item);
         comp.remove(key);
         dataItemStack.setTag(comp);
         return CraftItemStack.asBukkitCopy(dataItemStack);
     }
 
-    public static NBTTagCompound getNBTTagCompound(ItemStack item) {
-        net.minecraft.server.v1_16_R3.ItemStack dataItemStack = CraftItemStack.asNMSCopy(item);
+    public static CompoundTag getNBTTagCompound(ItemStack item) {
+        net.minecraft.world.item.ItemStack dataItemStack = CraftItemStack.asNMSCopy(item);
         if (dataItemStack == null) return null;
         return dataItemStack.getTag();
     }
 
-    private static NBTTagCompound getOrCreateNBTTagCompound(ItemStack item) {
-        net.minecraft.server.v1_16_R3.ItemStack dataItemStack = CraftItemStack.asNMSCopy(item);
+    private static CompoundTag getOrCreateNBTTagCompound(ItemStack item) {
+        if (item == null) return null;
+
+        net.minecraft.world.item.ItemStack dataItemStack = CraftItemStack.asNMSCopy(item);
         if (dataItemStack == null) return null;
-        NBTTagCompound comp = dataItemStack.getTag();
-        if (comp == null) comp = new NBTTagCompound();
+
+        CompoundTag comp = dataItemStack.getTag();
+        if (comp == null) comp = new CompoundTag();
         return comp;
     }
 

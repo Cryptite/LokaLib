@@ -54,6 +54,11 @@ public class FancyMessage {
         return this;
     }
 
+    public FancyMessage insert(int index, net.md_5.bungee.api.chat.TextComponent component) {
+//        componentList.add(index, component);
+        return this;
+    }
+
     public FancyMessage then(Component component) {
         this.component = this.component.append(component);
         return this;

@@ -4,18 +4,22 @@ import com.destroystokyo.paper.profile.PlayerProfile;
 import com.destroystokyo.paper.profile.ProfileProperty;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
-import net.minecraft.server.v1_16_R3.World;
-import net.minecraft.server.v1_16_R3.*;
-import org.bukkit.Material;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.protocol.game.ClientboundPlayerInfoPacket;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.network.ServerGamePacketListenerImpl;
 import org.bukkit.*;
 import org.bukkit.block.Block;
-import org.bukkit.craftbukkit.v1_16_R3.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_17_R1.CraftServer;
+import org.bukkit.craftbukkit.v1_17_R1.entity.CraftPlayer;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.SkullMeta;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.BlockIterator;
@@ -27,8 +31,6 @@ import java.lang.reflect.Field;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
-
-import static net.minecraft.server.v1_16_R3.PacketPlayOutPlayerInfo.EnumPlayerInfoAction.REMOVE_PLAYER;
 
 public class PlayerUtil {
     public static boolean inValidGameMode(Player p) {
@@ -136,31 +138,29 @@ public class PlayerUtil {
 
     public static void togglePlayerInTabList(Player p) {
         CraftPlayer cp = (CraftPlayer) p;
-        PlayerConnection con = cp.getHandle().playerConnection;
-        PacketPlayOutPlayerInfo packet3 = new PacketPlayOutPlayerInfo(REMOVE_PLAYER, cp.getHandle());
-        con.sendPacket(packet3);
+        ServerGamePacketListenerImpl con = cp.getHandle().connection;
+        ClientboundPlayerInfoPacket packet3 = new ClientboundPlayerInfoPacket(ClientboundPlayerInfoPacket.Action.REMOVE_PLAYER, cp.getHandle());
+        con.send(packet3);
     }
 
-    public static void loadPlayer(UUID uuid, Consumer<Player> consumer) {
+    public static void loadPlayer(Plugin plugin, UUID uuid, Consumer<Player> consumer) {
         Player p = Bukkit.getPlayer(uuid);
         if (p != null && p.isOnline()) {
             consumer.accept(p);
         } else {
-            CompletableFuture.runAsync(() -> consumer.accept(loadOfflinePlayer(uuid)));
+            CompletableFuture.runAsync(() -> consumer.accept(loadOfflinePlayer(uuid)), Bukkit.getScheduler().getMainThreadExecutor(plugin));
         }
     }
 
     public static Player loadOfflinePlayer(UUID uuid) {
         OfflinePlayer player = Bukkit.getOfflinePlayer(uuid);
-        MinecraftServer minecraftserver = MinecraftServer.getServer();
-        GameProfile gameprofile = new GameProfile(player.getUniqueId(), player.getName());
-        WorldServer worldServer = minecraftserver.getWorldServer(World.OVERWORLD);
-        EntityPlayer entity = new EntityPlayer(minecraftserver, worldServer, gameprofile, new PlayerInteractManager(worldServer));
-
-        final Player target = entity.getBukkitEntity();
-        if (target != null)
-            target.loadData();
-        return target;
+        GameProfile profile = new GameProfile(player.getUniqueId(), player.getName());
+        MinecraftServer server = ((CraftServer) Bukkit.getServer()).getServer();
+        ServerPlayer entity = new ServerPlayer(server, server.overworld(), profile);
+        CompoundTag load = server.getPlayerList().playerIo.load(entity);
+        CraftPlayer craftPlayer = entity.getBukkitEntity();
+        entity.load(load);
+        return craftPlayer;
     }
 
     public static boolean hasEmptyInventory(Player p) {

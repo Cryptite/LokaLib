@@ -77,6 +77,16 @@ public class StringLocation extends Location {
         return worldName;
     }
 
+    @Override
+    public World getWorld() {
+        World w = super.getWorld();
+        if (w == null && worldName != null) {
+            setWorld(Bukkit.getWorld(worldName));
+        }
+
+        return w;
+    }
+
     public void setWorldName(String worldName) {
         this.worldName = worldName;
     }
@@ -118,6 +128,12 @@ public class StringLocation extends Location {
     public boolean looseEquals(Location l) {
         return getWorld().equals(l.getWorld())
                 && getBlockX() == l.getBlockX()
+                && getBlockY() == l.getBlockY()
+                && getBlockZ() == l.getBlockZ();
+    }
+
+    public boolean equalsCoords(Location l) {
+        return getBlockX() == l.getBlockX()
                 && getBlockY() == l.getBlockY()
                 && getBlockZ() == l.getBlockZ();
     }

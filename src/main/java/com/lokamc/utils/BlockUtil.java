@@ -1,20 +1,13 @@
 package com.lokamc.utils;
 
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.Sign;
-import org.bukkit.craftbukkit.v1_16_R3.CraftWorld;
-import org.bukkit.craftbukkit.v1_16_R3.entity.CraftItemFrame;
-import org.bukkit.craftbukkit.v1_16_R3.entity.CraftPlayer;
-import org.bukkit.craftbukkit.v1_16_R3.inventory.CraftItemStack;
-import org.bukkit.craftbukkit.v1_16_R3.util.CraftMagicNumbers;
+import org.bukkit.craftbukkit.v1_17_R1.entity.CraftItemFrame;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Hanging;
 import org.bukkit.entity.ItemFrame;
-import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
 
 public class BlockUtil {
     public static BlockFace[] surroundingBlockFaces = new BlockFace[]{
@@ -114,20 +107,5 @@ public class BlockUtil {
 
     public static Block getBlockHangingAgainst(Hanging hanging) {
         return hanging.getLocation().getBlock().getRelative(hanging.getFacing().getOppositeFace());
-    }
-
-    public static void dropItemTypeFromBlock(Player p, Block b, Material type) {
-        dropItemTypeFromBlock(p, b, b.getLocation(), type);
-    }
-
-    public static void dropItemTypeFromBlock(Player p, Block b, Location l, Material type) {
-        ItemStack holding = p.getInventory().getItemInMainHand().clone();
-        net.minecraft.server.v1_16_R3.World world = ((CraftWorld) b.getWorld()).getHandle();
-        net.minecraft.server.v1_16_R3.ItemStack nmsItem = CraftItemStack.asNMSCopy(holding);
-
-        net.minecraft.server.v1_16_R3.Block.dropItems(CraftMagicNumbers.getBlock(type).getBlockData(),
-                world,
-                new net.minecraft.server.v1_16_R3.BlockPosition(l.getX(), l.getY(), l.getZ()),
-                null, ((CraftPlayer) p).getHandle(), nmsItem);
     }
 }

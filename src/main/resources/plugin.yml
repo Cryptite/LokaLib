@@ -1,7 +1,7 @@
 name: LokaLib
 main: com.lokamc.LokaLib
 version: 1.0
-api-version: 1.15
+api-version: 1.17
 commands:
   confirm:
     description: Confirm that command!
