@@ -9,7 +9,9 @@ import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import net.md_5.bungee.chat.ComponentSerializer;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
@@ -141,7 +143,7 @@ public class FancyMessage {
     }
 
     public FancyMessage tooltip(List<String> tooltip) {
-        ComponentLike[] components = tooltip.stream().map(PaperComponents.plainSerializer()::deserialize).toArray(ComponentLike[]::new);
+        List<TextComponent> components = tooltip.stream().map(line -> LegacyComponentSerializer.legacy(ChatColor.COLOR_CHAR).deserialize(line)).toList();
         component = component.hoverEvent(Component.join(JoinConfiguration.noSeparators(), components));
         return this;
     }
