@@ -5,6 +5,7 @@ import com.google.common.base.Strings;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import net.minecraft.nbt.CompoundTag;
 import org.bukkit.*;
 import org.bukkit.block.Banner;
@@ -265,6 +266,18 @@ public class ItemStackUtil {
         item.setItemMeta(meta);
     }
 
+    public static void addLoreLegacy(ItemStack item, String... lore) {
+        if (item == null || lore == null) return;
+
+        for (String line : lore) {
+            if (line.equals("")) {
+                addLore(item, Component.empty());
+            } else {
+                addLore(item, LegacyComponentSerializer.legacy(ChatColor.COLOR_CHAR).deserialize(line));
+            }
+        }
+    }
+
     public static void addLore(ItemStack item, Component... lore) {
         if (item == null || lore == null) return;
 
@@ -279,6 +292,18 @@ public class ItemStackUtil {
         if (meta != null) {
             meta.lore(currentLore);
             item.setItemMeta(meta);
+        }
+    }
+
+    public static void addLoreLegacy(ItemStack item, List<String> lore) {
+        if (item == null || lore == null) return;
+
+        for (String line : lore) {
+            if (line.equals("")) {
+                addLore(item, Component.empty());
+            } else {
+                addLore(item, LegacyComponentSerializer.legacy(ChatColor.COLOR_CHAR).deserialize(line));
+            }
         }
     }
 
