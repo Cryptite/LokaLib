@@ -96,4 +96,19 @@ public class MathUtil {
     public static float normalize(final float valueIn, final float baseMin, final float baseMax, final float limitMin, final float limitMax) {
         return ((limitMax - limitMin) * (valueIn - baseMin) / (baseMax - baseMin)) + limitMin;
     }
+
+    public static float getPercent(double v1, double v2) {
+        int percent = (int) ((v1 / v2) * 100);
+        return percent == 0 ? 1 : percent;
+    }
+
+    public static float getPercent(float v1, float v2) {
+        int percent = (int) ((v1 / v2) * 100);
+        return percent == 0 ? 1 : percent;
+    }
+
+    public static float getPercent(int v1, int v2) {
+        int percent = (int) (((float) v1 / (float) v2) * 100);
+        return percent == 0 ? 1 : percent;
+    }
 }
