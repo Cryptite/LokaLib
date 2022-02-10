@@ -1,5 +1,6 @@
 package com.lokamc.utils;
 
+import net.kyori.adventure.text.format.TextColor;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.*;
 import net.md_5.bungee.chat.ComponentSerializer;
@@ -147,6 +148,13 @@ public class FancyMessage {
 
     public FancyMessage then(TextComponent component) {
         componentList.add(component);
+        return this;
+    }
+
+    public FancyMessage color(TextColor color) {
+        net.md_5.bungee.api.ChatColor bColor = ChatColor.of(color.asHexString());
+        latest().setColor(bColor);
+        currentColor = bColor;
         return this;
     }
 
