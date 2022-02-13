@@ -95,13 +95,17 @@ public class PlayerUtil {
      * @param seconds
      * @param level   0 is a level I potion effect.
      */
-    public static void givePotionEffect(LivingEntity e, PotionEffectType type, int seconds, int level) {
-        if (e == null || type == null) return;
+    public static PotionEffect givePotionEffect(LivingEntity e, PotionEffectType type, int seconds, int level) {
+        if (e == null || type == null) return null;
 
         if (!hasGreaterPotionEffect(e, type, level, seconds)) {
             e.removePotionEffect(type);
-            e.addPotionEffect(new PotionEffect(type, 20 * seconds, level));
+            PotionEffect effect = new PotionEffect(type, 20 * seconds, level);
+            e.addPotionEffect(effect);
+            return effect;
         }
+
+        return null;
     }
 
     public static Boolean hasPotionSpeed(LivingEntity e) {
