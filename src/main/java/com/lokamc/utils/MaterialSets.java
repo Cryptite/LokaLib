@@ -50,6 +50,7 @@ public class MaterialSets {
             LAVA,
             FIRE,
             TALL_GRASS,
+            VINE,
             DIRT_PATH));
 
     static {
