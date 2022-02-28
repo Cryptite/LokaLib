@@ -1,12 +1,12 @@
 plugins {
-  `java-library`
-  `maven-publish`
-  id("io.papermc.paperweight.userdev") version "1.1.14"
-  id("xyz.jpenilla.run-paper") version "1.0.4" // Adds runServer and runMojangMappedServer tasks for testing
+    `java-library`
+    `maven-publish`
+    id("io.papermc.paperweight.userdev") version "1.3.4"
+    id("xyz.jpenilla.run-paper") version "1.0.6" // Adds runServer and runMojangMappedServer tasks for testing
 }
 
 group = "com.lokamc"
-version = "2.0"
+version = "2.1"
 description = "LokaLib helpful utilities"
 
 repositories {
@@ -16,7 +16,7 @@ repositories {
 }
 
 dependencies {
-    paperDevBundle("1.17.1-R0.1-SNAPSHOT", "com.lokamc.slice")
+    paperweightDevBundle("com.lokamc.slice", "1.18.1-R0.1-SNAPSHOT")
     implementation("commons-io:commons-io:2.7")
     implementation("com.github.ben-manes.caffeine:caffeine:3.0.5")
     implementation("org.ocpsoft.prettytime:prettytime:5.0.2.Final")
@@ -25,28 +25,28 @@ dependencies {
 }
 
 tasks {
-  // Run reobfJar on build
-  build {
-    dependsOn(reobfJar)
-  }
-
-  compileJava {
-    options.encoding = Charsets.UTF_8.name()
-    options.release.set(16)
-  }
-  javadoc {
-    options.encoding = Charsets.UTF_8.name()
-  }
-  processResources {
-    val props = mapOf(
-      "version" to project.version
-    )
-    inputs.properties(props)
-    filteringCharset = "UTF-8"
-    filesMatching("plugin.yml") {
-      expand(props)
+    // Run reobfJar on build
+    build {
+        dependsOn(reobfJar)
     }
-  }
+
+    compileJava {
+        options.encoding = Charsets.UTF_8.name()
+        options.release.set(17)
+    }
+    javadoc {
+        options.encoding = Charsets.UTF_8.name()
+    }
+    processResources {
+        val props = mapOf(
+            "version" to project.version
+        )
+        inputs.properties(props)
+        filteringCharset = "UTF-8"
+        filesMatching("plugin.yml") {
+            expand(props)
+        }
+    }
 }
 
 publishing {
@@ -61,6 +61,7 @@ publishing {
 
     repositories {
         maven {
+            name = "Ysera"
             url = uri("https://ysera.dyndns.org:444/releases")
             // https://docs.gradle.org/current/samples/sample_publishing_credentials.html
             credentials(PasswordCredentials::class)

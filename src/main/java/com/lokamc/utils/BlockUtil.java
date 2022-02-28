@@ -4,7 +4,7 @@ import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.Sign;
-import org.bukkit.craftbukkit.v1_17_R1.entity.CraftItemFrame;
+import org.bukkit.craftbukkit.v1_18_R1.entity.CraftItemFrame;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Hanging;
 import org.bukkit.entity.ItemFrame;
