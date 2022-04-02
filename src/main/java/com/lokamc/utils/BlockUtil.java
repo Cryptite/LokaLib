@@ -101,24 +101,18 @@ public class BlockUtil {
         return null;
     }
 
-    public static CompletableFuture<ItemFrame> getItemFrameExact(Plugin plugin, Location l) {
-        return l.getWorld().getChunkAtAsync(l).thenApplyAsync(chunk -> {
-            try {
-                for (Entity entity : l.getNearbyEntities(1, 1, 1)) {
-                    if (entity instanceof CraftItemFrame) {
-                        ItemFrame frame = (ItemFrame) entity;
-                        Block frameBlock = frame.getLocation().getBlock();
-                        if (frameBlock.equals(l.getBlock()) || frameBlock.getRelative(frame.getFacing().getOppositeFace()).equals(l.getBlock())) {
-                            return frame;
-                        }
-                    }
+    public static ItemFrame getItemFrameExact(Location l) {
+        for (Entity entity : l.getNearbyEntities(1, 1, 1)) {
+            if (entity instanceof CraftItemFrame) {
+                ItemFrame frame = (ItemFrame) entity;
+                Block frameBlock = frame.getLocation().getBlock();
+                if (frameBlock.equals(l.getBlock()) || frameBlock.getRelative(frame.getFacing().getOppositeFace()).equals(l.getBlock())) {
+                    return frame;
                 }
-            } catch (Exception e) {
-                e.printStackTrace();
             }
+        }
 
-            return null;
-        }, Bukkit.getScheduler().getMainThreadExecutor(plugin));
+        return null;
     }
 
     public static CompletableFuture<ItemFrame> getItemFrame(Plugin plugin, Location l, Block against) {
