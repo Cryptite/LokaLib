@@ -1,5 +1,6 @@
 package com.lokamc.utils;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -8,6 +9,9 @@ import org.bukkit.craftbukkit.v1_18_R2.entity.CraftItemFrame;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Hanging;
 import org.bukkit.entity.ItemFrame;
+import org.bukkit.plugin.Plugin;
+
+import java.util.concurrent.CompletableFuture;
 
 public class BlockUtil {
     public static BlockFace[] surroundingBlockFaces = new BlockFace[]{
@@ -54,6 +58,30 @@ public class BlockUtil {
         sign.update();
     }
 
+    public static CompletableFuture<ItemFrame> getItemFrame(Plugin plugin, Block b) {
+        return getItemFrame(plugin, b.getLocation());
+    }
+
+    public static CompletableFuture<ItemFrame> getItemFrame(Plugin plugin, Location l) {
+        return l.getWorld().getChunkAtAsync(l).thenApplyAsync(chunk -> {
+            try {
+                for (Entity entity : l.getNearbyEntities(2, 2, 2)) {
+                    if (entity instanceof CraftItemFrame) {
+                        ItemFrame frame = (ItemFrame) entity;
+                        Block frameBlock = frame.getLocation().getBlock();
+                        if (frameBlock.equals(l.getBlock()) || frameBlock.getRelative(frame.getFacing().getOppositeFace()).equals(l.getBlock())) {
+                            return frame;
+                        }
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            return null;
+        }, Bukkit.getScheduler().getMainThreadExecutor(plugin));
+    }
+
     public static ItemFrame getItemFrame(Block b) {
         return getItemFrame(b.getLocation());
     }
@@ -73,19 +101,46 @@ public class BlockUtil {
         return null;
     }
 
-    public static ItemFrame getItemFrameExact(Location l) {
-        l.getChunk().load();
-        for (Entity entity : l.getNearbyEntities(1, 1, 1)) {
-            if (entity instanceof CraftItemFrame) {
-                ItemFrame frame = (ItemFrame) entity;
-                Block frameBlock = frame.getLocation().getBlock();
-                if (frameBlock.equals(l.getBlock()) || frameBlock.getRelative(frame.getFacing().getOppositeFace()).equals(l.getBlock())) {
-                    return frame;
+    public static CompletableFuture<ItemFrame> getItemFrameExact(Plugin plugin, Location l) {
+        return l.getWorld().getChunkAtAsync(l).thenApplyAsync(chunk -> {
+            try {
+                for (Entity entity : l.getNearbyEntities(1, 1, 1)) {
+                    if (entity instanceof CraftItemFrame) {
+                        ItemFrame frame = (ItemFrame) entity;
+                        Block frameBlock = frame.getLocation().getBlock();
+                        if (frameBlock.equals(l.getBlock()) || frameBlock.getRelative(frame.getFacing().getOppositeFace()).equals(l.getBlock())) {
+                            return frame;
+                        }
+                    }
                 }
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-        }
 
-        return null;
+            return null;
+        }, Bukkit.getScheduler().getMainThreadExecutor(plugin));
+    }
+
+    public static CompletableFuture<ItemFrame> getItemFrame(Plugin plugin, Location l, Block against) {
+        return l.getWorld().getChunkAtAsync(l).thenApplyAsync(chunk -> {
+            try {
+                for (Entity entity : l.getNearbyEntities(2, 2, 2)) {
+                    if (entity instanceof CraftItemFrame) {
+                        ItemFrame frame = (ItemFrame) entity;
+                        Block frameBlock = frame.getLocation().getBlock();
+                        if (frameBlock.equals(l.getBlock()) || frameBlock.getRelative(frame.getFacing().getOppositeFace()).equals(l.getBlock())) {
+                            if (getBlockHangingAgainst(frame).equals(against)) {
+                                return frame;
+                            }
+                        }
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            return null;
+        }, Bukkit.getScheduler().getMainThreadExecutor(plugin));
     }
 
     public static ItemFrame getItemFrame(Location l, Block against) {
