@@ -98,14 +98,9 @@ public class PlayerUtil {
     public static PotionEffect givePotionEffect(LivingEntity e, PotionEffectType type, int seconds, int level) {
         if (e == null || type == null) return null;
 
-        if (!hasGreaterPotionEffect(e, type, level, seconds)) {
-            e.removePotionEffect(type);
-            PotionEffect effect = new PotionEffect(type, 20 * seconds, level);
-            e.addPotionEffect(effect);
-            return effect;
-        }
-
-        return null;
+        PotionEffect effect = new PotionEffect(type, 20 * seconds, level);
+        e.addPotionEffect(effect);
+        return effect;
     }
 
     public static Boolean hasPotionSpeed(LivingEntity e) {
