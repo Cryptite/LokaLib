@@ -273,6 +273,14 @@ public class ItemStackUtil {
         item.setItemMeta(meta);
     }
 
+    public static void insertLore(ItemStack item, int index, Component lore) {
+        ItemMeta meta = item.getItemMeta();
+        List<Component> currentLore = meta.hasLore() ? meta.lore() : new ArrayList<>();
+        currentLore.add(index, lore);
+        meta.lore(currentLore);
+        item.setItemMeta(meta);
+    }
+
     public static void insertLore(ItemStack item, int index, String... lore) {
         ItemMeta meta = item.getItemMeta();
         List<String> currentLore = meta.getLore() != null ? meta.getLore() : new ArrayList<>();
@@ -280,6 +288,16 @@ public class ItemStackUtil {
             currentLore.add(index, lore[i]);
         }
         meta.setLore(currentLore);
+        item.setItemMeta(meta);
+    }
+
+    public static void insertLore(ItemStack item, int index, Component... lore) {
+        ItemMeta meta = item.getItemMeta();
+        List<Component> currentLore = meta.hasLore() ? meta.lore() : new ArrayList<>();
+        for (int i = lore.length - 1; i >= 0; i--) {
+            currentLore.add(index, lore[i]);
+        }
+        meta.lore(currentLore);
         item.setItemMeta(meta);
     }
 
