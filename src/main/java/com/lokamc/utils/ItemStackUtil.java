@@ -2,6 +2,7 @@ package com.lokamc.utils;
 
 import com.destroystokyo.paper.profile.PlayerProfile;
 import com.google.common.base.Strings;
+import net.kyori.adventure.text.Component;
 import net.minecraft.nbt.CompoundTag;
 import org.bukkit.*;
 import org.bukkit.block.Banner;
@@ -299,6 +300,23 @@ public class ItemStackUtil {
         }
     }
 
+    public static void addLoreComponents(ItemStack item, Component... lore) {
+        if (item == null || lore == null) return;
+
+        ItemMeta meta = item.getItemMeta();
+        List<Component> currentLore = new ArrayList<>();
+        try {
+            if (meta != null && meta.hasLore()) currentLore.addAll(meta.lore());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        Collections.addAll(currentLore, lore);
+        if (meta != null) {
+            meta.lore(currentLore);
+            item.setItemMeta(meta);
+        }
+    }
+
     public static void addLore(ItemStack item, List<String> lore) {
         if (item == null || lore == null) return;
 
@@ -312,11 +330,32 @@ public class ItemStackUtil {
         item.setItemMeta(meta);
     }
 
+    public static void addLoreComponents(ItemStack item, List<Component> lore) {
+        if (item == null || lore == null) return;
+
+        ItemMeta meta = item.getItemMeta();
+        if (meta == null) return;
+
+        List<Component> currentLore = new ArrayList<>();
+        if (meta.hasLore()) currentLore.addAll(meta.lore());
+        currentLore.addAll(lore);
+        meta.lore(currentLore);
+        item.setItemMeta(meta);
+    }
+
     public static void setLore(ItemStack item, List<String> lore) {
         if (item == null || lore == null) return;
 
         ItemMeta meta = item.getItemMeta();
         meta.setLore(lore);
+        item.setItemMeta(meta);
+    }
+
+    public static void setLoreComponents(ItemStack item, List<Component> lore) {
+        if (item == null || lore == null) return;
+
+        ItemMeta meta = item.getItemMeta();
+        meta.lore(lore);
         item.setItemMeta(meta);
     }
 
