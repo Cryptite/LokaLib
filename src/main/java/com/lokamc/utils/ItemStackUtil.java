@@ -3,6 +3,7 @@ package com.lokamc.utils;
 import com.destroystokyo.paper.profile.PlayerProfile;
 import com.google.common.base.Strings;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.TextDecoration;
 import net.minecraft.nbt.CompoundTag;
 import org.bukkit.*;
 import org.bukkit.block.Banner;
@@ -328,7 +329,11 @@ public class ItemStackUtil {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        Collections.addAll(currentLore, lore);
+
+        for (Component component : lore) {
+            currentLore.add(component.decoration(TextDecoration.ITALIC, false));
+        }
+
         if (meta != null) {
             meta.lore(currentLore);
             item.setItemMeta(meta);
@@ -356,7 +361,11 @@ public class ItemStackUtil {
 
         List<Component> currentLore = new ArrayList<>();
         if (meta.hasLore()) currentLore.addAll(meta.lore());
-        currentLore.addAll(lore);
+
+        for (Component component : lore) {
+            currentLore.add(component.decoration(TextDecoration.ITALIC, false));
+        }
+
         meta.lore(currentLore);
         item.setItemMeta(meta);
     }
