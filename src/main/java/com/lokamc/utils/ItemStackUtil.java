@@ -58,6 +58,16 @@ public class ItemStackUtil {
         return itemStack;
     }
 
+    public static ItemStack createItemStack(Material material, Component displayName) {
+        return createItemStack(new ItemStack(material), displayName);
+    }
+
+    public static ItemStack createItemStack(ItemStack itemStack, Component displayName) {
+        itemStack = itemStack.clone();
+        setDisplayName(itemStack, displayName);
+        return itemStack;
+    }
+
     public static boolean hasDisplayName(ItemStack item, String name) {
         return item.getItemMeta() != null && item.getItemMeta().getDisplayName().equals(name);
     }
@@ -201,6 +211,14 @@ public class ItemStackUtil {
 
         ItemMeta meta = item.getItemMeta();
         meta.setDisplayName(name);
+        item.setItemMeta(meta);
+    }
+
+    public static void setDisplayName(ItemStack item, Component component) {
+        if (item == null || item.getItemMeta() == null) return;
+
+        ItemMeta meta = item.getItemMeta();
+        meta.displayName(component);
         item.setItemMeta(meta);
     }
 
