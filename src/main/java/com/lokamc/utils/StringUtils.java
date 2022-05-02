@@ -1,5 +1,8 @@
 package com.lokamc.utils;
 
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
 import java.text.DecimalFormat;
@@ -15,6 +18,10 @@ import static org.bukkit.ChatColor.stripColor;
 
 public class StringUtils {
     private static final DecimalFormat numberFormat = new DecimalFormat("#,###,###");
+
+    public static String stripComponentColor(Component component) {
+        return ChatColor.stripColor(PlainTextComponentSerializer.plainText().serialize(component));
+    }
 
     public static String getFormattedNumber(double number) {
         return numberFormat.format(number);
