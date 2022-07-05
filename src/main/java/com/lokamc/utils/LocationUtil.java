@@ -280,18 +280,20 @@ public class LocationUtil {
     }
 
     private static List<Block> getBlocksFromRegion(Location p1, Location p2, int outset) {
+        World world = p1.getWorld();
+
         List<Block> blocks = new ArrayList<>();
         int minX = Math.min(p1.getBlockX(), p2.getBlockX()) - outset;
         int maxX = Math.max(p1.getBlockX(), p2.getBlockX()) + outset;
-        int minY = clamp(Math.min(p1.getBlockY(), p2.getBlockY()) - outset, 0, 255);
-        int maxY = clamp(Math.max(p1.getBlockY(), p2.getBlockY()) + outset, 0, 255);
+        int minY = clamp(Math.min(p1.getBlockY(), p2.getBlockY()) - outset, world.getMinHeight(), world.getMaxHeight());
+        int maxY = clamp(Math.max(p1.getBlockY(), p2.getBlockY()) + outset, world.getMinHeight(), world.getMaxHeight());
         int minZ = Math.min(p1.getBlockZ(), p2.getBlockZ()) - outset;
         int maxZ = Math.max(p1.getBlockZ(), p2.getBlockZ()) + outset;
 
         for (int y = minY; y <= maxY; y++) {
             for (int x = minX; x <= maxX; x++) {
                 for (int z = minZ; z <= maxZ; z++) {
-                    blocks.add(p1.getWorld().getBlockAt(x, y, z));
+                    blocks.add(world.getBlockAt(x, y, z));
                 }
             }
         }
