@@ -107,7 +107,7 @@ public class StringLocation extends Location {
     }
 
     public void getBlockAsync(Plugin plugin, Consumer<Block> consumer) {
-        FutureUtils.thenRunSync(plugin, getWorld().getChunkAtAsync(this, false), () -> consumer.accept(getBlock()));
+        FutureUtils.thenRunSync(getWorld().getChunkAtAsync(this, false), () -> consumer.accept(getBlock()));
     }
 
     public CompletableFuture<Chunk> getChunkAsync() {

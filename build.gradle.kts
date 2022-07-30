@@ -12,7 +12,7 @@ description = "LokaLib helpful utilities"
 repositories {
     mavenCentral()
     maven("https://maven.enginehub.org/repo/")
-    maven("https://ysera.dyndns.org:444/releases")
+    maven("https://test.lokamc.com:444/releases")
 }
 
 dependencies {
