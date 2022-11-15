@@ -38,6 +38,7 @@ public class StringBlock extends StringLocation implements Comparable<StringBloc
     //    private BlockState blockState;
     private BlockStateHolder blockStateHolder;
     private Runnable onSetRunnable;
+    private boolean empty;
 
     public StringBlock(Location l) {
         super(l);
@@ -138,6 +139,10 @@ public class StringBlock extends StringLocation implements Comparable<StringBloc
 
     public Runnable getOnSetRunnable() {
         return onSetRunnable;
+    }
+
+    public void setEmpty(boolean empty) {
+        this.empty = empty;
     }
 
     public void setType(Material m) {
@@ -363,6 +368,8 @@ public class StringBlock extends StringLocation implements Comparable<StringBloc
     }
 
     public void set(boolean notify) {
+        if (empty) return;
+
         if (blockStateHolder != null) {
             try {
                 adapt(getWorld()).setBlock(asBlockVector(this), blockStateHolder, notify);
