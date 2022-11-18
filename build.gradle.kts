@@ -58,13 +58,4 @@ publishing {
             }
         }
     }
-
-    repositories {
-        maven {
-            name = "Ysera"
-            url = uri("https://test.lokamc.com:444/releases")
-            // https://docs.gradle.org/current/samples/sample_publishing_credentials.html
-            credentials(PasswordCredentials::class)
-        }
-    }
 }

@@ -103,6 +103,8 @@ public class ItemStackUtil {
                     } else {
                         displayName = item.getI18NDisplayName();
                     }
+                } else {
+                    displayName = "Player Head";
                 }
             } else {
                 displayName = item.getI18NDisplayName();
