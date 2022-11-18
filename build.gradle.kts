@@ -13,7 +13,6 @@ repositories {
     mavenCentral()
     mavenLocal()
     maven("https://maven.enginehub.org/repo/")
-//    maven("https://test.lokamc.com:444/releases")
 }
 
 dependencies {
