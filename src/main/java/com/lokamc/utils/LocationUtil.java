@@ -177,6 +177,22 @@ public class LocationUtil {
         return regions;
     }
 
+    public static Map<String, ProtectedRegion> getWGProtectedRegions(Entity e) {
+        return getWGProtectedRegions(e.getLocation());
+    }
+
+    public static Map<String, ProtectedRegion> getWGProtectedRegions(Location loc) {
+        RegionQuery query = WorldGuard.getInstance().getPlatform().getRegionContainer().createQuery();
+        ApplicableRegionSet set = query.getApplicableRegions(BukkitAdapter.adapt(loc));
+        Iterator<ProtectedRegion> prs = set.iterator();
+        Map<String, ProtectedRegion> regions = new HashMap<>(set.size());
+        while (prs.hasNext()) {
+            ProtectedRegion pr = prs.next();
+            regions.put(pr.getId(), pr);
+        }
+        return regions;
+    }
+
     public static Location getRandom(Location loc, double r, int min) {
         // given loc as the centre of the area you want, r as the max radius...
         double a = ThreadLocalRandom.current().nextDouble() * 2 * Math.PI;
