@@ -185,7 +185,7 @@ public class LocationUtil {
         RegionQuery query = WorldGuard.getInstance().getPlatform().getRegionContainer().createQuery();
         ApplicableRegionSet set = query.getApplicableRegions(BukkitAdapter.adapt(loc));
         Iterator<ProtectedRegion> prs = set.iterator();
-        Map<String, ProtectedRegion> regions = new HashMap<>(set.size());
+        Map<String, ProtectedRegion> regions = new LinkedHashMap<>(set.size());
         while (prs.hasNext()) {
             ProtectedRegion pr = prs.next();
             regions.put(pr.getId(), pr);
