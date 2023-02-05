@@ -323,7 +323,7 @@ public class ItemStackUtil {
     }
 
     public static void addLore(ItemStack item, String... lore) {
-        if (item == null || lore == null) return;
+        if (item == null || lore == null || lore.length == 0) return;
 
         ItemMeta meta = item.getItemMeta();
         List<String> currentLore = new ArrayList<>();
@@ -340,7 +340,7 @@ public class ItemStackUtil {
     }
 
     public static void addLoreComponents(ItemStack item, Component... lore) {
-        if (item == null || lore == null) return;
+        if (item == null || lore == null || lore.length == 0) return;
 
         ItemMeta meta = item.getItemMeta();
         List<Component> currentLore = new ArrayList<>();
@@ -361,7 +361,7 @@ public class ItemStackUtil {
     }
 
     public static void addLore(ItemStack item, List<String> lore) {
-        if (item == null || lore == null) return;
+        if (item == null || lore == null || lore.isEmpty()) return;
 
         ItemMeta meta = item.getItemMeta();
         if (meta == null) return;
@@ -374,7 +374,7 @@ public class ItemStackUtil {
     }
 
     public static void addLoreComponents(ItemStack item, List<Component> lore) {
-        if (item == null || lore == null) return;
+        if (item == null || lore == null || lore.isEmpty()) return;
 
         ItemMeta meta = item.getItemMeta();
         if (meta == null) return;
@@ -391,7 +391,7 @@ public class ItemStackUtil {
     }
 
     public static void setLore(ItemStack item, List<String> lore) {
-        if (item == null || lore == null) return;
+        if (item == null || lore == null || lore.isEmpty()) return;
 
         ItemMeta meta = item.getItemMeta();
         meta.setLore(lore);
@@ -399,7 +399,7 @@ public class ItemStackUtil {
     }
 
     public static void setLoreComponents(ItemStack item, List<Component> lore) {
-        if (item == null || lore == null) return;
+        if (item == null || lore == null || lore.isEmpty()) return;
 
         ItemMeta meta = item.getItemMeta();
         meta.lore(lore);
