@@ -4,6 +4,7 @@ import com.lokamc.utils.FutureUtils;
 import com.lokamc.utils.LocationUtil;
 import com.sk89q.worldedit.math.BlockVector3;
 import com.sk89q.worldedit.math.Vector3;
+import io.papermc.paper.util.CoordinateUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
@@ -81,7 +82,11 @@ public class StringLocation extends Location {
     public World getWorld() {
         World w = super.getWorld();
         if (w == null && worldName != null) {
-            setWorld(Bukkit.getWorld(worldName));
+            World world = Bukkit.getWorld(worldName);
+            if (world != null) {
+                setWorld(world);
+                return world;
+            }
         }
 
         return w;
@@ -116,6 +121,10 @@ public class StringLocation extends Location {
 
     public Chunk getChunk() {
         return getWorld().getChunkAt(this);
+    }
+
+    public long getChunkKey() {
+        return CoordinateUtils.getChunkKey(getBlockX() >> 4, getBlockZ() >> 4);
     }
 
     /**
