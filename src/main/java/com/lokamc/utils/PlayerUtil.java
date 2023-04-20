@@ -5,10 +5,8 @@ import com.destroystokyo.paper.profile.ProfileProperty;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.protocol.game.ClientboundPlayerInfoPacket;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.server.network.ServerGamePacketListenerImpl;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.craftbukkit.v1_19_R3.CraftServer;
@@ -133,13 +131,6 @@ public class PlayerUtil {
         }
 
         return false;
-    }
-
-    public static void togglePlayerInTabList(Player p) {
-        CraftPlayer cp = (CraftPlayer) p;
-        ServerGamePacketListenerImpl con = cp.getHandle().connection;
-        ClientboundPlayerInfoPacket packet3 = new ClientboundPlayerInfoPacket(ClientboundPlayerInfoPacket.Action.REMOVE_PLAYER, cp.getHandle());
-        con.send(packet3);
     }
 
     public static void loadPlayer(Plugin plugin, UUID uuid, Consumer<Player> consumer) {
