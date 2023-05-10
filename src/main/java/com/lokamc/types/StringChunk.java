@@ -57,6 +57,10 @@ public class StringChunk {
                 .add(7, 0, 7);
     }
 
+    public static Location getCenter(Chunk c) {
+        return new Location(c.getWorld(), c.getX() << 4, 64, c.getZ() << 4).add(7, 0, 7);
+    }
+
     public boolean isLoaded() {
         return world.isChunkLoaded(x, z);
     }
