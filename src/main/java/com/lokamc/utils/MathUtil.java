@@ -98,16 +98,22 @@ public class MathUtil {
     }
 
     public static float getPercent(double v1, double v2) {
+        if (v1 == 0) return 0;
+
         int percent = (int) ((v1 / v2) * 100);
         return percent == 0 ? 1 : percent;
     }
 
     public static float getPercent(float v1, float v2) {
+        if (v1 == 0) return 0;
+
         int percent = (int) ((v1 / v2) * 100);
         return percent == 0 ? 1 : percent;
     }
 
     public static float getPercent(int v1, int v2) {
+        if (v1 == 0) return 0;
+
         int percent = (int) (((float) v1 / (float) v2) * 100);
         return percent == 0 ? 1 : percent;
     }
