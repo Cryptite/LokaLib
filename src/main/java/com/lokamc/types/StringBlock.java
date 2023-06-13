@@ -14,7 +14,7 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.block.Container;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.type.Slab;
-import org.bukkit.craftbukkit.v1_19_R3.block.impl.CraftFluids;
+import org.bukkit.craftbukkit.v1_20_R1.block.impl.CraftFluids;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
