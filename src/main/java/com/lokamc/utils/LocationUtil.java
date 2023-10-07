@@ -222,7 +222,8 @@ public class LocationUtil {
 
             regions.add(protectedRegion.getId());
         }
-        return regions;
+
+        return regions != null ? regions : Collections.emptyList();
     }
 
     public static Map<String, ProtectedRegion> getWGProtectedRegions(Entity e) {
@@ -241,7 +242,8 @@ public class LocationUtil {
             ProtectedRegion pr = prs.next();
             regions.put(pr.getId(), pr);
         }
-        return regions;
+
+        return regions != null ? regions : Collections.emptyMap();
     }
 
     public static ApplicableRegionSet getRegionSet(Location l) {
