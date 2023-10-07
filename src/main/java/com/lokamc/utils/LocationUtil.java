@@ -26,6 +26,7 @@ import org.bukkit.util.Vector;
 
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.function.Predicate;
 
 import static java.lang.Double.parseDouble;
 import static java.lang.Float.parseFloat;
@@ -136,43 +137,90 @@ public class LocationUtil {
         return inWGRegion(p, region);
     }
 
-    public static boolean inWGRegion(Player p, String region) {
-        return p != null && getWGRegions(p.getLocation()).contains(region);
+    public static boolean inWGRegion(Entity e, String region) {
+        return inWGRegion(e, region, false);
+    }
+
+    public static boolean inWGRegion(Entity e, String region, boolean highestRegionOnly) {
+        return e != null && inWGRegion(e.getLocation(), region, highestRegionOnly);
     }
 
     public static boolean inWGRegion(Location l, String region) {
-        return l != null && getWGRegions(l).contains(region);
+        return inWGRegion(l, region, false);
     }
 
-    public static boolean inAnyWGRegion(Location l, String... region) {
-        return l != null && Arrays.stream(region).anyMatch(getWGRegions(l)::contains);
+    public static boolean inWGRegion(Location l, String region, boolean highestRegionOnly) {
+        if (l == null) return false;
+
+        ApplicableRegionSet set = getRegionSet(l);
+        if (highestRegionOnly) {
+            Iterator<ProtectedRegion> iterator = set.iterator();
+            return iterator.hasNext() && region.equals(iterator.next().getId());
+        } else {
+            for (ProtectedRegion protectedRegion : set) {
+                if (region.equals(protectedRegion.getId())) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    public static boolean inWGRegion(Entity e, boolean highestRegionOnly, Predicate<String> test) {
+        return inWGRegion(e.getLocation(), highestRegionOnly, test);
+    }
+
+    public static boolean inWGRegion(Location l, boolean highestRegionOnly, Predicate<String> test) {
+        if (l == null) return false;
+
+        ApplicableRegionSet set = getRegionSet(l);
+        if (highestRegionOnly) {
+            Iterator<ProtectedRegion> iterator = set.iterator();
+            return iterator.hasNext() && test.test(iterator.next().getId());
+        } else {
+            for (ProtectedRegion protectedRegion : set) {
+                if (test.test(protectedRegion.getId())) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    public static boolean inAnyWGRegion(Location l, String... regions) {
+        return inAnyWGRegion(l, List.of(regions));
     }
 
     public static boolean inAnyWGRegion(Location l, Collection<String> regions) {
-        return l != null && regions != null && regions.stream().anyMatch(getWGRegions(l)::contains);
-    }
+        if (l == null) return false;
 
-    public static boolean inWGRegion(Entity e, String region) {
-        return e != null && getWGRegions(e.getLocation()).contains(region);
+        ApplicableRegionSet set = getRegionSet(l);
+        for (ProtectedRegion protectedRegion : set) {
+            if (regions.contains(protectedRegion.getId())) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public static Set<String> getWGRegions(World world) {
         RegionManager regionManager = WorldGuard.getInstance().getPlatform().getRegionContainer().get(BukkitAdapter.adapt(world));
-        return regionManager != null ? regionManager.getRegions().keySet() : new HashSet<>();
+        return regionManager != null ? regionManager.getRegions().keySet() : Collections.emptySet();
     }
 
     public static List<String> getWGRegions(Entity e) {
         return getWGRegions(e.getLocation());
     }
 
-    public static List<String> getWGRegions(Location loc) {
-        RegionQuery query = WorldGuard.getInstance().getPlatform().getRegionContainer().createQuery();
-        ApplicableRegionSet set = query.getApplicableRegions(BukkitAdapter.adapt(loc));
-        Iterator<ProtectedRegion> prs = set.iterator();
-        List<String> regions = new ArrayList<>(set.size());
-        while (prs.hasNext()) {
-            ProtectedRegion pr = prs.next();
-            regions.add(pr.getId());
+    public static List<String> getWGRegions(Location l) {
+        ApplicableRegionSet set = getRegionSet(l);
+        List<String> regions = null;
+        for (ProtectedRegion protectedRegion : set) {
+            if (regions == null) {
+                regions = new ArrayList<>(set.size());
+            }
+
+            regions.add(protectedRegion.getId());
         }
         return regions;
     }
@@ -181,16 +229,24 @@ public class LocationUtil {
         return getWGProtectedRegions(e.getLocation());
     }
 
-    public static Map<String, ProtectedRegion> getWGProtectedRegions(Location loc) {
-        RegionQuery query = WorldGuard.getInstance().getPlatform().getRegionContainer().createQuery();
-        ApplicableRegionSet set = query.getApplicableRegions(BukkitAdapter.adapt(loc));
+    public static Map<String, ProtectedRegion> getWGProtectedRegions(Location l) {
+        ApplicableRegionSet set = getRegionSet(l);
         Iterator<ProtectedRegion> prs = set.iterator();
-        Map<String, ProtectedRegion> regions = new LinkedHashMap<>(set.size());
+        Map<String, ProtectedRegion> regions = null;
         while (prs.hasNext()) {
+            if (regions == null) {
+                regions = new LinkedHashMap<>(set.size());
+            }
+
             ProtectedRegion pr = prs.next();
             regions.put(pr.getId(), pr);
         }
         return regions;
+    }
+
+    public static ApplicableRegionSet getRegionSet(Location l) {
+        RegionQuery query = WorldGuard.getInstance().getPlatform().getRegionContainer().createQuery();
+        return query.getApplicableRegions(BukkitAdapter.adapt(l));
     }
 
     public static Location getRandom(Location loc, double r, int min) {
