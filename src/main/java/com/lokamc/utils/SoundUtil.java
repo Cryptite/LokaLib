@@ -12,11 +12,16 @@ import org.bukkit.entity.Player;
 
 import java.util.Collection;
 
+import static com.lokamc.utils.LocationUtil.getSphereClosestPoint;
 import static com.lokamc.utils.MathUtil.normalize;
 import static net.kyori.adventure.sound.Sound.Source.AMBIENT;
 import static net.kyori.adventure.sound.Sound.Source.MASTER;
 
 public class SoundUtil {
+
+    public static final int NEARBY_SOUND_MAX_DISTANCE = 15 * 15; //15 blocks
+    public static final int DISTANT_SOUND_MAX_DISTANCE = 2000 * 2000; //2000 blocks
+
     public static void playCustomSound(Player p, Location l, String sound, Source source, float volume) {
         //Also play for the player
         Sound adventureSound = Sound.sound(Key.key(sound.toLowerCase()), source, volume, 1);
@@ -74,19 +79,23 @@ public class SoundUtil {
         }
     }
 
-    public static void playDistantExplosion(Location l) {
-        for (Player p : l.getWorld().getPlayers()) {
-            double distance = p.getLocation().distance(l);
-            float vol = 3 - normalize((float) distance, 400, 1200, 1f, 2f);
-            playCustomSound(p, "distantexplosion", AMBIENT, vol);
-        }
+    public static void playDistantSound(Location l, String sound) {
+        playDistantSound(l, sound, MASTER, .5f, 1.5f);
     }
 
-    public static void playDistantSound(Location l, String sound) {
+    public static void playDistantSound(Location l, String sound, float minVol, float maxVol) {
+        playDistantSound(l, sound, MASTER, minVol, maxVol);
+    }
+
+    public static void playDistantSound(Location l, String sound, Sound.Source source, float minVol, float maxVol) {
         for (Player p : l.getWorld().getPlayers()) {
-            double distance = p.getLocation().distance(l);
-            float vol = 3 - normalize((float) distance, 400, 1200, 1f, 2f);
-            playCustomSound(p, sound, AMBIENT, vol);
+            double distance = p.getLocation().distanceSquared(l);
+            if (distance <= NEARBY_SOUND_MAX_DISTANCE) {
+                playCustomSound(p, l, sound, source, maxVol);
+            } else if (distance <= DISTANT_SOUND_MAX_DISTANCE) {
+                float volume = maxVol - normalize((float) distance, 0, DISTANT_SOUND_MAX_DISTANCE, minVol, maxVol);
+                playCustomSound(p, getSphereClosestPoint(p.getLocation(), 14, l), sound, source, volume);
+            }
         }
     }
 
