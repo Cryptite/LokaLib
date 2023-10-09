@@ -93,8 +93,8 @@ public class SoundUtil {
             if (distance <= NEARBY_SOUND_MAX_DISTANCE) {
                 playCustomSound(p, l, sound, source, maxVol);
             } else if (distance <= DISTANT_SOUND_MAX_DISTANCE) {
-                float volume = maxVol - normalize((float) distance, 0, DISTANT_SOUND_MAX_DISTANCE, minVol, maxVol);
-                playCustomSound(p, getSphereClosestPoint(p.getLocation(), 14, l), sound, source, volume);
+                float volume = maxVol - normalize((float) distance, NEARBY_SOUND_MAX_DISTANCE, DISTANT_SOUND_MAX_DISTANCE, minVol, maxVol);
+                playCustomSound(p, getSphereClosestPoint(p.getLocation(), 8, l), sound, source, volume);
             }
         }
     }
