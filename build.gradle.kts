@@ -21,7 +21,7 @@ dependencies {
     implementation("com.github.ben-manes.caffeine:caffeine:3.1.1")
     implementation("org.ocpsoft.prettytime:prettytime:5.0.3.Final")
     compileOnly("com.sk89q.worldguard:worldguard-bukkit:7.0.6")
-    compileOnly("com.sk89q.worldedit:worldedit-bukkit:7.2.8")
+    compileOnly("com.sk89q.worldedit:worldedit-bukkit:7.3.0-SNAPSHOT")
 }
 
 tasks {
