@@ -18,7 +18,7 @@ import static org.bukkit.ChatColor.stripColor;
  */
 public class BookUtil {
     private static final MinecraftFont font = new MinecraftFont();
-    public static final int maxLineWidth = font.getWidth("LLLLLLLLLLLLLLLLLLL");
+    public static final int maxLineWidth = font.getWidth("LLLLLLLLLLLLLLLLLL");
 
     /**
      * Splits a string given a line length.
@@ -28,6 +28,17 @@ public class BookUtil {
      * @return
      */
     public static List<String> splitIntoPages(String text) {
+        return splitIntoPages(text, null);
+    }
+
+    /**
+     * Splits a string given a line length.
+     * If the string contains \n, returns the string just based on a split of the newline characters
+     *
+     * @param text
+     * @return
+     */
+    public static List<String> splitIntoPages(String text, String eachPageHeader) {
         if (text == null) return new ArrayList<>();
 
         List<String> lines = new ArrayList<>();
@@ -89,14 +100,20 @@ public class BookUtil {
         int currentLine = 1;
         StringBuilder pageBuilder = new StringBuilder();
         while (!lines.isEmpty()) {
-            String line = lines.remove(0);
+            String line;
+            if (currentLine == 1 && eachPageHeader != null) {
+                line = eachPageHeader;
+            } else {
+                line = lines.remove(0);
+            }
+
             if (line.isEmpty()) {
                 pageBuilder.append("\n");
             } else {
                 pageBuilder.append(line).append(" ");
             }
 
-            if (currentLine++ >= 10) {
+            if (currentLine++ >= 9) {
                 pages.add(processPage(pageBuilder.toString()));
                 pageBuilder = new StringBuilder();
                 currentLine = 1;
