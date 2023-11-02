@@ -102,21 +102,22 @@ public class BookUtil {
         while (!lines.isEmpty()) {
             String line;
             if (currentLine == 1 && eachPageHeader != null) {
-                line = eachPageHeader;
+                pageBuilder.append(eachPageHeader).append("\n");
+                currentLine++;
             } else {
                 line = lines.remove(0);
-            }
 
-            if (line.isEmpty()) {
-                pageBuilder.append("\n");
-            } else {
-                pageBuilder.append(line).append(" ");
-            }
+                if (line.isEmpty()) {
+                    pageBuilder.append("\n");
+                } else {
+                    pageBuilder.append(line).append(" ");
+                }
 
-            if (currentLine++ >= 9) {
-                pages.add(processPage(pageBuilder.toString()));
-                pageBuilder = new StringBuilder();
-                currentLine = 1;
+                if (currentLine++ >= 9) {
+                    pages.add(processPage(pageBuilder.toString()));
+                    pageBuilder = new StringBuilder();
+                    currentLine = 1;
+                }
             }
         }
 
