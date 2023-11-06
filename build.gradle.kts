@@ -6,7 +6,7 @@ plugins {
 }
 
 group = "com.lokamc"
-version = "2.5"
+version = "2.6"
 description = "LokaLib helpful utilities"
 
 repositories {
