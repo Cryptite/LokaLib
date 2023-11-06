@@ -1,7 +1,7 @@
 plugins {
     `java-library`
     `maven-publish`
-    id("io.papermc.paperweight.userdev") version "1.5.5"
+    id("io.papermc.paperweight.userdev") version "1.5.9"
     id("xyz.jpenilla.run-paper") version "2.1.0" // Adds runServer and runMojangMappedServer tasks for testing
 }
 
@@ -16,10 +16,10 @@ repositories {
 }
 
 dependencies {
-    paperweightDevBundle("com.lokamc.slice", "1.20.1-R0.1-SNAPSHOT")
+    paperweightDevBundle("com.lokamc.slice", "1.20.2-R0.1-SNAPSHOT")
     implementation("commons-io:commons-io:2.11.0")
-    implementation("com.github.ben-manes.caffeine:caffeine:3.1.1")
-    implementation("org.ocpsoft.prettytime:prettytime:5.0.3.Final")
+    implementation("com.github.ben-manes.caffeine:caffeine:3.1.5")
+    implementation("org.ocpsoft.prettytime:prettytime:5.0.4.Final")
     compileOnly("com.sk89q.worldguard:worldguard-bukkit:7.0.6")
     compileOnly("com.sk89q.worldedit:worldedit-bukkit:7.3.0-SNAPSHOT")
 }
@@ -53,8 +53,8 @@ tasks.register("copyJar") {
     dependsOn("reobfJar")
     doLast {
         copy {
-            from("build/libs/LokaLib-2.5.jar")
-            into("D:/Loka/pts120/plugins/update")
+            from("build/libs/LokaLib-2.6.jar")
+            into("D:/Loka/pts1202/plugins/update")
         }
     }
 }
