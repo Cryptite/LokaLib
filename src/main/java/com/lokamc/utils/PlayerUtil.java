@@ -393,7 +393,7 @@ public class PlayerUtil {
     }
 
     public static GameProfile getGameProfile(String url) {
-        GameProfile profile = new GameProfile(UUID.randomUUID(), null);
+        GameProfile profile = new GameProfile(UUID.randomUUID(), UUID.randomUUID().toString());
         profile.getProperties().put("textures", new Property("textures", url));
         return profile;
     }
