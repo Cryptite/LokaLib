@@ -6,7 +6,7 @@ plugins {
 }
 
 group = "com.lokamc"
-version = "2.6"
+version = "2.7"
 description = "LokaLib helpful utilities"
 
 repositories {
@@ -53,7 +53,7 @@ tasks.register("copyJar") {
     dependsOn("reobfJar")
     doLast {
         copy {
-            from("build/libs/LokaLib-2.6.jar")
+            from("build/libs/LokaLib-2.7.jar")
             into("D:/Loka/pts1202/plugins/update")
         }
     }
