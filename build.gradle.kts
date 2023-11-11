@@ -18,8 +18,8 @@ repositories {
 dependencies {
     paperweightDevBundle("com.lokamc.slice", "1.20.1-R0.1-SNAPSHOT")
     implementation("commons-io:commons-io:2.11.0")
-    implementation("com.github.ben-manes.caffeine:caffeine:3.1.1")
-    implementation("org.ocpsoft.prettytime:prettytime:5.0.3.Final")
+    implementation("com.github.ben-manes.caffeine:caffeine:3.1.5")
+    implementation("org.ocpsoft.prettytime:prettytime:5.0.4.Final")
     compileOnly("com.sk89q.worldguard:worldguard-bukkit:7.0.6")
     compileOnly("com.sk89q.worldedit:worldedit-bukkit:7.3.0-SNAPSHOT")
 }

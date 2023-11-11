@@ -258,6 +258,18 @@ public class LocationUtil {
         return loc.clone().add(dist * Math.sin(a), 0, dist * Math.cos(a));
     }
 
+    public static Location getRandom(Location loc, double r, int min, boolean toSurface) {
+        // given loc as the centre of the area you want, r as the max radius...
+        double a = ThreadLocalRandom.current().nextDouble() * 2 * Math.PI;
+        double dist = min + ThreadLocalRandom.current().nextDouble() * r;
+        if (toSurface) {
+            Location wanted = loc.clone().add(dist * Math.sin(a), loc.getBlockY(), dist * Math.cos(a));
+            return wanted.getWorld().getHighestBlockAt(wanted).getLocation().add(0, 1, 0);
+        } else {
+            return loc.clone().add(dist * Math.sin(a), 0, dist * Math.cos(a));
+        }
+    }
+
     public static ProtectedRegion getWGRegion(World world, String region) {
         RegionManager query = getRegionContainer(world);
         if (query != null) {
