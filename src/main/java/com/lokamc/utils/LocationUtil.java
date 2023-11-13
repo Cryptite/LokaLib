@@ -26,6 +26,7 @@ import org.bukkit.util.Vector;
 
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 import static java.lang.Double.parseDouble;
@@ -417,6 +418,20 @@ public class LocationUtil {
         }
 
         return chunks;
+    }
+
+    public static void iterateChunksFromRegion(Location p1, Location p2, Consumer<Chunk> consumer) {
+        int minX = Math.min(p1.getBlockX(), p2.getBlockX()) >> 4;
+        int maxX = Math.max(p1.getBlockX(), p2.getBlockX()) >> 4;
+        int minZ = Math.min(p1.getBlockZ(), p2.getBlockZ()) >> 4;
+        int maxZ = Math.max(p1.getBlockZ(), p2.getBlockZ()) >> 4;
+
+        List<Chunk> chunks = new ArrayList<>();
+        for (int x = minX; x <= maxX; x++) {
+            for (int z = minZ; z <= maxZ; z++) {
+                consumer.accept(p1.getWorld().getChunkAt(x, z));
+            }
+        }
     }
 
     public static List<Block> getRandomBlockRadius(Location source, int randX, int randY, int randZ) {
