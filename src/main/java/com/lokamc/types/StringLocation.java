@@ -111,6 +111,10 @@ public class StringLocation extends Location {
         return new StringChunk(clean ? Bukkit.getWorld(world.getName() + "_clean") : world, getBlockX() >> 4, getBlockZ() >> 4);
     }
 
+    public static StringChunk getStringChunk(Location l) {
+        return new StringChunk(l.getWorld(), l.getBlockX() >> 4, l.getBlockZ() >> 4);
+    }
+
     public void getBlockAsync(Plugin plugin, Consumer<Block> consumer) {
         FutureUtils.thenRunSync(getWorld().getChunkAtAsync(this, false), () -> consumer.accept(getBlock()));
     }
