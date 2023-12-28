@@ -23,7 +23,7 @@ public class MaterialSets {
             BAMBOO
     ));
 
-    public static final Set<Material> plants = new HashSet<>(Arrays.asList(GRASS,
+    public static final Set<Material> plants = new HashSet<>(Arrays.asList(SHORT_GRASS,
             DEAD_BUSH,
             FERN,
             DANDELION,

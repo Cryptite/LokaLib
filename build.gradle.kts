@@ -16,7 +16,7 @@ repositories {
 }
 
 dependencies {
-    paperweightDevBundle("com.lokamc.slice", "1.20.2-R0.1-SNAPSHOT")
+    paperweightDevBundle("com.lokamc.slice", "1.20.4-R0.1-SNAPSHOT")
     implementation("commons-io:commons-io:2.11.0")
     implementation("com.github.ben-manes.caffeine:caffeine:3.1.5")
     implementation("org.ocpsoft.prettytime:prettytime:5.0.4.Final")
@@ -32,7 +32,7 @@ tasks {
 
     compileJava {
         options.encoding = Charsets.UTF_8.name()
-        options.release.set(21)
+        options.release.set(17)
     }
     javadoc {
         options.encoding = Charsets.UTF_8.name()
@@ -54,7 +54,7 @@ tasks.register("copyJar") {
     doLast {
         copy {
             from("build/libs/LokaLib-2.7.jar")
-            into("D:/Loka/pts1202/plugins/update")
+            into("D:/Loka/pts1204/plugins/update")
         }
     }
 }
