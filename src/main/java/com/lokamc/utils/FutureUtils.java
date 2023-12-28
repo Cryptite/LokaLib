@@ -128,7 +128,7 @@ public class FutureUtils {
     }
 
     public static void runOnceLoaded(Collection<StringLocation> locations, Runnable runnable) {
-        Set<StringChunk> chunks = locations.stream().map(StringLocation::getStringChunk).collect(Collectors.toSet());
+        Set<StringChunk> chunks = locations.stream().map(location -> location.getStringChunk()).collect(Collectors.toSet());
         runOnceRegionLoaded(chunks, runnable);
     }
 

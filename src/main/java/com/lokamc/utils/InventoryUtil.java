@@ -30,15 +30,21 @@ public class InventoryUtil {
     }
 
     public static Inventory getShulkerInventory(ItemStack item) {
-        if (item.getItemMeta() instanceof BlockStateMeta) {
-            BlockStateMeta im = (BlockStateMeta) item.getItemMeta();
-            if (im.getBlockState() instanceof ShulkerBox) {
-                ShulkerBox shulker = (ShulkerBox) im.getBlockState();
-                return shulker.getInventory();
-            }
+        if (item.getItemMeta() instanceof BlockStateMeta blockStateMeta
+                && blockStateMeta.getBlockState() instanceof ShulkerBox shulkerBox) {
+            return shulkerBox.getInventory();
         }
 
         return Bukkit.createInventory(null, 27, "Shulker Box");
+    }
+
+    public static boolean isEmptyShulker(ItemStack item) {
+        if (item.getItemMeta() instanceof BlockStateMeta blockStateMeta
+                && blockStateMeta.getBlockState() instanceof ShulkerBox shulkerBox) {
+            return isEmptyInventory(shulkerBox.getInventory());
+        }
+
+        return true;
     }
 
     public static boolean isEmptyInventory(Inventory i) {
