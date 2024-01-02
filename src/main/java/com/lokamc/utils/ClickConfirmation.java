@@ -98,8 +98,19 @@ public class ClickConfirmation {
         msg.send(p);
     }
 
-    void registerCommands(UUID id, UUID setId, Map<UUID, Consumer<Player>> commandMap, boolean expires) {
-        CommandMap map = commands.getOrDefault(id, new CommandMap());
+    public String registerClick(Player p, Consumer<Player> consumer) {
+        return registerClick(p, consumer, true);
+    }
+
+    public String registerClick(Player p, Consumer<Player> consumer, boolean expires) {
+        UUID id = UUID.randomUUID();
+        UUID setId = UUID.randomUUID();
+        registerCommands(p.getUniqueId(), setId, Map.of(id, consumer), expires);
+        return "/confirm " + setId + " " + id;
+    }
+
+    public void registerCommands(UUID id, UUID setId, Map<UUID, Consumer<Player>> commandMap, boolean expires) {
+        CommandMap map = commands.computeIfAbsent(id, uuid -> new CommandMap());
         map.addCommand(setId, commandMap, expires);
         commands.put(id, map);
     }
