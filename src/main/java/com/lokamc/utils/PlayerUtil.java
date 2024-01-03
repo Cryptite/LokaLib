@@ -362,15 +362,9 @@ public class PlayerUtil {
 
         ItemStack head = new ItemStack(Material.PLAYER_HEAD);
         SkullMeta headMeta = (SkullMeta) head.getItemMeta();
-        GameProfile profile = getGameProfile(url);
-        Field profileField;
-        try {
-            profileField = headMeta.getClass().getDeclaredField("profile");
-            profileField.setAccessible(true);
-            profileField.set(headMeta, profile);
-        } catch (NoSuchFieldException | IllegalArgumentException | IllegalAccessException e1) {
-            e1.printStackTrace();
-        }
+        PlayerProfile profile = Bukkit.createProfile(UUID.randomUUID());
+        profile.setProperty(new ProfileProperty("textures", url));
+        headMeta.setPlayerProfile(profile);
         head.setItemMeta(headMeta);
         return headMeta;
     }
