@@ -8,6 +8,7 @@ import org.bukkit.entity.Player;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 
@@ -15,7 +16,7 @@ import static org.bukkit.ChatColor.*;
 
 public class ClickConfirmation {
     private static final ClickConfirmation instance = new ClickConfirmation();
-    private final Map<UUID, CommandMap> commands = new HashMap<>();
+    private final Map<UUID, CommandMap> commands = new ConcurrentHashMap<>();
 
     private static class CommandMap {
         private final Cache<UUID, Map<UUID, Consumer<Player>>> commands;
