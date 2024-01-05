@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
 
 public class FutureUtils {
     private static final LokaLib plugin = LokaLib.instance;
-    public static final ExecutorService utilsExecutor = Executors.newCachedThreadPool(new ThreadFactoryBuilder().setNameFormat("Loka FutureUtils").build());
+    public static final ExecutorService utilsExecutor = Executors.newFixedThreadPool(5, new ThreadFactoryBuilder().setNameFormat("Loka FutureUtils").build());
     private static final Map<String, BukkitTask> tryLaterTasks = new HashMap<>();
 
     public static void runSyncIfOnline(Player p, Consumer<Player> consumer) {
