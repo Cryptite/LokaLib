@@ -159,7 +159,7 @@ public class InventoryUtil {
         return Arrays.stream(i.getContents()).noneMatch(Objects::nonNull);
     }
 
-    private static boolean stripItems(Player p, Inventory inv, Predicate<ItemStack> predicate) {
+    public static boolean stripItems(Player p, Inventory inv, Predicate<ItemStack> predicate) {
         boolean hadInvalidItems = false;
         for (int i = 0; i < inv.getSize(); i++) {
             ItemStack item = inv.getItem(i);
@@ -226,7 +226,7 @@ public class InventoryUtil {
         return false;
     }
 
-    private static boolean removeItemFromContents(ItemStack[] contents, ItemStack toRemove) {
+    public static boolean removeItemFromContents(ItemStack[] contents, ItemStack toRemove) {
         for (int i = 0; i < contents.length; i++) {
             ItemStack itemStack = contents[i];
             if (toRemove.equals(itemStack)) {
