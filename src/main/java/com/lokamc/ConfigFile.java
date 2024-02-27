@@ -13,6 +13,8 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
+import org.joml.AxisAngle4f;
+import org.joml.Quaternionf;
 
 import java.io.File;
 import java.io.InputStream;
@@ -22,6 +24,7 @@ import java.text.ParseException;
 import java.util.*;
 
 import static com.lokamc.utils.SerializeInventory.fromBase64ToItem;
+import static java.lang.Float.parseFloat;
 
 public class ConfigFile {
     public final Plugin plugin;
@@ -103,11 +106,11 @@ public class ConfigFile {
     }
 
     public float getFloat(String key) {
-        return Float.parseFloat(get(key, 0f));
+        return parseFloat(get(key, 0f));
     }
 
     public float getFloat(String key, Float defaultValue) {
-        return Float.parseFloat(get(key, defaultValue));
+        return parseFloat(get(key, defaultValue));
     }
 
     public Boolean getBool(String key) {
@@ -157,8 +160,8 @@ public class ConfigFile {
         World world = plugin.getServer().getWorld(elems[0]);
         return new Location(world, Double.parseDouble(elems[1]),
                 Double.parseDouble(elems[2]), Double.parseDouble(elems[3]),
-                elems.length > 4 ? Float.parseFloat(elems[4]) : 0f,
-                elems.length > 5 ? Float.parseFloat(elems[5]) : 0f);
+                elems.length > 4 ? parseFloat(elems[4]) : 0f,
+                elems.length > 5 ? parseFloat(elems[5]) : 0f);
     }
 
     public Material getMaterial(String key) {
@@ -259,6 +262,34 @@ public class ConfigFile {
         return id != null ? UUID.fromString(id) : null;
     }
 
+    public AxisAngle4f getAxisAngle4f(String key) {
+        String value = get(key, null);
+        if (value == null) return null;
+
+        try {
+            String[] split = value.split(",");
+            return new AxisAngle4f(parseFloat(split[0]), parseFloat(split[1]), parseFloat(split[2]), parseFloat(split[3]));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
+    public Quaternionf getQuaternionf(String key) {
+        String value = get(key, null);
+        if (value == null) return null;
+
+        try {
+            String[] split = value.split(",");
+            return new Quaternionf(parseFloat(split[0]), parseFloat(split[1]), parseFloat(split[2]), parseFloat(split[3]));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
     public String get(String key) {
         return get(key, null);
     }
@@ -307,7 +338,13 @@ public class ConfigFile {
     }
 
     public void set(String key, Object value) {
-        getConfig().set(key, value);
+        if (value instanceof AxisAngle4f axisAngle4f) {
+            getConfig().set(key, axisAngle4f.angle + "," + axisAngle4f.x + "," + axisAngle4f.y + "," + axisAngle4f.z);
+        } else if (value instanceof Quaternionf quaternionf) {
+            getConfig().set(key, quaternionf.x + "," + quaternionf.y + "," + quaternionf.z + "," + quaternionf.w);
+        } else {
+            getConfig().set(key, value);
+        }
     }
 
     public void reloadConfig() {
