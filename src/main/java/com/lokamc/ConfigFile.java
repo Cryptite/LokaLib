@@ -263,8 +263,12 @@ public class ConfigFile {
     }
 
     public AxisAngle4f getAxisAngle4f(String key) {
+        return getAxisAngle4f(key, new AxisAngle4f());
+    }
+
+    public AxisAngle4f getAxisAngle4f(String key, AxisAngle4f defaultValue) {
         String value = get(key, null);
-        if (value == null) return null;
+        if (value == null) return defaultValue;
 
         try {
             String[] split = value.split(",");
@@ -273,12 +277,16 @@ public class ConfigFile {
             e.printStackTrace();
         }
 
-        return null;
+        return defaultValue;
     }
 
     public Quaternionf getQuaternionf(String key) {
+        return getQuaternionf(key, new Quaternionf());
+    }
+
+    public Quaternionf getQuaternionf(String key, Quaternionf defaultValue) {
         String value = get(key, null);
-        if (value == null) return null;
+        if (value == null) return defaultValue;
 
         try {
             String[] split = value.split(",");
@@ -287,7 +295,7 @@ public class ConfigFile {
             e.printStackTrace();
         }
 
-        return null;
+        return defaultValue;
     }
 
     public String get(String key) {
