@@ -107,9 +107,17 @@ public class ClickConfirmation {
     }
 
     public void sendClickableComponent(Player p, Component component, Component hover, Consumer<Player> consumer, boolean expires) {
-        p.sendMessage(component
+        p.sendMessage(getClickableComponent(p, component, hover, consumer, expires));
+    }
+
+    public Component getClickableComponent(Player p, Component component, Component hover, Consumer<Player> consumer) {
+        return getClickableComponent(p, component, hover, consumer, true);
+    }
+
+    public Component getClickableComponent(Player p, Component component, Component hover, Consumer<Player> consumer, boolean expires) {
+        return component
                 .hoverEvent(HoverEvent.showText(hover))
-                .clickEvent(ClickEvent.runCommand(registerClick(p, consumer, expires))));
+                .clickEvent(ClickEvent.runCommand(registerClick(p, consumer, expires)));
     }
 
     public String registerClick(Player p, Consumer<Player> consumer) {
