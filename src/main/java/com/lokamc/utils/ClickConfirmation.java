@@ -3,6 +3,9 @@ package com.lokamc.utils;
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.google.common.base.Strings;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.event.ClickEvent;
+import net.kyori.adventure.text.event.HoverEvent;
 import org.bukkit.entity.Player;
 
 import java.util.HashMap;
@@ -97,6 +100,16 @@ public class ClickConfirmation {
 
         registerCommands(p.getUniqueId(), setId, setMap, true);
         msg.send(p);
+    }
+
+    public void sendClickableComponent(Player p, Component component, Component hover, Consumer<Player> consumer) {
+        sendClickableComponent(p, component, hover, consumer, true);
+    }
+
+    public void sendClickableComponent(Player p, Component component, Component hover, Consumer<Player> consumer, boolean expires) {
+        p.sendMessage(component
+                .hoverEvent(HoverEvent.showText(hover))
+                .clickEvent(ClickEvent.runCommand(registerClick(p, consumer, expires))));
     }
 
     public String registerClick(Player p, Consumer<Player> consumer) {
