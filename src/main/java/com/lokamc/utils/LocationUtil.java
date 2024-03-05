@@ -174,7 +174,7 @@ public class LocationUtil {
     public static boolean inWGRegion(Location l, boolean highestRegionOnly, Predicate<String> test) {
         if (l == null) return false;
 
-        ApplicableRegionSet set = getRegionSet(l);
+        ApplicableRegionSet set = getRegionSet(l, RegionQuery.QueryOption.NONE);
         if (highestRegionOnly) {
             Iterator<ProtectedRegion> iterator = set.iterator();
             return iterator.hasNext() && test.test(iterator.next().getId());
@@ -189,13 +189,24 @@ public class LocationUtil {
     }
 
     public static boolean inAnyWGRegion(Location l, String... regions) {
-        return inAnyWGRegion(l, List.of(regions));
+        if (l == null) return false;
+
+        ApplicableRegionSet set = getRegionSet(l, RegionQuery.QueryOption.NONE);
+        for (String region : regions) {
+            for (ProtectedRegion protectedRegion : set) {
+                if (region.equals(protectedRegion.getId())) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 
     public static boolean inAnyWGRegion(Location l, Collection<String> regions) {
         if (l == null) return false;
 
-        ApplicableRegionSet set = getRegionSet(l);
+        ApplicableRegionSet set = getRegionSet(l, RegionQuery.QueryOption.NONE);
         for (ProtectedRegion protectedRegion : set) {
             if (regions.contains(protectedRegion.getId())) {
                 return true;
@@ -250,6 +261,11 @@ public class LocationUtil {
     public static ApplicableRegionSet getRegionSet(Location l) {
         RegionQuery query = WorldGuard.getInstance().getPlatform().getRegionContainer().createQuery();
         return query.getApplicableRegions(BukkitAdapter.adapt(l));
+    }
+
+    public static ApplicableRegionSet getRegionSet(Location l, RegionQuery.QueryOption option) {
+        RegionQuery query = WorldGuard.getInstance().getPlatform().getRegionContainer().createQuery();
+        return query.getApplicableRegions(BukkitAdapter.adapt(l), option);
     }
 
     public static Location getRandom(Location loc, double r, int min) {
