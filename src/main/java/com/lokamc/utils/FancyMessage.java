@@ -310,7 +310,7 @@ public class FancyMessage {
 
     public TextComponent build(UUID playerId) {
         if (!commandsMap.isEmpty() && playerId != null) {
-            ClickConfirmation.getInstance().registerCommands(playerId, setId, commandsMap, expires);
+            ClickConfirmation.getInstance().registerCommands(setId, commandsMap, expires);
         }
 
         TextComponent finalComponent = new TextComponent();

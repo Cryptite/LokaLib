@@ -11,7 +11,6 @@ import org.bukkit.entity.Player;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 
@@ -19,45 +18,12 @@ import static org.bukkit.ChatColor.*;
 
 public class ClickConfirmation {
     private static final ClickConfirmation instance = new ClickConfirmation();
-    private final Map<UUID, CommandMap> commands = new ConcurrentHashMap<>();
-
-    private static class CommandMap {
-        private final Cache<UUID, Map<UUID, Consumer<Player>>> commands;
-        private final Map<UUID, Map<UUID, Consumer<Player>>> persistentCommands = new HashMap<>();
-
-        CommandMap() {
-            commands = Caffeine.newBuilder()
-                    .expireAfterWrite(1, TimeUnit.MINUTES)
-                    .build();
-        }
-
-        void addCommand(UUID id, Map<UUID, Consumer<Player>> command, boolean expires) {
-            if (expires) {
-                commands.put(id, command);
-            } else {
-                persistentCommands.put(id, command);
-            }
-        }
-
-        void runCommand(Player p, UUID setId, UUID commandId) {
-            Map<UUID, Consumer<Player>> map = commands.getIfPresent(setId);
-            if (map != null) {
-                Consumer<Player> command = map.get(commandId);
-                if (command != null) {
-                    command.accept(p);
-                    commands.invalidate(setId);
-                }
-            } else {
-                map = persistentCommands.get(setId);
-                if (map != null) {
-                    Consumer<Player> command = map.get(commandId);
-                    if (command != null) {
-                        command.accept(p);
-                    }
-                }
-            }
-        }
-    }
+    private static final Cache<UUID, Map<UUID, Consumer<Player>>> commandsCache = Caffeine.newBuilder()
+            .expireAfterWrite(1, TimeUnit.MINUTES)
+            .build();
+    private static final Cache<UUID, Map<UUID, Consumer<Player>>> persistentCommands = Caffeine.newBuilder()
+            .expireAfterWrite(15, TimeUnit.MINUTES)
+            .build();
 
     private ClickConfirmation() {
     }
@@ -98,7 +64,7 @@ public class ClickConfirmation {
                     .tooltip("Click to deny.");
         }
 
-        registerCommands(p.getUniqueId(), setId, setMap, true);
+        registerCommands(setId, setMap, true);
         msg.send(p);
     }
 
@@ -117,28 +83,30 @@ public class ClickConfirmation {
     public Component getClickableComponent(Player p, Component component, Component hover, Consumer<Player> consumer, boolean expires) {
         return component
                 .hoverEvent(HoverEvent.showText(hover))
-                .clickEvent(ClickEvent.runCommand(registerClick(p, consumer, expires)));
+                .clickEvent(ClickEvent.runCommand(registerClick(consumer, expires)));
     }
 
     public String registerClick(Player p, Consumer<Player> consumer) {
-        return registerClick(p, consumer, true);
+        return registerClick(consumer, true);
     }
 
-    public String registerClick(Player p, Consumer<Player> consumer, boolean expires) {
+    public String registerClick(Consumer<Player> consumer, boolean expires) {
         UUID id = UUID.randomUUID();
         UUID setId = UUID.randomUUID();
-        registerCommands(p.getUniqueId(), setId, Map.of(id, consumer), expires);
+        registerCommands(setId, Map.of(id, consumer), expires);
         return "/confirm " + setId + " " + id;
     }
 
-    public void registerCommands(UUID id, UUID setId, Map<UUID, Consumer<Player>> commandMap, boolean expires) {
-        CommandMap map = commands.computeIfAbsent(id, uuid -> new CommandMap());
-        map.addCommand(setId, commandMap, expires);
-        commands.put(id, map);
+    public void registerCommands(UUID setId, Map<UUID, Consumer<Player>> commands, boolean expires) {
+        if (expires) {
+            commandsCache.asMap().computeIfAbsent(setId, s -> commands);
+        } else {
+            persistentCommands.asMap().computeIfAbsent(setId, s -> commands);
+        }
     }
 
     public void removeCommands(Player p) {
-        commands.remove(p.getUniqueId());
+        commandsCache.invalidate(p.getUniqueId());
     }
 
     public static ClickConfirmation getInstance() {
@@ -146,11 +114,28 @@ public class ClickConfirmation {
     }
 
     public void respondConsumer(Player p, String[] args) {
-        CommandMap map = commands.get(p.getUniqueId());
-        if (map != null) {
-            UUID setId = UUID.fromString(args[0]);
-            UUID commandId = UUID.fromString(args[1]);
-            map.runCommand(p, setId, commandId);
+        UUID setId = UUID.fromString(args[0]);
+        UUID commandId = UUID.fromString(args[1]);
+
+        Map<UUID, Consumer<Player>> map = commandsCache.getIfPresent(setId);
+        if (map != null && runCommand(p, map, commandId)) {
+            commandsCache.invalidate(setId);
+            return;
         }
+
+        map = persistentCommands.getIfPresent(setId);
+        if (map != null && runCommand(p, map, commandId)) {
+            persistentCommands.invalidate(setId);
+        }
+    }
+
+    private boolean runCommand(Player p, Map<UUID, Consumer<Player>> commands, UUID commandId) {
+        Consumer<Player> consumer = commands.get(commandId);
+        if (consumer != null) {
+            consumer.accept(p);
+            return true;
+        }
+
+        return false;
     }
 }
