@@ -124,8 +124,8 @@ public class ClickConfirmation {
         }
 
         map = persistentCommands.getIfPresent(setId);
-        if (map != null && runCommand(p, map, commandId)) {
-            persistentCommands.invalidate(setId);
+        if (map != null) {
+            runCommand(p, map, commandId);
         }
     }
 
