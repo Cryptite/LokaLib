@@ -6,10 +6,12 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.logging.Logger;
 
 public class LokaLib extends JavaPlugin {
     public static final ExecutorService configFileExecutor = Executors.newSingleThreadExecutor();
     public static LokaLib instance;
+    public static final Logger log = Logger.getLogger("LokaLib");
 
     public static LokaLib getInstance() {
         return instance;

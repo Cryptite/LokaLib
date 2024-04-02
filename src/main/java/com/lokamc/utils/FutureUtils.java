@@ -21,6 +21,57 @@ public class FutureUtils {
     public static final ExecutorService utilsExecutor = Executors.newFixedThreadPool(5, new ThreadFactoryBuilder().setNameFormat("Loka FutureUtils").build());
     private static final Map<String, BukkitTask> tryLaterTasks = new HashMap<>();
 
+    public static void tryFuture(CompletableFuture<Boolean> future, Runnable onSuccess) {
+        tryFuture(future, onSuccess, null);
+    }
+
+    public static void tryFuture(CompletableFuture<Boolean> future, Runnable onSuccess, Runnable onFailure) {
+        future.thenAccept(result -> {
+            if (result) {
+                onSuccess.run();
+            } else {
+                if (onFailure != null) {
+                    onFailure.run();
+                }
+            }
+        });
+    }
+
+    public static void tryFuture(Player p, CompletableFuture<Boolean> future, Consumer<Player> onSuccess) {
+        tryFuture(p, future, onSuccess, player -> {
+            LokaLib.log.warning("Completable future failure for " + player.getName());
+            Thread.dumpStack();
+        });
+    }
+
+    public static void tryFutureSync(Player p, CompletableFuture<Boolean> future, Consumer<Player> onSuccess) {
+        tryFutureSync(p, future, onSuccess, player -> {
+            LokaLib.log.warning("Completable future failure for " + player.getName());
+            Thread.dumpStack();
+        });
+    }
+
+    public static void tryFuture(Player p, CompletableFuture<Boolean> future, Consumer<Player> onSuccess, Consumer<Player> onFailure) {
+        future.thenAccept(result -> tryFutureResult(p, result, onSuccess, onFailure));
+    }
+
+    public static void tryFutureSync(Player p, CompletableFuture<Boolean> future, Consumer<Player> onSuccess, Consumer<Player> onFailure) {
+        future.thenAcceptAsync(result -> tryFutureResult(p, result, onSuccess, onFailure), Bukkit.getScheduler().getMainThreadExecutor(plugin));
+    }
+
+    private static void tryFutureResult(Player p, boolean result, Consumer<Player> onSuccess, Consumer<Player> onFailure) {
+        try {
+            Player player = Bukkit.getPlayer(p.getUniqueId());
+            if (result) {
+                onSuccess.accept(player);
+            } else if (onFailure != null) {
+                onFailure.accept(player);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     public static void runSyncIfOnline(Player p, Consumer<Player> consumer) {
         runSyncIfOnline(p.getUniqueId(), consumer);
     }
