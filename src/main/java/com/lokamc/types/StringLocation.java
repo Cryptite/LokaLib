@@ -139,7 +139,9 @@ public class StringLocation extends Location {
     }
 
     public boolean looseEquals(Location l) {
-        return getWorld().equals(l.getWorld())
+        World world = getWorld();
+        return world != null
+                && world.equals(l.getWorld())
                 && getBlockX() == l.getBlockX()
                 && getBlockY() == l.getBlockY()
                 && getBlockZ() == l.getBlockZ();
