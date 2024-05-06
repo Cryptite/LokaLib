@@ -26,7 +26,6 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 
-import static org.bukkit.ChatColor.GOLD;
 import static org.bukkit.DyeColor.*;
 
 public class ItemStackUtil {
@@ -808,12 +807,6 @@ public class ItemStackUtil {
         p.getInventory().setBoots(new ItemStack(Material.AIR));
         p.getInventory().setChestplate(new ItemStack(Material.AIR));
         p.getInventory().setLeggings(new ItemStack(Material.AIR));
-    }
-
-    public static ItemStack setSoulbound(UUID id, ItemStack item) {
-        addLore(item, "", "" + GOLD + "◆ Soulbound");
-        item = addNBTTag(item, "soulbound", id.toString());
-        return item;
     }
 
     public static ItemStack getPlayerSkull(OfflinePlayer skullOwner, String displayName) {
