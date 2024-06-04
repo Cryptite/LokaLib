@@ -223,8 +223,12 @@ public class ConfigFile {
     }
 
     public ItemStack getItemStack(String key) {
+        return getItemStack(key, null);
+    }
+
+    public ItemStack getItemStack(String key, ItemStack defaultItemStack) {
         String item = get(key, null);
-        if (item == null) return null;
+        if (item == null) return defaultItemStack;
 
         try {
             return getConfig().getItemStack(key);
@@ -232,7 +236,7 @@ public class ConfigFile {
             e.printStackTrace();
         }
 
-        return null;
+        return defaultItemStack;
     }
 
     public World getWorld(String worldName) {
