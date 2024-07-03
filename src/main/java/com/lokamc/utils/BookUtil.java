@@ -1,6 +1,9 @@
 package com.lokamc.utils;
 
+import net.kyori.adventure.text.Component;
 import org.bukkit.ChatColor;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.BookMeta;
 import org.bukkit.map.MinecraftFont;
 
 import java.util.ArrayList;
@@ -8,6 +11,7 @@ import java.util.List;
 
 import static org.apache.commons.lang.StringUtils.join;
 import static org.bukkit.ChatColor.stripColor;
+import static org.bukkit.Material.WRITTEN_BOOK;
 
 /**
  * Create a "Virtual" book gui that doesn't require the user to have a book in their hand.
@@ -189,5 +193,18 @@ public class BookUtil {
         }
 
         return lines;
+    }
+
+    public static ItemStack getShowableBook(ItemStack book) {
+        if (book.getType() == WRITTEN_BOOK) return book;
+
+        ItemStack writtenBook = new ItemStack(WRITTEN_BOOK);
+        if (book.getItemMeta() instanceof BookMeta bookMeta) {
+            bookMeta.title(Component.text("Unknown"));
+            bookMeta.author(Component.text("Unknown"));
+            writtenBook.setItemMeta(bookMeta);
+        }
+
+        return writtenBook;
     }
 }
