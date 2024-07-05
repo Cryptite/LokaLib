@@ -394,8 +394,12 @@ public class PlayerUtil {
     }
 
     public static boolean isLookingAt(LivingEntity viewer, Entity entity) {
+        return isLookingAt(viewer, entity, 0.5f);
+    }
+
+    public static boolean isLookingAt(LivingEntity viewer, Entity entity, float angle) {
         Location eyeLocation = viewer.getEyeLocation();
         Vector towardsEntity = entity.getLocation().subtract(eyeLocation).toVector().normalize();
-        return eyeLocation.getDirection().distance(towardsEntity) <= 0.5f;
+        return eyeLocation.getDirection().distance(towardsEntity) <= angle;
     }
 }
