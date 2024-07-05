@@ -12,6 +12,7 @@ import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.craftbukkit.v1_20_R3.CraftServer;
 import org.bukkit.craftbukkit.v1_20_R3.entity.CraftPlayer;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.EquipmentSlot;
@@ -390,5 +391,11 @@ public class PlayerUtil {
         GameProfile profile = new GameProfile(UUID.randomUUID(), UUID.randomUUID().toString());
         profile.getProperties().put("textures", new Property("textures", url));
         return profile;
+    }
+
+    public static boolean isLookingAt(LivingEntity viewer, Entity entity) {
+        Location eyeLocation = viewer.getEyeLocation();
+        Vector towardsEntity = entity.getLocation().subtract(viewer.getEyeLocation().getDirection()).toVector().normalize();
+        return eyeLocation.getDirection().distance(towardsEntity) <= 0.5f;
     }
 }
