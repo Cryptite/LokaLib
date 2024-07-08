@@ -110,4 +110,13 @@ public class SoundUtil {
             playCustomSound(p, sound, MASTER, volume);
         }
     }
+
+    public static void playSound(Player p, org.bukkit.Sound sound) {
+        playSound(p, sound, 1, 1);
+    }
+
+    public static void playSound(Player p, org.bukkit.Sound sound, float volume, float pitch) {
+        net.kyori.adventure.sound.Sound adventureSound = net.kyori.adventure.sound.Sound.sound(Key.key(sound.key().asString()), net.kyori.adventure.sound.Sound.Source.MASTER, volume, pitch);
+        p.playSound(adventureSound, net.kyori.adventure.sound.Sound.Emitter.self());
+    }
 }
