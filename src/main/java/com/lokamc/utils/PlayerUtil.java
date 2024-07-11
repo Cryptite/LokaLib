@@ -15,7 +15,9 @@ import org.bukkit.craftbukkit.v1_20_R3.entity.CraftPlayer;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.EquipmentSlot;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.SkullMeta;
@@ -401,5 +403,15 @@ public class PlayerUtil {
         Location eyeLocation = viewer.getEyeLocation();
         Vector towardsEntity = entity.getLocation().subtract(eyeLocation).toVector().normalize();
         return eyeLocation.getDirection().distance(towardsEntity) <= angle;
+    }
+
+    public static void fullClearPlayerInventory(Player p) {
+        p.getInventory().clear();
+        Inventory topInventory = p.getOpenInventory().getTopInventory();
+        InventoryType type = topInventory.getType();
+        if (type == InventoryType.PLAYER || type == InventoryType.CRAFTING) {
+            topInventory.clear();
+        }
+        p.setItemOnCursor(null);
     }
 }
