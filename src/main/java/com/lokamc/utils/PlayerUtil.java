@@ -28,6 +28,7 @@ import org.bukkit.util.BlockIterator;
 import org.bukkit.util.BoundingBox;
 import org.bukkit.util.RayTraceResult;
 import org.bukkit.util.Vector;
+import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.Field;
 import java.util.*;
@@ -205,7 +206,7 @@ public class PlayerUtil {
     public record HoldingResult(ItemStack itemStack, EquipmentSlot slot) {
     }
 
-    public static HoldingResult getHolding(Player p, Material... materials) {
+    public static @Nullable HoldingResult getHolding(Player p, Material... materials) {
         if (p == null) return null;
 
         for (Material m : materials) {
@@ -216,7 +217,7 @@ public class PlayerUtil {
         return null;
     }
 
-    public static HoldingResult getHolding(Player p, Material m) {
+    public static @Nullable HoldingResult getHolding(Player p, Material m) {
         if (p == null) return null;
 
         ItemStack item = p.getInventory().getItemInMainHand();
