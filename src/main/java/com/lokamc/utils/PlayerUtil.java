@@ -202,23 +202,30 @@ public class PlayerUtil {
         return false;
     }
 
-    public static ItemStack getHolding(Player p, Material... materials) {
+    public record HoldingResult(ItemStack itemStack, EquipmentSlot slot) {
+    }
+
+    public static HoldingResult getHolding(Player p, Material... materials) {
         if (p == null) return null;
 
         for (Material m : materials) {
-            ItemStack holding = getHolding(p, m);
-            if (holding != null) return holding;
+            HoldingResult result = getHolding(p, m);
+            if (result != null) return result;
         }
 
         return null;
     }
 
-    public static ItemStack getHolding(Player p, Material m) {
-        if (p == null || !isHolding(p, m)) return null;
+    public static HoldingResult getHolding(Player p, Material m) {
+        if (p == null) return null;
 
-        ItemStack mh = p.getInventory().getItemInMainHand();
-        if (mh.getType() == m) return mh;
-        else return p.getInventory().getItemInOffHand();
+        ItemStack item = p.getInventory().getItemInMainHand();
+        if (item.getType() == m) return new HoldingResult(item, EquipmentSlot.HAND);
+
+        item = p.getInventory().getItemInOffHand();
+        if (item.getType() == m) return new HoldingResult(item, EquipmentSlot.OFF_HAND);
+
+        return null;
     }
 
     public static void setItemInHandFromItem(Player p, ItemStack holding, ItemStack newItem) {
@@ -259,8 +266,7 @@ public class PlayerUtil {
     public static boolean isHolding(Player p, Material m) {
         ItemStack inHand = p.getInventory().getItemInMainHand();
         ItemStack offHand = p.getInventory().getItemInOffHand();
-        return (inHand != null && inHand.getType() == m)
-                || offHand != null && offHand.getType() == m;
+        return inHand.getType() == m || offHand.getType() == m;
     }
 
     public static boolean isHolding(Player p, EquipmentSlot hand, Material m) {
