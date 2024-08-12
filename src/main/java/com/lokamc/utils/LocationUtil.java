@@ -253,6 +253,7 @@ public class LocationUtil {
     }
 
     public static boolean testForRegion(Location l, String region) {
+        if (region == null) return false;
         RegionContainer container = WorldGuard.getInstance().getPlatform().getRegionContainer();
         if (container != null) {
             RegionManager regionManager = container.get(BukkitAdapter.adapt(l.getWorld()));
@@ -272,6 +273,8 @@ public class LocationUtil {
                 BlockVector3 blockVector = BukkitAdapter.asBlockVector(l);
 
                 for (String region : regions) {
+                    if (region == null) continue;
+
                     ProtectedRegion protectedRegion = regionManager.getRegion(region);
                     if (protectedRegion != null && protectedRegion.contains(blockVector)) return true;
                 }
