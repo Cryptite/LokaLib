@@ -5,6 +5,7 @@ import com.google.common.base.Strings;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.minecraft.nbt.CompoundTag;
+import org.apache.commons.lang.StringUtils;
 import org.bukkit.*;
 import org.bukkit.block.Banner;
 import org.bukkit.block.Block;
@@ -48,22 +49,54 @@ public class ItemStackUtil {
     }
 
     public static ItemStack createItemStack(Material material, String displayName) {
-        return createItemStack(new ItemStack(material), displayName);
+        return createItemStack(material, displayName, -1);
+    }
+
+    public static ItemStack createItemStack(Material material, String displayName, int customModelData) {
+        return createItemStack(new ItemStack(material), displayName, customModelData);
     }
 
     public static ItemStack createItemStack(ItemStack itemStack, String displayName) {
+        return createItemStack(itemStack, displayName, -1);
+    }
+
+    public static ItemStack createItemStack(ItemStack itemStack, String displayName, int customModelData) {
         itemStack = itemStack.clone();
         setDisplayName(itemStack, displayName);
+
+        if (customModelData != -1) {
+            ItemMeta itemMeta = itemStack.getItemMeta();
+            if (itemMeta != null) {
+                itemMeta.setCustomModelData(customModelData);
+            }
+        }
+
         return itemStack;
     }
 
     public static ItemStack createItemStack(Material material, Component displayName) {
-        return createItemStack(new ItemStack(material), displayName);
+        return createItemStack(material, displayName, -1);
+    }
+
+    public static ItemStack createItemStack(Material material, Component displayName, int customModelData) {
+        return createItemStack(new ItemStack(material), displayName, customModelData);
     }
 
     public static ItemStack createItemStack(ItemStack itemStack, Component displayName) {
+        return createItemStack(itemStack, displayName, -1);
+    }
+
+    public static ItemStack createItemStack(ItemStack itemStack, Component displayName, int customModelData) {
         itemStack = itemStack.clone();
         setDisplayName(itemStack, displayName);
+
+        if (customModelData != -1) {
+            ItemMeta itemMeta = itemStack.getItemMeta();
+            if (itemMeta != null) {
+                itemMeta.setCustomModelData(customModelData);
+            }
+        }
+
         return itemStack;
     }
 
@@ -112,7 +145,7 @@ public class ItemStackUtil {
         }
 
         if (displayName != null && displayName.equalsIgnoreCase("air")) {
-            displayName = org.apache.commons.lang.StringUtils.capitalize(item.getType().toString().toLowerCase().replace("_", " "));
+            displayName = StringUtils.capitalize(item.getType().toString().toLowerCase().replace("_", " "));
         }
 
         return displayName;
@@ -972,24 +1005,24 @@ public class ItemStackUtil {
 
     public static DyeColor getBannerBaseColor(ItemStack banner) {
         if (banner == null) {
-            return DyeColor.BLACK;
+            return BLACK;
         }
 
         BannerMeta meta = (BannerMeta) banner.getItemMeta();
-        if (meta == null) return DyeColor.BLACK;
+        if (meta == null) return BLACK;
 
         if (meta.getBaseColor() == null) {
             //How broken is this? I have to check the NAME of the banner to see what its base color is, thanks Minecraft
             String name = getFriendlyName(banner);
             if (name != null && name.endsWith(" Banner") && !name.contains("§")) {
                 try {
-                    return DyeColor.valueOf(name.replace(" Banner", "").toUpperCase());
+                    return valueOf(name.replace(" Banner", "").toUpperCase());
                 } catch (Exception ignored) {
                 }
             }
         }
 
-        return DyeColor.BLACK;
+        return BLACK;
     }
 
     public static void clearEnchants(ItemStack itemStack) {
