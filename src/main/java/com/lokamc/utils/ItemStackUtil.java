@@ -61,6 +61,8 @@ public class ItemStackUtil {
     }
 
     public static ItemStack createItemStack(ItemStack itemStack, String displayName, int customModelData) {
+        if (itemStack.isEmpty()) return itemStack;
+
         itemStack = itemStack.clone();
         ItemMeta itemMeta = itemStack.getItemMeta();
         itemMeta.setDisplayName(displayName);
@@ -86,6 +88,8 @@ public class ItemStackUtil {
     }
 
     public static ItemStack createItemStack(ItemStack itemStack, Component displayName, int customModelData) {
+        if (itemStack.isEmpty()) return itemStack;
+
         itemStack = itemStack.clone();
         ItemMeta itemMeta = itemStack.getItemMeta();
         itemMeta.displayName(displayName);
