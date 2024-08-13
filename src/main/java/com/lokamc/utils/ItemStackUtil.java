@@ -62,15 +62,14 @@ public class ItemStackUtil {
 
     public static ItemStack createItemStack(ItemStack itemStack, String displayName, int customModelData) {
         itemStack = itemStack.clone();
-        setDisplayName(itemStack, displayName);
+        ItemMeta itemMeta = itemStack.getItemMeta();
+        itemMeta.setDisplayName(displayName);
 
         if (customModelData != -1) {
-            ItemMeta itemMeta = itemStack.getItemMeta();
-            if (itemMeta != null) {
-                itemMeta.setCustomModelData(customModelData);
-            }
+            itemMeta.setCustomModelData(customModelData);
         }
 
+        itemStack.setItemMeta(itemMeta);
         return itemStack;
     }
 
@@ -88,15 +87,14 @@ public class ItemStackUtil {
 
     public static ItemStack createItemStack(ItemStack itemStack, Component displayName, int customModelData) {
         itemStack = itemStack.clone();
-        setDisplayName(itemStack, displayName);
+        ItemMeta itemMeta = itemStack.getItemMeta();
+        itemMeta.displayName(displayName);
 
         if (customModelData != -1) {
-            ItemMeta itemMeta = itemStack.getItemMeta();
-            if (itemMeta != null) {
-                itemMeta.setCustomModelData(customModelData);
-            }
+            itemMeta.setCustomModelData(customModelData);
         }
 
+        itemStack.setItemMeta(itemMeta);
         return itemStack;
     }
 
