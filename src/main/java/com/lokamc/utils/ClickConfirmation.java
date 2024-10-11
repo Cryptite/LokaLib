@@ -87,7 +87,11 @@ public class ClickConfirmation {
     }
 
     public String registerClick(Player p, Consumer<Player> consumer) {
-        return registerClick(consumer, true);
+        return registerClick(p, true, consumer);
+    }
+
+    public String registerClick(Player p, boolean expires, Consumer<Player> consumer) {
+        return registerClick(consumer, expires);
     }
 
     public String registerClick(Consumer<Player> consumer, boolean expires) {
