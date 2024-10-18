@@ -93,6 +93,13 @@ public class PlayerUtil {
     }
 
     /**
+     * Gives a max-length potion effect
+     */
+    public static PotionEffect givePotionEffect(LivingEntity e, PotionEffectType type, int level) {
+        return givePotionEffect(e, type, Integer.MAX_VALUE / 20, level);
+    }
+
+    /**
      * @param e
      * @param type
      * @param seconds
