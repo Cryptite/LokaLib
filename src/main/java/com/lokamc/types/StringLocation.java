@@ -13,6 +13,7 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.plugin.Plugin;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -70,7 +71,7 @@ public class StringLocation extends Location {
     }
 
     public StringLocation(World world, BlockVector3 vector3) {
-        super(world, vector3.getX(), vector3.getY(), vector3.getZ());
+        super(world, vector3.x(), vector3.y(), vector3.z());
         this.worldName = world.getName();
     }
 
@@ -79,7 +80,9 @@ public class StringLocation extends Location {
     }
 
     @Override
-    public World getWorld() {
+    public @Nullable World getWorld() {
+        if (!isWorldLoaded()) return null;
+
         World w = super.getWorld();
         if (w == null && worldName != null) {
             World world = Bukkit.getWorld(worldName);
