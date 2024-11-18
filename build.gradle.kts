@@ -1,12 +1,12 @@
 plugins {
     `java-library`
     `maven-publish`
-    id("io.papermc.paperweight.userdev") version "1.5.9"
-    id("xyz.jpenilla.run-paper") version "2.1.0" // Adds runServer and runMojangMappedServer tasks for testing
+    id("io.papermc.paperweight.userdev") version "1.7.4"
+    id("xyz.jpenilla.run-paper") version "2.3.1" // Adds runServer and runMojangMappedServer tasks for testing
 }
 
 group = "com.lokamc"
-version = "2.7"
+version = "2.8"
 description = "LokaLib helpful utilities"
 
 repositories {
@@ -16,8 +16,8 @@ repositories {
 }
 
 dependencies {
-    paperweightDevBundle("com.lokamc.slice", "1.20.4-R0.1-SNAPSHOT")
-    implementation("commons-io:commons-io:2.11.0")
+    paperweightDevBundle("com.lokamc.slice", "1.21.3-R0.1-SNAPSHOT")
+    implementation("commons-io:commons-io:2.14.0")
     implementation("com.github.ben-manes.caffeine:caffeine:3.1.5")
     implementation("org.ocpsoft.prettytime:prettytime:5.0.4.Final")
     compileOnly("com.sk89q.worldguard:worldguard-bukkit:7.0.6")
@@ -32,7 +32,7 @@ tasks {
 
     compileJava {
         options.encoding = Charsets.UTF_8.name()
-        options.release.set(17)
+        options.release.set(21)
     }
     javadoc {
         options.encoding = Charsets.UTF_8.name()
@@ -53,8 +53,8 @@ tasks.register("copyJar") {
     dependsOn("reobfJar")
     doLast {
         copy {
-            from("build/libs/LokaLib-2.7.jar")
-            into("D:/Loka/pts/plugins/update")
+            from("build/libs/LokaLib-2.8.jar")
+            into("D:/Loka/pts121/plugins/update")
         }
     }
 }

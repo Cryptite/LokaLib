@@ -10,8 +10,8 @@ import net.minecraft.server.level.ClientInformation;
 import net.minecraft.server.level.ServerPlayer;
 import org.bukkit.*;
 import org.bukkit.block.Block;
-import org.bukkit.craftbukkit.v1_20_R3.CraftServer;
-import org.bukkit.craftbukkit.v1_20_R3.entity.CraftPlayer;
+import org.bukkit.craftbukkit.CraftServer;
+import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -139,7 +139,7 @@ public class PlayerUtil {
     public static Boolean hasBeaconHaste(Player p) {
         //If they have speed with a duration less than 120, it's from a from roads, not speed pots
         for (PotionEffect pot : p.getActivePotionEffects()) {
-            if (pot.getType().equals(PotionEffectType.FAST_DIGGING) && pot.getDuration() <= 160) return true;
+            if (pot.getType().equals(PotionEffectType.HASTE) && pot.getDuration() <= 160) return true;
         }
 
         return false;
@@ -159,7 +159,7 @@ public class PlayerUtil {
         GameProfile profile = new GameProfile(player.getUniqueId(), player.getName());
         MinecraftServer server = ((CraftServer) Bukkit.getServer()).getServer();
         ServerPlayer entity = new ServerPlayer(server, server.overworld(), profile, ClientInformation.createDefault());
-        CompoundTag load = server.getPlayerList().playerIo.load(entity);
+        CompoundTag load = server.getPlayerList().playerIo.load(entity).orElse(null);
         CraftPlayer craftPlayer = entity.getBukkitEntity();
         entity.load(load);
         return craftPlayer;

@@ -1,10 +1,10 @@
 package com.lokamc.types;
 
+import ca.spottedleaf.moonrise.common.util.CoordinateUtils;
 import com.lokamc.utils.FutureUtils;
 import com.lokamc.utils.LocationUtil;
 import com.sk89q.worldedit.math.BlockVector3;
 import com.sk89q.worldedit.math.Vector3;
-import io.papermc.paper.util.CoordinateUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.Location;

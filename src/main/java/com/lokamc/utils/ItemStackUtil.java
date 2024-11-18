@@ -5,17 +5,18 @@ import com.google.common.base.Strings;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.item.component.CustomData;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.*;
 import org.bukkit.block.Banner;
 import org.bukkit.block.Block;
 import org.bukkit.block.Skull;
+import org.bukkit.block.banner.Pattern;
 import org.bukkit.block.data.Rotatable;
-import org.bukkit.craftbukkit.v1_20_R3.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.inventory.CraftItemStack;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.ThrownPotion;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.*;
 import org.bukkit.potion.PotionData;
@@ -27,6 +28,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 
+import static net.minecraft.core.component.DataComponents.CUSTOM_DATA;
 import static org.bukkit.DyeColor.*;
 
 public class ItemStackUtil {
@@ -705,7 +707,7 @@ public class ItemStackUtil {
         net.minecraft.world.item.ItemStack dataItemStack = CraftItemStack.asNMSCopy(item);
         if (dataItemStack == null) return false;
 
-        return hasNBTData(dataItemStack.getTag(), data);
+        return getCompoundTag(item).contains(data);
     }
 
     public static boolean hasNBTData(CompoundTag comp, String data) {
@@ -713,21 +715,18 @@ public class ItemStackUtil {
     }
 
     public static boolean getNBTBoolean(ItemStack item, String data) {
-        net.minecraft.world.item.ItemStack dataItemStack = CraftItemStack.asNMSCopy(item);
-        CompoundTag comp = dataItemStack.getTag();
-        return (comp != null && comp.contains(data)) && comp.getBoolean(data);
+        CompoundTag comp = getCompoundTag(item);
+        return comp.contains(data) && comp.getBoolean(data);
     }
 
     public static UUID getNBTUUID(ItemStack item, String data) {
-        net.minecraft.world.item.ItemStack dataItemStack = CraftItemStack.asNMSCopy(item);
-        CompoundTag comp = dataItemStack.getTag();
-        return (comp != null && comp.contains(data)) ? UUID.fromString(comp.getString(data)) : null;
+        CompoundTag comp = getCompoundTag(item);
+        return comp.contains(data) ? UUID.fromString(comp.getString(data)) : null;
     }
 
     public static String getNBTString(ItemStack item, String data) {
-        net.minecraft.world.item.ItemStack dataItemStack = CraftItemStack.asNMSCopy(item);
-        CompoundTag comp = dataItemStack.getTag();
-        return comp != null && comp.contains(data) ? comp.getString(data) : "";
+        CompoundTag comp = getCompoundTag(item);
+        return comp.contains(data) ? comp.getString(data) : "";
     }
 
     public static String getNBTString(CompoundTag comp, String data) {
@@ -735,86 +734,24 @@ public class ItemStackUtil {
     }
 
     public static int getNBTInt(ItemStack item, String data) {
-        net.minecraft.world.item.ItemStack dataItemStack = CraftItemStack.asNMSCopy(item);
-        CompoundTag comp = dataItemStack.getTag();
-        return comp != null && comp.contains(data) ? comp.getInt(data) : 0;
+        CompoundTag comp = getCompoundTag(item);
+        return comp.contains(data) ? comp.getInt(data) : 0;
     }
 
     public static long getNBTLong(ItemStack item, String data) {
-        net.minecraft.world.item.ItemStack dataItemStack = CraftItemStack.asNMSCopy(item);
-        CompoundTag comp = dataItemStack.getTag();
-        return comp != null && comp.contains(data) ? comp.getLong(data) : 0;
-    }
-
-    public static ItemStack addNBTTag(ItemStack item, String key, String data) {
-        net.minecraft.world.item.ItemStack dataItemStack = CraftItemStack.asNMSCopy(item);
-        CompoundTag comp = getOrCreateNBTTagCompound(item);
-        if (comp == null) return item;
-
-        comp.putString(key, data);
-        dataItemStack.setTag(comp);
-        return CraftItemStack.asBukkitCopy(dataItemStack);
-    }
-
-    public static ItemStack addNBTTag(ItemStack item, String key, UUID uuid) {
-        return addNBTTag(item, key, uuid.toString());
-    }
-
-    public static ItemStack addNBTTag(ItemStack item, String key, boolean data) {
-        net.minecraft.world.item.ItemStack dataItemStack = CraftItemStack.asNMSCopy(item);
-        CompoundTag comp = getOrCreateNBTTagCompound(item);
-        if (comp == null) return item;
-
-        comp.putBoolean(key, data);
-        dataItemStack.setTag(comp);
-        return CraftItemStack.asBukkitCopy(dataItemStack);
-    }
-
-    public static ItemStack addNBTTag(ItemStack item, String key, int data) {
-        net.minecraft.world.item.ItemStack dataItemStack = CraftItemStack.asNMSCopy(item);
-        CompoundTag comp = getOrCreateNBTTagCompound(item);
-        if (comp == null) return item;
-
-        comp.putInt(key, data);
-        dataItemStack.setTag(comp);
-        return CraftItemStack.asBukkitCopy(dataItemStack);
-    }
-
-    public static ItemStack addNBTTag(ItemStack item, String key, long data) {
-        net.minecraft.world.item.ItemStack dataItemStack = CraftItemStack.asNMSCopy(item);
-        CompoundTag comp = getOrCreateNBTTagCompound(item);
-        if (comp == null) return item;
-
-        comp.putLong(key, data);
-        dataItemStack.setTag(comp);
-        return CraftItemStack.asBukkitCopy(dataItemStack);
+        CompoundTag comp = getCompoundTag(item);
+        return comp.contains(data) ? comp.getLong(data) : 0;
     }
 
     public static ItemStack removeNBTTag(ItemStack item, String key) {
-        CompoundTag comp = getNBTTagCompound(item);
-        if (comp == null) return item;
-
-        net.minecraft.world.item.ItemStack dataItemStack = CraftItemStack.asNMSCopy(item);
+        CompoundTag comp = getCompoundTag(item);
         comp.remove(key);
-        dataItemStack.setTag(comp);
-        return CraftItemStack.asBukkitCopy(dataItemStack);
+        return item;
     }
 
-    public static CompoundTag getNBTTagCompound(ItemStack item) {
+    private static CompoundTag getCompoundTag(ItemStack item) {
         net.minecraft.world.item.ItemStack dataItemStack = CraftItemStack.asNMSCopy(item);
-        if (dataItemStack == null) return null;
-        return dataItemStack.getTag();
-    }
-
-    private static CompoundTag getOrCreateNBTTagCompound(ItemStack item) {
-        if (item == null) return null;
-
-        net.minecraft.world.item.ItemStack dataItemStack = CraftItemStack.asNMSCopy(item);
-        if (dataItemStack == null) return null;
-
-        CompoundTag comp = dataItemStack.getTag();
-        if (comp == null) comp = new CompoundTag();
-        return comp;
+        return dataItemStack.getComponents().getOrDefault(CUSTOM_DATA, CustomData.EMPTY).getUnsafe();
     }
 
     public static ItemStack getPotion(PotionType type, boolean splash, boolean extended, boolean upgraded) {
@@ -911,16 +848,6 @@ public class ItemStackUtil {
         return book;
     }
 
-    public static void addBackButton(Inventory i, String destination) {
-        ItemStack back = new ItemStack(Material.BARRIER);
-        setDisplayName(back, "Go Back");
-
-        if (destination != null)
-            back = addNBTTag(back, "dest", destination);
-
-        i.setItem(i.getSize() - 1, back);
-    }
-
     public static List<ItemStack> splitStack(final ItemStack itemStack) {
         return splitStack(itemStack, itemStack.getAmount());
     }
@@ -1011,20 +938,10 @@ public class ItemStackUtil {
         }
 
         BannerMeta meta = (BannerMeta) banner.getItemMeta();
-        if (meta == null) return BLACK;
+        List<Pattern> patterns = meta.getPatterns();
+        if (meta == null || patterns.isEmpty()) return BLACK;
 
-        if (meta.getBaseColor() == null) {
-            //How broken is this? I have to check the NAME of the banner to see what its base color is, thanks Minecraft
-            String name = getFriendlyName(banner);
-            if (name != null && name.endsWith(" Banner") && !name.contains("§")) {
-                try {
-                    return valueOf(name.replace(" Banner", "").toUpperCase());
-                } catch (Exception ignored) {
-                }
-            }
-        }
-
-        return BLACK;
+        return patterns.getFirst().getColor();
     }
 
     public static void clearEnchants(ItemStack itemStack) {

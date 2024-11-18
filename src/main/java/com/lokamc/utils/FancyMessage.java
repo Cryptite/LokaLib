@@ -4,7 +4,6 @@ import net.kyori.adventure.text.format.TextColor;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.*;
 import net.md_5.bungee.chat.ComponentSerializer;
-import net.minecraft.nbt.CompoundTag;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
@@ -196,14 +195,15 @@ public class FancyMessage {
     }
 
     public FancyMessage itemTooltip(ItemStack itemStack) {
-        net.minecraft.world.item.ItemStack nmsItemStack = net.minecraft.world.item.ItemStack.fromBukkitCopy(itemStack);
-        CompoundTag tag = nmsItemStack.save(new CompoundTag());//nmsItemStack.getTag();
-        HoverEvent hoverEvent = new HoverEvent(HoverEvent.Action.SHOW_ITEM,
-                new BaseComponent[]{new TextComponent(tag.toString())});
-        for (TextComponent component : componentList) {
-            if (lastThenSet.contains(component))
-                component.setHoverEvent(hoverEvent);
-        }
+        //TODO: Reimplement
+//        net.minecraft.world.item.ItemStack nmsItemStack = net.minecraft.world.item.ItemStack.fromBukkitCopy(itemStack);
+//        CompoundTag tag = nmsItemStack.save(new CompoundTag());//nmsItemStack.getTag();
+//        HoverEvent hoverEvent = new HoverEvent(HoverEvent.Action.SHOW_ITEM,
+//                new BaseComponent[]{new TextComponent(tag.toString())});
+//        for (TextComponent component : componentList) {
+//            if (lastThenSet.contains(component))
+//                component.setHoverEvent(hoverEvent);
+//        }
 //        latest().setHoverEvent(hoverEvent);
         return this;
     }

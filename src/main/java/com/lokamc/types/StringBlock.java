@@ -14,7 +14,7 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.block.Container;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.type.Slab;
-import org.bukkit.craftbukkit.v1_20_R3.block.impl.CraftFluids;
+import org.bukkit.craftbukkit.block.impl.CraftFluids;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
@@ -189,7 +189,7 @@ public class StringBlock extends StringLocation implements Comparable<StringBloc
         if (block == null) block = getBlock();
 
         if (!statesMatch(block.getBlockData(), blockData)) {
-            block.setBlockData(blockData, update, doLightUpdate);
+            block.setBlockData(blockData, update); //TODO: Reimplement, doLightUpdate);
         }
     }
 
@@ -203,7 +203,7 @@ public class StringBlock extends StringLocation implements Comparable<StringBloc
                     if (block == null) block = getBlock();
 
                     if (!statesMatch(block.getBlockData(), blockData)) {
-                        block.setBlockData(blockData, update, doLightUpdate);
+                        block.setBlockData(blockData, update); //TODO: Reimplement, doLightUpdate);
                     }
                 });
     }
