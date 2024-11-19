@@ -701,6 +701,10 @@ public class ItemStackUtil {
         return null;
     }
 
+    public static boolean hasNBTData(ItemStack item, String... data) {
+        return Arrays.stream(data).anyMatch(tag -> hasNBTData(item, tag));
+    }
+
     public static boolean hasNBTData(ItemStack item, String data) {
         if (item == null || item.getType() == Material.AIR) return false;
 
