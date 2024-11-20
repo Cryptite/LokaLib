@@ -753,7 +753,7 @@ public class ItemStackUtil {
         return item;
     }
 
-    private static CompoundTag getCompoundTag(ItemStack item) {
+    public static CompoundTag getCompoundTag(ItemStack item) {
         net.minecraft.world.item.ItemStack dataItemStack = CraftItemStack.asNMSCopy(item);
         return dataItemStack.getComponents().getOrDefault(CUSTOM_DATA, CustomData.EMPTY).getUnsafe();
     }
