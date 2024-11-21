@@ -26,50 +26,55 @@ public class FutureUtils {
     }
 
     public static void tryFuture(CompletableFuture<Boolean> future, Runnable onSuccess, Runnable onFailure) {
-        future.thenAccept(result -> {
-            if (result) {
-                onSuccess.run();
+        future.handle((result, throwable) -> {
+            if (throwable != null) {
+                if (result) {
+                    onSuccess.run();
+                } else if (onFailure != null) {
+                    onFailure.run();
+                }
             } else {
+                throwable.printStackTrace();
+
                 if (onFailure != null) {
                     onFailure.run();
                 }
             }
+
+            return null;
         });
     }
 
     public static void tryFuture(Player p, CompletableFuture<Boolean> future, Consumer<Player> onSuccess) {
-        tryFuture(p, future, onSuccess, player -> {
-            LokaLib.log.warning("Completable future failure for " + player.getName());
-            Thread.dumpStack();
-        });
+        tryFuture(p, future, onSuccess, null);
     }
 
     public static void tryFutureSync(Player p, CompletableFuture<Boolean> future, Consumer<Player> onSuccess) {
-        tryFutureSync(p, future, onSuccess, player -> {
-            LokaLib.log.warning("Completable future failure for " + player.getName());
-            Thread.dumpStack();
-        });
+        tryFutureSync(p, future, onSuccess, null);
     }
 
     public static void tryFuture(Player p, CompletableFuture<Boolean> future, Consumer<Player> onSuccess, Consumer<Player> onFailure) {
-        future.thenAccept(result -> tryFutureResult(p, result, onSuccess, onFailure));
+        future.handle((result, throwable) -> performFuture(p, result, throwable, onSuccess, onFailure));
     }
 
     public static void tryFutureSync(Player p, CompletableFuture<Boolean> future, Consumer<Player> onSuccess, Consumer<Player> onFailure) {
-        future.thenAcceptAsync(result -> tryFutureResult(p, result, onSuccess, onFailure), Bukkit.getScheduler().getMainThreadExecutor(plugin));
+        future.handleAsync((result, throwable) -> performFuture(p, result, throwable, onSuccess, onFailure),
+                Bukkit.getScheduler().getMainThreadExecutor(plugin));
     }
 
-    private static void tryFutureResult(Player p, boolean result, Consumer<Player> onSuccess, Consumer<Player> onFailure) {
-        try {
-            Player player = Bukkit.getPlayer(p.getUniqueId());
+    private static boolean performFuture(Player p, boolean result, Throwable throwable, Consumer<Player> onSuccess, Consumer<Player> onFailure) {
+        if (throwable == null) {
             if (result) {
-                onSuccess.accept(player);
+                onSuccess.accept(Bukkit.getPlayer(p.getUniqueId()));
             } else if (onFailure != null) {
-                onFailure.accept(player);
+                onFailure.accept(Bukkit.getPlayer(p.getUniqueId()));
             }
-        } catch (Exception e) {
-            e.printStackTrace();
+        } else {
+            throwable.printStackTrace();
+            result = false;
         }
+
+        return result;
     }
 
     public static void runSyncIfOnline(Player p, Consumer<Player> consumer) {
