@@ -28,19 +28,15 @@ public class FutureUtils {
     public static void tryFuture(CompletableFuture<Boolean> future, Runnable onSuccess, Runnable onFailure) {
         future.handle((result, throwable) -> {
             if (throwable != null) {
-                if (result) {
-                    onSuccess.run();
-                } else if (onFailure != null) {
-                    onFailure.run();
-                }
-            } else {
                 throwable.printStackTrace();
-
-                if (onFailure != null) {
-                    onFailure.run();
-                }
+                result = false;
             }
 
+            if (result) {
+                onSuccess.run();
+            } else if (onFailure != null) {
+                onFailure.run();
+            }
             return null;
         });
     }
@@ -54,27 +50,36 @@ public class FutureUtils {
     }
 
     public static void tryFuture(Player p, CompletableFuture<Boolean> future, Consumer<Player> onSuccess, Consumer<Player> onFailure) {
-        future.handle((result, throwable) -> performFuture(p, result, throwable, onSuccess, onFailure));
+        future.handle((result, throwable) -> {
+            if (throwable != null) {
+                throwable.printStackTrace();
+                result = false;
+            }
+
+            performFuture(p, result, onSuccess, onFailure);
+            return null;
+        });
     }
 
     public static void tryFutureSync(Player p, CompletableFuture<Boolean> future, Consumer<Player> onSuccess, Consumer<Player> onFailure) {
-        future.handleAsync((result, throwable) -> performFuture(p, result, throwable, onSuccess, onFailure),
+        future.handleAsync((result, throwable) -> {
+                    if (throwable != null) {
+                        throwable.printStackTrace();
+                        result = false;
+                    }
+
+                    performFuture(p, result, onSuccess, onFailure);
+                    return null;
+                },
                 Bukkit.getScheduler().getMainThreadExecutor(plugin));
     }
 
-    private static boolean performFuture(Player p, boolean result, Throwable throwable, Consumer<Player> onSuccess, Consumer<Player> onFailure) {
-        if (throwable == null) {
-            if (result) {
-                onSuccess.accept(Bukkit.getPlayer(p.getUniqueId()));
-            } else if (onFailure != null) {
-                onFailure.accept(Bukkit.getPlayer(p.getUniqueId()));
-            }
-        } else {
-            throwable.printStackTrace();
-            result = false;
+    private static void performFuture(Player p, boolean result, Consumer<Player> onSuccess, Consumer<Player> onFailure) {
+        if (result) {
+            onSuccess.accept(Bukkit.getPlayer(p.getUniqueId()));
+        } else if (onFailure != null) {
+            onFailure.accept(Bukkit.getPlayer(p.getUniqueId()));
         }
-
-        return result;
     }
 
     public static void runSyncIfOnline(Player p, Consumer<Player> consumer) {
