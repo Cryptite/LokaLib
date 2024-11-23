@@ -24,6 +24,8 @@ dependencies {
     compileOnly("com.sk89q.worldedit:worldedit-bukkit:7.3.0-SNAPSHOT")
 }
 
+paperweight.reobfArtifactConfiguration = io.papermc.paperweight.userdev.ReobfArtifactConfiguration.MOJANG_PRODUCTION
+
 tasks {
     // Run reobfJar on build
     build {
@@ -50,7 +52,7 @@ tasks {
 }
 
 tasks.register("copyJar") {
-    dependsOn("reobfJar")
+    dependsOn("build")
     doLast {
         copy {
             from("build/libs/LokaLib-2.8.jar")
@@ -63,9 +65,9 @@ publishing {
     publications {
         create<MavenPublication>("maven") {
             from(components["java"])
-            artifact(tasks.reobfJar.flatMap { it.outputJar }) {
-                classifier = "reobf"
-            }
+//            artifact(tasks.build.flatMap { it.outputJar }) {
+//                classifier = "build"
+//            }
         }
     }
 }

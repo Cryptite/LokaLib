@@ -80,8 +80,6 @@ public class FutureUtils {
         } else if (onFailure != null) {
             onFailure.accept(Bukkit.getPlayer(p.getUniqueId()));
         }
-
-        return result;
     }
 
     public static void runSyncIfOnline(Player p, Consumer<Player> consumer) {
