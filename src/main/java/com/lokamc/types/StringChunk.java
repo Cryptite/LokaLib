@@ -12,6 +12,7 @@ public class StringChunk {
     private World world;
     public int x, z;
     private boolean biome;
+    private boolean hasTicket;
 
     public StringChunk(Chunk c) {
         this.world = c.getWorld();
@@ -50,6 +51,14 @@ public class StringChunk {
 
     public void setBiome(boolean biome) {
         this.biome = biome;
+    }
+
+    public boolean isHasTicket() {
+        return hasTicket;
+    }
+
+    public void setHasTicket(boolean hasTicket) {
+        this.hasTicket = hasTicket;
     }
 
     public Location getCenter() {
