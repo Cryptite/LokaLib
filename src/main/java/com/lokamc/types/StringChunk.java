@@ -53,7 +53,7 @@ public class StringChunk {
         this.biome = biome;
     }
 
-    public boolean isHasTicket() {
+    public boolean hasTicket() {
         return hasTicket;
     }
 
