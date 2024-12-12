@@ -21,8 +21,8 @@ dependencies {
     implementation("commons-io:commons-io:2.14.0")
     implementation("com.github.ben-manes.caffeine:caffeine:3.1.8")
     implementation("org.ocpsoft.prettytime:prettytime:5.0.9.Final")
-    compileOnly("com.sk89q.worldguard:worldguard-bukkit:7.0.6")
-    compileOnly("com.sk89q.worldedit:worldedit-bukkit:7.3.0-SNAPSHOT")
+    compileOnly("com.sk89q.worldguard:worldguard-bukkit:7.1.0-SNAPSHOT")
+    compileOnly("com.sk89q.worldedit:worldedit-bukkit:7.3.9")
 }
 
 paperweight.reobfArtifactConfiguration = io.papermc.paperweight.userdev.ReobfArtifactConfiguration.MOJANG_PRODUCTION
