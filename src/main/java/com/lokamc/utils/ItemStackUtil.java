@@ -1062,9 +1062,14 @@ public class ItemStackUtil {
             return getFriendlyName(item);
 
         PotionMeta meta = (PotionMeta) item.getItemMeta();
-        return (withExtended && meta.getBasePotionData().isExtended() ? "Extended " : "")
+        PotionType basePotionType = meta.getBasePotionType();
+        if (basePotionType == null) {
+            return getFriendlyName(item);
+        }
+
+        return (withExtended && basePotionType.isExtendable() ? "Extended " : "")
                 + getFriendlyName(item) + " "
-                + (meta.getBasePotionData().isUpgraded() ? "2" : "1");
+                + (basePotionType.isUpgradeable() ? "2" : "1");
     }
 
     public static String getPotionString(ThrownPotion potion) {
