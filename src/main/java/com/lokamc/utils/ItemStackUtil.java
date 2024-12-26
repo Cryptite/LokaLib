@@ -315,10 +315,12 @@ public class ItemStackUtil {
      */
     public static void clearLore(ItemStack item, int startingIndex) {
         ItemMeta meta = item.getItemMeta();
-        List<String> lore = meta.getLore() != null ? meta.getLore() : new ArrayList<>();
+        if (meta == null) return;
+
+        List<Component> lore = meta.lore() != null ? meta.lore() : new ArrayList<>();
         if (startingIndex < 0 || startingIndex >= lore.size()) return;
 
-        meta.setLore(lore.subList(0, startingIndex));
+        meta.lore(lore.subList(0, startingIndex));
         item.setItemMeta(meta);
     }
 
