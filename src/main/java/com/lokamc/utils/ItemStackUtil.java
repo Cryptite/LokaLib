@@ -776,7 +776,7 @@ public class ItemStackUtil {
         if (potion.getType() != Material.POTION && potion.getType() != Material.SPLASH_POTION) return false;
 
         PotionMeta meta = (PotionMeta) potion.getItemMeta();
-        return meta.getBasePotionData().getType() == type;
+        return meta.getBasePotionType() == type;
     }
 
     public static void clearInventory(Player p) {
