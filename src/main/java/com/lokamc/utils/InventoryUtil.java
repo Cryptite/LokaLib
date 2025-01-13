@@ -25,6 +25,7 @@ import org.bukkit.inventory.meta.BlockStateMeta;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Predicate;
@@ -103,7 +104,14 @@ public class InventoryUtil {
         CraftInventoryPlayer inv = new CraftInventoryPlayer(fakePlayer.getInventory());
         inv.setContents(p.getInventory().getContents());
         List<ItemStack> clonedContents = Arrays.stream(contents).map(ItemStack::clone).toList();
-        return inv.addItem(clonedContents.toArray(new ItemStack[0])).isEmpty();
+
+        HashMap<Integer, ItemStack> leftovers = inv.addItem(clonedContents.toArray(new ItemStack[0]));
+        if (!leftovers.isEmpty()) {
+            ItemStack leftoverStack = leftovers.entrySet().iterator().next().getValue();
+            return canFitInPlayerInventory(leftoverStack, inv);
+        }
+
+        return true;
     }
 
     public static boolean canFitInInventory(Inventory inv, ItemStack item) {
@@ -118,7 +126,21 @@ public class InventoryUtil {
             checkInv.setContents(inv.getContents());
         }
 
-        return checkInv.addItem(item.clone()).isEmpty();
+        HashMap<Integer, ItemStack> leftovers = checkInv.addItem(item.clone());
+        if (!leftovers.isEmpty() && inv instanceof PlayerInventory playerInventory) {
+            ItemStack leftoverStack = leftovers.entrySet().iterator().next().getValue();
+            return canFitInPlayerInventory(leftoverStack, playerInventory);
+        }
+
+        return leftovers.isEmpty();
+    }
+
+    private static boolean canFitInPlayerInventory(ItemStack itemStack, PlayerInventory inv) {
+        return Tag.ITEMS_CHEST_ARMOR.isTagged(itemStack.getType()) && inv.getChestplate() == null
+                || Tag.ITEMS_HEAD_ARMOR.isTagged(itemStack.getType()) && inv.getHelmet() == null
+                || Tag.ITEMS_LEG_ARMOR.isTagged(itemStack.getType()) && inv.getLeggings() == null
+                || Tag.ITEMS_FOOT_ARMOR.isTagged(itemStack.getType()) && inv.getBoots() == null
+                || inv.getItemInOffHand().isEmpty();
     }
 
     public static Inventory cloneInventory(Inventory inv) {
