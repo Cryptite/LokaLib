@@ -41,6 +41,26 @@ public class FutureUtils {
         });
     }
 
+    public static <T> void tryFuture(CompletableFuture<T> future, Consumer<T> onSuccess) {
+        tryFuture(future, onSuccess, null);
+    }
+
+    public static <T> void tryFuture(CompletableFuture<T> future, Consumer<T> onSuccess, Runnable onFailure) {
+        future.handle((result, throwable) -> {
+            if (throwable != null) {
+                throwable.printStackTrace();
+                result = null;
+            }
+
+            if (result != null) {
+                onSuccess.accept(result);
+            } else if (onFailure != null) {
+                onFailure.run();
+            }
+            return null;
+        });
+    }
+
     public static void tryFuture(Player p, CompletableFuture<Boolean> future, Consumer<Player> onSuccess) {
         tryFuture(p, future, onSuccess, null);
     }
