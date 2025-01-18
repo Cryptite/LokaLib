@@ -22,15 +22,18 @@ import java.io.InputStreamReader;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.util.*;
+import java.util.concurrent.locks.ReentrantLock;
 
 import static com.lokamc.utils.SerializeInventory.fromBase64ToItem;
 import static java.lang.Float.parseFloat;
 
+@SuppressWarnings("unused")
 public class ConfigFile {
     public final Plugin plugin;
     private final String fileName;
     public final File file;
     public FileConfiguration fileConfiguration;
+    private final ReentrantLock lock = new ReentrantLock();
 
     public ConfigFile(Plugin plugin, String fileName) {
         this.plugin = plugin;
@@ -387,20 +390,21 @@ public class ConfigFile {
 
     public synchronized void save(Runnable onComplete) {
         final FileConfiguration config = fileConfiguration;
-        LokaLib.configFileExecutor.execute(() -> doSave(file, config, onComplete));
+        Thread.ofVirtual().start(() -> doSave(file, config, onComplete));
     }
 
     private void doSave(File file, FileConfiguration config, Runnable onComplete) {
-        synchronized (this.file) {
-            try {
-                config.save(file);
+        lock.lock();
+        try {
+            config.save(file);
 
-                if (onComplete != null) {
-                    onComplete.run();
-                }
-            } catch (Exception ex) {
-                ex.printStackTrace();
+            if (onComplete != null) {
+                onComplete.run();
             }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        } finally {
+            lock.unlock();
         }
     }
 
@@ -416,6 +420,6 @@ public class ConfigFile {
 
     @Override
     public boolean equals(Object obj) {
-        return obj instanceof ConfigFile && ((ConfigFile) obj).fileName.equals(fileName);
+        return obj instanceof ConfigFile configFile && configFile.fileName.equals(fileName);
     }
 }
