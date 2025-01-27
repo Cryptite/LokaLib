@@ -59,7 +59,7 @@ tasks.register("copyJar") {
     dependsOn("build")
     doLast {
         copy {
-            from("build/libs/LokaLib-2.8-all.jar")
+            from("build/libs/LokaLib-2.9-all.jar")
             into("D:/Loka/pts1214/plugins/update")
         }
     }
