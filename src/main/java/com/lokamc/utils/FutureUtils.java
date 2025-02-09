@@ -254,4 +254,36 @@ public class FutureUtils {
             });
         });
     }
+
+    public static void runTaskOrImmediately(boolean immediately, Runnable runnable) {
+        if (immediately) {
+            runnable.run();
+        } else {
+            Bukkit.getScheduler().runTask(plugin, runnable);
+        }
+    }
+
+    public static void runTaskAsyncOrImmediately(boolean immediately, Runnable runnable) {
+        if (immediately) {
+            runnable.run();
+        } else {
+            Bukkit.getScheduler().runTaskAsynchronously(plugin, runnable);
+        }
+    }
+
+    public static void runTaskLaterOrImmediately(boolean immediately, Runnable runnable, int ticks) {
+        if (immediately) {
+            runnable.run();
+        } else {
+            Bukkit.getScheduler().runTaskLater(plugin, runnable, ticks);
+        }
+    }
+
+    public static void runTaskLaterAsyncOrImmediately(boolean immediately, Runnable runnable, int ticks) {
+        if (immediately) {
+            runnable.run();
+        } else {
+            Bukkit.getScheduler().runTaskLaterAsynchronously(plugin, runnable, ticks);
+        }
+    }
 }
