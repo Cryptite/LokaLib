@@ -35,6 +35,10 @@ import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 
+import static net.minecraft.world.entity.player.Player.MAX_HEALTH;
+import static net.minecraft.world.food.FoodConstants.MAX_FOOD;
+import static net.minecraft.world.food.FoodConstants.MAX_SATURATION;
+
 public class PlayerUtil {
     public static boolean inValidGameMode(Player p) {
         return p.getGameMode() == GameMode.SURVIVAL || p.getGameMode() == GameMode.ADVENTURE;
@@ -427,5 +431,13 @@ public class PlayerUtil {
             topInventory.clear();
         }
         p.setItemOnCursor(null);
+    }
+
+    public static void regenPlayer(Player p) {
+        p.setHealth(MAX_HEALTH);
+        p.setFoodLevel(MAX_FOOD);
+        p.setSaturation(MAX_SATURATION);
+        p.setExhaustion(0F);
+        p.setFireTicks(0);
     }
 }
