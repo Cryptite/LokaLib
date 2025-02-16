@@ -81,7 +81,11 @@ public class StringLocation extends Location {
 
     @Override
     public @Nullable World getWorld() {
-        if (!isWorldLoaded()) return null;
+        return getWorld(false);
+    }
+
+    public @Nullable World getWorld(boolean tryLoad) {
+        if (!isWorldLoaded() && !tryLoad) return null;
 
         World w = super.getWorld();
         if (w == null && worldName != null) {
