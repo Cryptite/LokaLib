@@ -16,7 +16,6 @@ import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 public class FutureUtils {
-    private static final LokaLib plugin = LokaLib.instance;
     public static final ExecutorService utilsExecutor = Executors.newVirtualThreadPerTaskExecutor();
     private static final Map<String, BukkitTask> tryLaterTasks = new HashMap<>();
 
@@ -90,7 +89,7 @@ public class FutureUtils {
                     performFuture(p, result, onSuccess, onFailure);
                     return null;
                 },
-                Bukkit.getScheduler().getMainThreadExecutor(plugin));
+                Bukkit.getScheduler().getMainThreadExecutor(LokaLib.instance));
     }
 
     private static void performFuture(Player p, boolean result, Consumer<Player> onSuccess, Consumer<Player> onFailure) {
@@ -106,7 +105,7 @@ public class FutureUtils {
     }
 
     public static void runSyncIfOnline(UUID uuid, Consumer<Player> consumer) {
-        Bukkit.getScheduler().runTask(plugin, () -> {
+        Bukkit.getScheduler().runTask(LokaLib.instance, () -> {
             Player player = Bukkit.getPlayer(uuid);
             if (player != null) {
                 consumer.accept(player);
@@ -119,7 +118,7 @@ public class FutureUtils {
     }
 
     public static void runAsyncIfOnline(UUID uuid, Consumer<Player> consumer) {
-        Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
+        Bukkit.getScheduler().runTaskAsynchronously(LokaLib.instance, () -> {
             Player player = Bukkit.getPlayer(uuid);
             if (player != null) {
                 consumer.accept(player);
@@ -132,7 +131,7 @@ public class FutureUtils {
     }
 
     public static void runLaterSyncIfOnline(UUID uuid, Consumer<Player> consumer, int ticks) {
-        Bukkit.getScheduler().runTaskLater(plugin, () -> {
+        Bukkit.getScheduler().runTaskLater(LokaLib.instance, () -> {
             Player player = Bukkit.getPlayer(uuid);
             if (player != null) {
                 consumer.accept(player);
@@ -145,7 +144,7 @@ public class FutureUtils {
     }
 
     public static void runLaterAsyncIfOnline(UUID uuid, Consumer<Player> consumer, int ticks) {
-        Bukkit.getScheduler().runTaskLaterAsynchronously(plugin, () -> {
+        Bukkit.getScheduler().runTaskLaterAsynchronously(LokaLib.instance, () -> {
             Player player = Bukkit.getPlayer(uuid);
             if (player != null) {
                 consumer.accept(player);
@@ -159,7 +158,7 @@ public class FutureUtils {
             task.cancel();
         }
 
-        task = Bukkit.getScheduler().runTaskLater(plugin, () -> {
+        task = Bukkit.getScheduler().runTaskLater(LokaLib.instance, () -> {
             tryLaterTasks.remove(key);
             runnable.run();
         }, ticks);
@@ -173,7 +172,7 @@ public class FutureUtils {
             task.cancel();
         }
 
-        task = Bukkit.getScheduler().runTaskLaterAsynchronously(plugin, () -> {
+        task = Bukkit.getScheduler().runTaskLaterAsynchronously(LokaLib.instance, () -> {
             tryLaterTasks.remove(key);
             runnable.run();
         }, ticks);
@@ -182,15 +181,15 @@ public class FutureUtils {
     }
 
     public static void runAsyncThenSync(Runnable async, Runnable sync) {
-        tryAsync(async).thenRun(() -> Bukkit.getScheduler().runTask(plugin, sync));
+        tryAsync(async).thenRun(() -> Bukkit.getScheduler().runTask(LokaLib.instance, sync));
     }
 
     public static void thenRunSync(CompletableFuture future, Runnable sync) {
-        future.thenRun(() -> Bukkit.getScheduler().runTask(plugin, sync));
+        future.thenRun(() -> Bukkit.getScheduler().runTask(LokaLib.instance, sync));
     }
 
     public static <T> void thenAcceptSync(CompletableFuture<T> future, Consumer<T> sync) {
-        future.thenAcceptAsync(object -> Bukkit.getScheduler().runTask(plugin, () -> sync.accept(object)));
+        future.thenAcceptAsync(object -> Bukkit.getScheduler().runTask(LokaLib.instance, () -> sync.accept(object)));
     }
 
     public static CompletableFuture<Void> tryAsync(Runnable runnable) {
@@ -224,9 +223,9 @@ public class FutureUtils {
                     iterator.remove();
                 } else {
                     c.getChunkAsync()
-                            .thenAcceptAsync(chunk -> Bukkit.getScheduler().runTask(plugin, () -> {
+                            .thenAcceptAsync(chunk -> Bukkit.getScheduler().runTask(LokaLib.instance, () -> {
                                 chunks.add(chunk);
-                                chunk.addPluginChunkTicket(plugin);
+                                chunk.addPluginChunkTicket(LokaLib.instance);
                                 stringChunks.remove(c);
                             }));
                 }
@@ -240,15 +239,15 @@ public class FutureUtils {
                 }
             }
 
-            Bukkit.getScheduler().runTask(plugin, () -> {
+            Bukkit.getScheduler().runTask(LokaLib.instance, () -> {
                 try {
                     runnable.run();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
 
-                Bukkit.getScheduler().runTaskLater(plugin,
-                        () -> chunks.forEach(chunk -> chunk.removePluginChunkTicket(plugin)),
+                Bukkit.getScheduler().runTaskLater(LokaLib.instance,
+                        () -> chunks.forEach(chunk -> chunk.removePluginChunkTicket(LokaLib.instance)),
                         20 * 3);
             });
         });
@@ -258,7 +257,7 @@ public class FutureUtils {
         if (immediately) {
             runnable.run();
         } else {
-            Bukkit.getScheduler().runTask(plugin, runnable);
+            Bukkit.getScheduler().runTask(LokaLib.instance, runnable);
         }
     }
 
@@ -266,7 +265,7 @@ public class FutureUtils {
         if (immediately) {
             runnable.run();
         } else {
-            Bukkit.getScheduler().runTaskAsynchronously(plugin, runnable);
+            Bukkit.getScheduler().runTaskAsynchronously(LokaLib.instance, runnable);
         }
     }
 
@@ -274,7 +273,7 @@ public class FutureUtils {
         if (immediately) {
             runnable.run();
         } else {
-            Bukkit.getScheduler().runTaskLater(plugin, runnable, ticks);
+            Bukkit.getScheduler().runTaskLater(LokaLib.instance, runnable, ticks);
         }
     }
 
@@ -282,7 +281,7 @@ public class FutureUtils {
         if (immediately) {
             runnable.run();
         } else {
-            Bukkit.getScheduler().runTaskLaterAsynchronously(plugin, runnable, ticks);
+            Bukkit.getScheduler().runTaskLaterAsynchronously(LokaLib.instance, runnable, ticks);
         }
     }
 }
