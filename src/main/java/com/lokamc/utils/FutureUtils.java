@@ -1,6 +1,5 @@
 package com.lokamc.utils;
 
-import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.lokamc.LokaLib;
 import com.lokamc.types.StringChunk;
 import com.lokamc.types.StringLocation;
@@ -18,7 +17,7 @@ import java.util.stream.Collectors;
 
 public class FutureUtils {
     private static final LokaLib plugin = LokaLib.instance;
-    public static final ExecutorService utilsExecutor = Executors.newFixedThreadPool(5, new ThreadFactoryBuilder().setNameFormat("Loka FutureUtils").build());
+    public static final ExecutorService utilsExecutor = Executors.newVirtualThreadPerTaskExecutor();
     private static final Map<String, BukkitTask> tryLaterTasks = new HashMap<>();
 
     public static void tryFuture(CompletableFuture<Boolean> future, Runnable onSuccess) {
