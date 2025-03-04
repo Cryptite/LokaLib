@@ -485,6 +485,10 @@ public class LocationUtil {
         return b;
     }
 
+    public static Location getLocationInFrontOfPlayer(Player p, float blocks) {
+        return p.getEyeLocation().add(p.getLocation().multiply(blocks));
+    }
+
     public static Location getCenter(World world, String region) {
         ProtectedRegion pr = getWGRegion(world, region);
         return pr != null ? getCenter(world, pr) : null;
