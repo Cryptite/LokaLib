@@ -486,7 +486,7 @@ public class LocationUtil {
     }
 
     public static Location getLocationInFrontOfPlayer(Player p, float blocks) {
-        return p.getEyeLocation().add(p.getLocation().multiply(blocks));
+        return p.getLocation().add(p.getLocation().multiply(blocks));
     }
 
     public static Location getCenter(World world, String region) {
