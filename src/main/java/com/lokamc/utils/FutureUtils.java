@@ -253,6 +253,14 @@ public class FutureUtils {
         });
     }
 
+    public static void runSync(Runnable runnable) {
+        if (Bukkit.isPrimaryThread()) {
+            runnable.run();
+        } else {
+            Bukkit.getScheduler().runTask(LokaLib.instance, runnable);
+        }
+    }
+
     public static void runTaskOrImmediately(boolean immediately, Runnable runnable) {
         if (immediately) {
             runnable.run();
