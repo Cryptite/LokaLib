@@ -243,12 +243,16 @@ public class ConfigFile {
     }
 
     public World getWorld(String worldName) {
+        return getWorld(worldName, null);
+    }
+
+    public World getWorld(String worldName, World defaultWorld) {
         String world = get(worldName);
         if (world != null) {
             return Bukkit.getWorld(world);
         }
 
-        return null;
+        return defaultWorld;
     }
 
     public Date getDate(String key, DateFormat simpleDateFormat) {
