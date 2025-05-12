@@ -2,9 +2,11 @@ package com.lokamc.utils;
 
 import com.destroystokyo.paper.profile.PlayerProfile;
 import com.google.common.base.Strings;
+import io.papermc.paper.datacomponent.DataComponentTypes;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.util.Mth;
 import net.minecraft.world.item.component.CustomData;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.*;
@@ -445,14 +447,17 @@ public class ItemStackUtil {
     }
 
     /**
-     * Itemstacks of size 0 are invisible, and over 64 breaks maybe? This just makes sure the amount
-     * is between 1 and 64
+     * Set an ItemStack to an amount between 1 and 99 (clamped). Will apply the MAX_STACK_SIZE DataComponent if needed.
      *
      * @param item
      * @param amount
      */
     public static void setItemAmount(ItemStack item, int amount) {
-        item.setAmount(Math.max(1, Math.min(amount, 64)));
+        int finalAmount = Mth.clamp(amount, 1, 99);
+        if (finalAmount >= item.getType().getMaxStackSize()) {
+            item.setData(DataComponentTypes.MAX_STACK_SIZE, finalAmount);
+        }
+        item.setAmount(finalAmount);
     }
 
     public static void setArmorColor(ItemStack i, Color color) {
