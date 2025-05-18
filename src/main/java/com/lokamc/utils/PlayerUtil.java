@@ -255,6 +255,19 @@ public class PlayerUtil {
         return null;
     }
 
+    public static @Nullable ItemStack getHolding(Player p, EquipmentSlot slot) {
+        if (p == null) return null;
+
+        PlayerInventory inventory = p.getInventory();
+        if (slot == EquipmentSlot.HAND) {
+            return inventory.getItemInMainHand();
+        } else if (slot == EquipmentSlot.OFF_HAND) {
+            return inventory.getItemInOffHand();
+        }
+
+        return null;
+    }
+
     public static void setItemInHandFromItem(Player p, ItemStack holding, ItemStack newItem) {
         if (inRightHand(p, holding))
             p.getInventory().setItemInMainHand(newItem);
