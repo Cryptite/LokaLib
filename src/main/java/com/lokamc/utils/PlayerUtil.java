@@ -8,6 +8,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ClientInformation;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.network.ServerGamePacketListenerImpl;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.craftbukkit.CraftServer;
@@ -40,6 +41,13 @@ import static net.minecraft.world.food.FoodConstants.MAX_FOOD;
 import static net.minecraft.world.food.FoodConstants.MAX_SATURATION;
 
 public class PlayerUtil {
+    public static @Nullable ServerGamePacketListenerImpl getConnection(Player p) {
+        if (p == null || !p.isOnline()) return null;
+
+        ServerPlayer serverPlayer = ((CraftPlayer) p).getHandle();
+        return serverPlayer != null ? serverPlayer.connection : null;
+    }
+
     public static boolean inValidGameMode(Player p) {
         return p.getGameMode() == GameMode.SURVIVAL || p.getGameMode() == GameMode.ADVENTURE;
     }
