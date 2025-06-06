@@ -5,6 +5,8 @@ import com.destroystokyo.paper.profile.ProfileProperty;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ClientInformation;
 import net.minecraft.server.level.ServerPlayer;
@@ -41,6 +43,13 @@ import static net.minecraft.world.food.FoodConstants.MAX_FOOD;
 import static net.minecraft.world.food.FoodConstants.MAX_SATURATION;
 
 public class PlayerUtil {
+    public static void sendPacket(Player p, Packet<ClientGamePacketListener> packet) {
+        ServerGamePacketListenerImpl connection = getConnection(p);
+        if (connection != null) {
+            connection.send(packet);
+        }
+    }
+
     public static @Nullable ServerGamePacketListenerImpl getConnection(Player p) {
         if (p == null || !p.isOnline()) return null;
 
