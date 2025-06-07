@@ -45,14 +45,14 @@ import static net.minecraft.world.food.FoodConstants.MAX_SATURATION;
 
 public class PlayerUtil {
     public static void sendPacket(Player p, Packet<ClientGamePacketListener> packet) {
-        sendPacket(p, packet, false);
+        sendPacket(p, packet, null);
     }
 
-    public static void sendPacket(Player p, Packet<ClientGamePacketListener> packet, boolean log) {
+    public static void sendPacket(Player p, Packet<ClientGamePacketListener> packet, String logExtra) {
         ServerGamePacketListenerImpl connection = getConnection(p);
         if (connection != null) {
-            if (log) {
-                LokaLib.log.info(String.format("Sending packet %s to player %s", packet.toString(), p.getName()));
+            if (logExtra != null) {
+                LokaLib.log.info(String.format("Sending packet (%s) %s to player %s", logExtra, packet.toString(), p.getName()));
             }
             connection.send(packet);
         }
