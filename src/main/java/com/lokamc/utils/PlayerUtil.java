@@ -2,6 +2,7 @@ package com.lokamc.utils;
 
 import com.destroystokyo.paper.profile.PlayerProfile;
 import com.destroystokyo.paper.profile.ProfileProperty;
+import com.lokamc.LokaLib;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
 import net.minecraft.nbt.CompoundTag;
@@ -44,8 +45,15 @@ import static net.minecraft.world.food.FoodConstants.MAX_SATURATION;
 
 public class PlayerUtil {
     public static void sendPacket(Player p, Packet<ClientGamePacketListener> packet) {
+        sendPacket(p, packet, false);
+    }
+
+    public static void sendPacket(Player p, Packet<ClientGamePacketListener> packet, boolean log) {
         ServerGamePacketListenerImpl connection = getConnection(p);
         if (connection != null) {
+            if (log) {
+                LokaLib.log.info(String.format("Sending packet %s to player %s", packet.toString(), p.getName()));
+            }
             connection.send(packet);
         }
     }
