@@ -157,4 +157,14 @@ public class BlockUtil {
     public static Block getBlockHangingAgainst(Hanging hanging) {
         return hanging.getLocation().getBlock().getRelative(hanging.getFacing().getOppositeFace());
     }
+
+    public static int toRelativeCoordinateInChunk(Location l) {
+        return toRelativeCoordinateInChunk(l.getBlock());
+    }
+
+    public static int toRelativeCoordinateInChunk(Block b) {
+        final int relX = (b.getX() % 16 + 16) % 16;
+        final int relZ = (b.getZ() % 16 + 16) % 16;
+        return (b.getY() & 0xFFFF) | ((relX & 0xFF) << 16) | ((relZ & 0xFF) << 24);
+    }
 }
