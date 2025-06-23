@@ -1,24 +1,25 @@
 package com.lokamc.types;
 
 import ca.spottedleaf.moonrise.common.util.CoordinateUtils;
+import com.lokamc.LokaLib;
 import com.lokamc.utils.FutureUtils;
 import com.lokamc.utils.LocationUtil;
 import com.sk89q.worldedit.math.BlockVector3;
 import com.sk89q.worldedit.math.Vector3;
-import org.bukkit.Bukkit;
-import org.bukkit.Chunk;
-import org.bukkit.Location;
-import org.bukkit.World;
+import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.plugin.Plugin;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
+
+import static com.lokamc.utils.BlockUtil.toRelativeCoordinateInChunk;
 
 public class StringLocation extends Location {
     private String worldName;
@@ -212,6 +213,11 @@ public class StringLocation extends Location {
 
     public String getPrettyCoords() {
         return LocationUtil.prettyCoords(this);
+    }
+
+    @NotNull
+    public NamespacedKey getCoordinateKey() {
+        return new NamespacedKey(LokaLib.instance, "" + toRelativeCoordinateInChunk(this));
     }
 
     @Override
