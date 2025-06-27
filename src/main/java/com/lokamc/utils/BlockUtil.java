@@ -1,7 +1,9 @@
 package com.lokamc.utils;
 
+import com.lokamc.LokaLib;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.NamespacedKey;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.Sign;
@@ -156,6 +158,14 @@ public class BlockUtil {
 
     public static Block getBlockHangingAgainst(Hanging hanging) {
         return hanging.getLocation().getBlock().getRelative(hanging.getFacing().getOppositeFace());
+    }
+
+    public static NamespacedKey getCoordinateKey(Location l) {
+        return getCoordinateKey(l.getBlock());
+    }
+
+    public static NamespacedKey getCoordinateKey(Block b) {
+        return new NamespacedKey(LokaLib.instance, "" + toRelativeCoordinateInChunk(b));
     }
 
     public static int toRelativeCoordinateInChunk(Location l) {
