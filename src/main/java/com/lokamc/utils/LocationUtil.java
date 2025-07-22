@@ -386,11 +386,20 @@ public class LocationUtil {
         return getBlocksFromRegion(b1.getLocation(), b2.getLocation(), 0);
     }
 
+    public static void iterateBlocksFromRegion(Block b1, Block b2, Predicate<Block> predicate) {
+        iterateBlocksFromRegion(b1.getLocation(), b2.getLocation(), 0, predicate);
+    }
+
     public static List<Block> getBlocksFromRegion(Location l, int outset) {
         Location p1 = l.clone().add(outset, outset, outset);
         Location p2 = l.clone().subtract(outset, outset, outset);
         return getBlocksFromRegion(p1, p2, 0);
+    }
 
+    public static void iterateBlocksFromRegion(Location l, int outset, Predicate<Block> predicate) {
+        Location p1 = l.clone().add(outset, outset, outset);
+        Location p2 = l.clone().subtract(outset, outset, outset);
+        iterateBlocksFromRegion(p1, p2, 0, predicate);
     }
 
     public static List<Block> getBlocksFromRegion(Location p1, Location p2) {
@@ -398,9 +407,18 @@ public class LocationUtil {
     }
 
     private static List<Block> getBlocksFromRegion(Location p1, Location p2, int outset) {
+        List<Block> blocks = new ArrayList<>();
+        iterateBlocksFromRegion(p1, p2, outset, block -> {
+            blocks.add(block);
+            return true;
+        });
+
+        return blocks;
+    }
+
+    private static void iterateBlocksFromRegion(Location p1, Location p2, int outset, Predicate<Block> predicate) {
         World world = p1.getWorld();
 
-        List<Block> blocks = new ArrayList<>();
         int minX = Math.min(p1.getBlockX(), p2.getBlockX()) - outset;
         int maxX = Math.max(p1.getBlockX(), p2.getBlockX()) + outset;
         int minY = clamp(Math.min(p1.getBlockY(), p2.getBlockY()) - outset, world.getMinHeight(), world.getMaxHeight());
@@ -411,12 +429,10 @@ public class LocationUtil {
         for (int y = minY; y <= maxY; y++) {
             for (int x = minX; x <= maxX; x++) {
                 for (int z = minZ; z <= maxZ; z++) {
-                    blocks.add(world.getBlockAt(x, y, z));
+                    predicate.test(world.getBlockAt(x, y, z));
                 }
             }
         }
-
-        return blocks;
     }
 
     public static List<StringChunk> getStringChunksFromRegion(Location p1, Location p2) {
