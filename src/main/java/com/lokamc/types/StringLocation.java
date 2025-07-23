@@ -143,7 +143,8 @@ public class StringLocation extends Location {
      * @return Returns whether chunk is loaded without actually loading it
      */
     public boolean isChunkLoaded() {
-        return getWorld().isChunkLoaded(getBlockX() >> 4, getBlockZ() >> 4);
+        World world = getWorld();
+        return world != null && world.isChunkLoaded(getBlockX() >> 4, getBlockZ() >> 4);
     }
 
     public boolean looseEquals(Location l) {
