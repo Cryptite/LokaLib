@@ -177,4 +177,16 @@ public class BlockUtil {
         final int relZ = (b.getZ() % 16 + 16) % 16;
         return (b.getY() & 0xFFFF) | ((relX & 0xFF) << 16) | ((relZ & 0xFF) << 24);
     }
+
+    public static long getColumnKey(Block block) {
+        return getColumnKey(block.getX(), block.getZ());
+    }
+
+    public static long getColumnKey(Location l) {
+        return getColumnKey(l.getBlockX(), l.getBlockZ());
+    }
+
+    public static long getColumnKey(int x, int z) {
+        return (((long) x) << 32) | (z & 0xFFFFFFFFL);
+    }
 }
