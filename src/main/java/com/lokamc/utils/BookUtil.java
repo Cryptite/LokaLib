@@ -9,7 +9,7 @@ import org.bukkit.map.MinecraftFont;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.apache.commons.lang.StringUtils.join;
+import static org.apache.commons.lang3.StringUtils.join;
 import static org.bukkit.ChatColor.stripColor;
 import static org.bukkit.Material.WRITTEN_BOOK;
 

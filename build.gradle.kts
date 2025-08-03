@@ -1,13 +1,13 @@
 plugins {
     `java-library`
     `maven-publish`
-    id("io.papermc.paperweight.userdev") version "2.0.0-beta.14"
+    id("io.papermc.paperweight.userdev") version "2.0.0-beta.18"
     id("xyz.jpenilla.run-paper") version "2.3.1" // Adds runServer and runMojangMappedServer tasks for testing
     id("io.github.goooler.shadow") version "8.1.2"
 }
 
 group = "com.lokamc"
-version = "2.9"
+version = "3.0"
 description = "LokaLib helpful utilities"
 
 repositories {
@@ -17,7 +17,7 @@ repositories {
 }
 
 dependencies {
-    paperweight.paperDevBundle("1.21.4-R0.1-SNAPSHOT", "fork.test")
+    paperweight.paperDevBundle("1.21.8-R0.1-SNAPSHOT", "fork.test")
     implementation("commons-io:commons-io:2.14.0")
     implementation("com.github.ben-manes.caffeine:caffeine:3.1.8")
     implementation("org.ocpsoft.prettytime:prettytime:5.0.9.Final")
@@ -59,8 +59,8 @@ tasks.register("copyJar") {
     dependsOn("build")
     doLast {
         copy {
-            from("build/libs/LokaLib-2.9-all.jar")
-            into("D:/Loka/pts1214/plugins/update")
+            from("build/libs/LokaLib-3.0-all.jar")
+            into("D:/Loka/pts1218/plugins/update")
         }
     }
 }

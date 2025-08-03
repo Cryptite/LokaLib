@@ -8,7 +8,6 @@ import net.kyori.adventure.text.format.TextDecoration;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.component.CustomData;
-import org.apache.commons.lang.StringUtils;
 import org.bukkit.*;
 import org.bukkit.block.Banner;
 import org.bukkit.block.Block;
@@ -31,6 +30,7 @@ import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 
 import static net.minecraft.core.component.DataComponents.CUSTOM_DATA;
+import static org.apache.commons.lang3.StringUtils.capitalize;
 import static org.bukkit.DyeColor.*;
 
 public class ItemStackUtil {
@@ -151,7 +151,7 @@ public class ItemStackUtil {
         }
 
         if (displayName != null && displayName.equalsIgnoreCase("air")) {
-            displayName = StringUtils.capitalize(item.getType().toString().toLowerCase().replace("_", " "));
+            displayName = capitalize(item.getType().toString().toLowerCase().replace("_", " "));
         }
 
         return displayName;
@@ -727,31 +727,32 @@ public class ItemStackUtil {
 
     public static boolean getNBTBoolean(ItemStack item, String data) {
         CompoundTag comp = getCompoundTag(item);
-        return comp.contains(data) && comp.getBoolean(data);
+        return comp.contains(data) && comp.getBooleanOr(data, false);
     }
 
     public static UUID getNBTUUID(ItemStack item, String data) {
         CompoundTag comp = getCompoundTag(item);
-        return comp.contains(data) ? UUID.fromString(comp.getString(data)) : null;
+        String uuidString = comp.contains(data) ? comp.getString(data).orElse(null) : null;
+        return uuidString != null ? UUID.fromString(uuidString) : null;
     }
 
     public static String getNBTString(ItemStack item, String data) {
         CompoundTag comp = getCompoundTag(item);
-        return comp.contains(data) ? comp.getString(data) : "";
+        return comp.contains(data) ? comp.getString(data).orElse(null) : "";
     }
 
     public static String getNBTString(CompoundTag comp, String data) {
-        return comp != null && comp.contains(data) ? comp.getString(data) : null;
+        return comp != null && comp.contains(data) ? comp.getString(data).orElse(null) : null;
     }
 
     public static int getNBTInt(ItemStack item, String data) {
         CompoundTag comp = getCompoundTag(item);
-        return comp.contains(data) ? comp.getInt(data) : 0;
+        return comp.contains(data) ? comp.getIntOr(data, 0) : 0;
     }
 
     public static long getNBTLong(ItemStack item, String data) {
         CompoundTag comp = getCompoundTag(item);
-        return comp.contains(data) ? comp.getLong(data) : 0;
+        return comp.contains(data) ? comp.getLongOr(data, 0L) : 0L;
     }
 
     public static ItemStack removeNBTTag(ItemStack item, String key) {

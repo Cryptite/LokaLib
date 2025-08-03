@@ -12,8 +12,8 @@ import java.util.Date;
 import java.util.List;
 
 import static net.md_5.bungee.api.ChatColor.GRAY;
-import static org.apache.commons.lang.StringUtils.isNumeric;
-import static org.apache.commons.lang.StringUtils.join;
+import static org.apache.commons.lang3.StringUtils.isNumeric;
+import static org.apache.commons.lang3.StringUtils.join;
 import static org.bukkit.ChatColor.stripColor;
 
 public class StringUtils {

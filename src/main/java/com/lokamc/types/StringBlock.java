@@ -5,6 +5,7 @@ import com.lokamc.utils.ItemStackUtil;
 import com.lokamc.utils.LocationUtil;
 import com.sk89q.worldedit.WorldEditException;
 import com.sk89q.worldedit.world.block.BlockStateHolder;
+import io.papermc.paper.block.fluid.FluidData;
 import org.bukkit.ChunkSnapshot;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -14,7 +15,6 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.block.Container;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.type.Slab;
-import org.bukkit.craftbukkit.block.impl.CraftFluids;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
@@ -210,7 +210,7 @@ public class StringBlock extends StringLocation implements Comparable<StringBloc
 
     private boolean statesMatch(BlockData b1, BlockData b2) {
         if (b1.matches(b2)) {
-            if (b1 instanceof CraftFluids f1 && b2 instanceof CraftFluids f2) {
+            if (b1 instanceof FluidData f1 && b2 instanceof FluidData f2) {
                 return f1.getLevel() == f2.getLevel();
             }
 
