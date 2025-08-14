@@ -403,10 +403,10 @@ public class PlayerUtil {
 
     public static boolean isWearingGear(Player p) {
         PlayerInventory inv = p.getInventory();
-        if (inv.getHelmet() != null) return true;
-        if (inv.getBoots() != null) return true;
-        if (inv.getChestplate() != null) return true;
-        if (inv.getLeggings() != null) return true;
+        if (inv.getHelmet() != null && !inv.getHelmet().isEmpty()) return true;
+        if (inv.getBoots() != null && !inv.getBoots().isEmpty()) return true;
+        if (inv.getChestplate() != null && !inv.getChestplate().isEmpty()) return true;
+        if (inv.getLeggings() != null && !inv.getLeggings().isEmpty()) return true;
 
         return false;
     }
