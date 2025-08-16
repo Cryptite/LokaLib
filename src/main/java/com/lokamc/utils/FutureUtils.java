@@ -3,6 +3,7 @@ package com.lokamc.utils;
 import com.lokamc.LokaLib;
 import com.lokamc.types.StringChunk;
 import com.lokamc.types.StringLocation;
+import net.kyori.adventure.audience.Audience;
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.entity.Player;
@@ -59,12 +60,20 @@ public class FutureUtils {
         });
     }
 
+    public static void tryFuture(Audience audience, CompletableFuture<Boolean> future, Consumer<Player> onSuccess) {
+        if (audience instanceof Player p) {
+            tryFuture(p, future, onSuccess, null);
+        }
+    }
+
     public static void tryFuture(Player p, CompletableFuture<Boolean> future, Consumer<Player> onSuccess) {
         tryFuture(p, future, onSuccess, null);
     }
 
-    public static void tryFutureSync(Player p, CompletableFuture<Boolean> future, Consumer<Player> onSuccess) {
-        tryFutureSync(p, future, onSuccess, null);
+    public static void tryFuture(Audience audience, CompletableFuture<Boolean> future, Consumer<Player> onSuccess, Consumer<Player> onFailure) {
+        if (audience instanceof Player p) {
+            tryFuture(p, future, onSuccess, onFailure);
+        }
     }
 
     public static void tryFuture(Player p, CompletableFuture<Boolean> future, Consumer<Player> onSuccess, Consumer<Player> onFailure) {
@@ -77,6 +86,16 @@ public class FutureUtils {
             performFuture(p, result, onSuccess, onFailure);
             return null;
         });
+    }
+
+    public static void tryFutureSync(Audience audience, CompletableFuture<Boolean> future, Consumer<Player> onSuccess) {
+        if (audience instanceof Player p) {
+            tryFutureSync(p, future, onSuccess, null);
+        }
+    }
+
+    public static void tryFutureSync(Player p, CompletableFuture<Boolean> future, Consumer<Player> onSuccess) {
+        tryFutureSync(p, future, onSuccess, null);
     }
 
     public static void tryFutureSync(Player p, CompletableFuture<Boolean> future, Consumer<Player> onSuccess, Consumer<Player> onFailure) {
