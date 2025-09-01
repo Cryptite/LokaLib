@@ -3,6 +3,7 @@ package com.lokamc;
 import com.lokamc.types.StringBlock;
 import com.lokamc.types.StringLocation;
 import net.md_5.bungee.api.ChatColor;
+import org.bson.types.ObjectId;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -240,6 +241,11 @@ public class ConfigFile {
         }
 
         return defaultItemStack;
+    }
+
+    public ObjectId getObjectId(String key) {
+        String id = get(key, null);
+        return id != null ? new ObjectId(id) : null;
     }
 
     public World getWorld(String worldName) {
