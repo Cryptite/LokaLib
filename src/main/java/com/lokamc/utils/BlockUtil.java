@@ -4,6 +4,7 @@ import com.lokamc.LokaLib;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.NamespacedKey;
+import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.Sign;
@@ -13,7 +14,11 @@ import org.bukkit.entity.Hanging;
 import org.bukkit.entity.ItemFrame;
 import org.bukkit.plugin.Plugin;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
+
+import static com.lokamc.utils.LocationUtil.getSurfaceBlockAbove;
 
 public class BlockUtil {
     public static BlockFace[] surroundingBlockFaces = new BlockFace[]{
@@ -188,5 +193,35 @@ public class BlockUtil {
 
     public static long getColumnKey(int x, int z) {
         return (((long) x) << 32) | (z & 0xFFFFFFFFL);
+    }
+
+    public static List<Block> getSurfaceCylinder(Location loc, int r) {
+        return getSurfaceCylinder(loc, r, 1);
+    }
+
+    public static List<Block> getSurfaceCylinder(Location loc, int r, int depth) {
+        int cx = loc.getBlockX();
+        int cy = loc.getBlockY();
+        int cz = loc.getBlockZ();
+        World w = loc.getWorld();
+        int rSquared = r * r;
+
+        List<Block> blocks = new ArrayList<>();
+
+        for (int x = cx - r; x <= cx + r; x++) {
+            for (int z = cz - r; z <= cz + r; z++) {
+                if ((cx - x) * (cx - x) + (cz - z) * (cz - z) <= rSquared) {
+                    Block surfaceBlockAbove = getSurfaceBlockAbove(w.getBlockAt(x, cy - 2, z), 5);
+                    blocks.add(surfaceBlockAbove);
+                    if (depth > 1) {
+                        for (int i = 1; i < depth; i++) {
+                            blocks.add(surfaceBlockAbove.getRelative(BlockFace.DOWN, i));
+                        }
+                    }
+                }
+            }
+        }
+
+        return blocks;
     }
 }
