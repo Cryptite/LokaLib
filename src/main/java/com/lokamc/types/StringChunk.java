@@ -63,11 +63,11 @@ public class StringChunk {
 
     public Location getCenter() {
         return new Location(world, x << 4, 64, z << 4)
-                .add(7, 0, 7);
+                .add(8, 0, 8);
     }
 
     public static Location getCenter(Chunk c) {
-        return new Location(c.getWorld(), c.getX() << 4, 64, c.getZ() << 4).add(7, 0, 7);
+        return new Location(c.getWorld(), c.getX() << 4, 64, c.getZ() << 4).add(8, 0, 8);
     }
 
     public boolean isLoaded() {
