@@ -76,29 +76,31 @@ public class LocationUtil {
         return coords;
     }
 
-    public static String coordsToString(Location point) {
-        if (point == null) return null;
+    public static String coordsToString(Location location) {
+        if (location == null) return null;
 
-        String coords = point.getWorld().getName() + "," +
-                point.getX() + "," +
-                point.getY() + "," +
-                point.getZ();
+        String worldName = location.getWorld() != null ? location.getWorld().getName() : "null";
+        String coords = worldName + "," +
+                location.getX() + "," +
+                location.getY() + "," +
+                location.getZ();
 
-        if (point.getYaw() != 0f || point.getPitch() != 0) {
-            coords += "," + point.getYaw();
-            coords += "," + point.getPitch();
+        if (location.getYaw() != 0f || location.getPitch() != 0) {
+            coords += "," + location.getYaw();
+            coords += "," + location.getPitch();
         }
 
         return coords;
     }
 
-    public static String coordsToStringBasic(Location point) {
-        if (point == null) return null;
+    public static String coordsToStringBasic(Location location) {
+        if (location == null) return null;
 
-        return point.getWorld().getName() + "," +
-                point.getBlockX() + "," +
-                point.getBlockY() + "," +
-                point.getBlockZ();
+        String worldName = location.getWorld() != null ? location.getWorld().getName() : "null";
+        return worldName + "," +
+                location.getBlockX() + "," +
+                location.getBlockY() + "," +
+                location.getBlockZ();
     }
 
     public static String prettyCoords(StringLocation l) {
