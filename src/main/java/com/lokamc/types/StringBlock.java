@@ -10,7 +10,8 @@ import org.bukkit.ChunkSnapshot;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
-import org.bukkit.block.*;
+import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.type.Slab;
 import org.bukkit.inventory.Inventory;
@@ -429,18 +430,7 @@ public class StringBlock extends StringLocation implements Comparable<StringBloc
 
     @Override
     public Inventory getInventory() {
-        try {
-            BlockState state = getBlock().getState(false);
-            if (state instanceof Container container) {
-                return container.getInventory();
-            } else if (state instanceof DecoratedPot decoratedPot) {
-                return decoratedPot.getInventory();
-            }
-        } catch (Exception ignored) {
-            //Sometimes you can just fail to read a blockstate..?
-        }
-
-        return null;
+        return LocationUtil.getChestInventory(getBlock());
     }
 
     public boolean isValidBottomStackedBlock(ChunkSnapshot snapshot) {

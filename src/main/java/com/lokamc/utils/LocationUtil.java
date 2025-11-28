@@ -17,11 +17,14 @@ import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import com.sk89q.worldguard.protection.regions.RegionContainer;
 import com.sk89q.worldguard.protection.regions.RegionQuery;
 import org.bukkit.*;
-import org.bukkit.block.*;
+import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
+import org.bukkit.block.Chest;
 import org.bukkit.entity.Animals;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.util.Vector;
 
 import java.util.*;
@@ -120,14 +123,14 @@ public class LocationUtil {
     }
 
     public static Inventory getChestInventory(Block block) {
-        BlockState state = block.getState();
-        if (state instanceof Container container) {
-            return container.getInventory();
-        } else if (state instanceof DecoratedPot decoratedPot) {
-            return decoratedPot.getInventory();
-        } else {
-            return null;
+        try {
+            if (block.getState() instanceof InventoryHolder inventoryHolder) {
+                return inventoryHolder.getInventory();
+            }
+        } catch (Exception ignored) {
         }
+
+        return null;
     }
 
     public static boolean hasWGBuildPerms(Player p, Location l) {
