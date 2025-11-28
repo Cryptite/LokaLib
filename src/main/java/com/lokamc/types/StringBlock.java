@@ -10,9 +10,7 @@ import org.bukkit.ChunkSnapshot;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
-import org.bukkit.block.Block;
-import org.bukkit.block.BlockFace;
-import org.bukkit.block.Container;
+import org.bukkit.block.*;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.type.Slab;
 import org.bukkit.inventory.Inventory;
@@ -418,8 +416,8 @@ public class StringBlock extends StringLocation implements Comparable<StringBloc
     }
 
     public boolean isSlabHalf(Slab.Type half) {
-        if (blockData instanceof Slab) {
-            return ((Slab) blockData).getType() == half;
+        if (blockData instanceof Slab slab) {
+            return slab.getType() == half;
         }
 
         return false;
@@ -432,9 +430,11 @@ public class StringBlock extends StringLocation implements Comparable<StringBloc
     @Override
     public Inventory getInventory() {
         try {
-            if (getBlock().getState(false) instanceof Container) {
-                Container c = (Container) getBlock().getState();
-                return c.getInventory();
+            BlockState state = getBlock().getState(false);
+            if (state instanceof Container container) {
+                return container.getInventory();
+            } else if (state instanceof DecoratedPot decoratedPot) {
+                return decoratedPot.getInventory();
             }
         } catch (Exception ignored) {
             //Sometimes you can just fail to read a blockstate..?

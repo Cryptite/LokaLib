@@ -112,7 +112,7 @@ public class LocationUtil {
     }
 
     public static Location getLocationFromChest(Inventory i) {
-        return i.getHolder() instanceof Chest ? ((Chest) i.getHolder()).getLocation() : null;
+        return i.getHolder() instanceof Chest chest ? chest.getLocation() : null;
     }
 
     public static Inventory getChestInventory(Location chestLocation) {
@@ -121,8 +121,10 @@ public class LocationUtil {
 
     public static Inventory getChestInventory(Block block) {
         BlockState state = block.getState();
-        if (state instanceof Container) {
-            return ((Container) state).getInventory();
+        if (state instanceof Container container) {
+            return container.getInventory();
+        } else if (state instanceof DecoratedPot decoratedPot) {
+            return decoratedPot.getInventory();
         } else {
             return null;
         }
@@ -226,7 +228,7 @@ public class LocationUtil {
         Map<String, ProtectedRegion> regions = null;
         while (prs.hasNext()) {
             if (regions == null) {
-                regions = new LinkedHashMap<>(set.size());
+                regions = LinkedHashMap.newLinkedHashMap(set.size());
             }
 
             ProtectedRegion pr = prs.next();
