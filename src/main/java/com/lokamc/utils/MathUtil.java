@@ -46,7 +46,7 @@ public class MathUtil {
         entries.sort(Map.Entry.comparingByValue());
 
         //Next roll from 0 to maxValue
-        float rand = new Random().nextFloat() * total;
+        float rand = ThreadLocalRandom.current().nextFloat() * total;
 
         //Then iterate through the descending list of entries, first one that's <= the random roll is our guy.
         for (Map.Entry<T, Float> entry : entries) {
@@ -66,7 +66,7 @@ public class MathUtil {
         if (dropRate == 100) return true;
         else if (dropRate == 0) return false;
 
-        float rand = new Random().nextFloat();
+        float rand = ThreadLocalRandom.current().nextFloat();
         double chance = rand * 100;
         return dropRate > chance;
     }
