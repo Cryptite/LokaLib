@@ -865,7 +865,7 @@ public class ItemStackUtil {
     }
 
     public static List<ItemStack> splitStack(final ItemStack itemStack, int amount) {
-        if (amount == 0) return new ArrayList<>();
+        if (amount <= 0) return new ArrayList<>();
 
         int maxStackSize = itemStack.getType().getMaxStackSize();
 
