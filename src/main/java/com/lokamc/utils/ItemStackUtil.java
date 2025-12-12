@@ -12,7 +12,6 @@ import org.bukkit.*;
 import org.bukkit.block.Banner;
 import org.bukkit.block.Block;
 import org.bukkit.block.Skull;
-import org.bukkit.block.banner.Pattern;
 import org.bukkit.block.data.Rotatable;
 import org.bukkit.craftbukkit.inventory.CraftItemStack;
 import org.bukkit.enchantments.Enchantment;
@@ -930,30 +929,40 @@ public class ItemStackUtil {
         if (banner == null) return shield;
 
         ItemMeta meta = shield.getItemMeta();
-        BlockStateMeta blockStateMeta = (BlockStateMeta) meta;
+        if (!(meta instanceof BlockStateMeta blockStateMeta)) {
+            return shield;
+        }
 
-        Banner bannerCopy = (Banner) blockStateMeta.getBlockState();
+        if (!(blockStateMeta.getBlockState() instanceof Banner bannerCopy)) {
+            return shield;
+        }
+        
         bannerCopy.setBaseColor(getBannerBaseColor(banner));
 
-        BannerMeta bannerMeta = (BannerMeta) banner.getItemMeta();
-        bannerCopy.setPatterns(bannerMeta.getPatterns());
+        ItemMeta bannerItemMeta = banner.getItemMeta();
+        if (bannerItemMeta instanceof BannerMeta bannerMeta) {
+            bannerCopy.setPatterns(bannerMeta.getPatterns());
+        }
+        
         bannerCopy.update();
-
         blockStateMeta.setBlockState(bannerCopy);
         shield.setItemMeta(blockStateMeta);
         return shield;
     }
 
     public static DyeColor getBannerBaseColor(ItemStack banner) {
-        if (banner == null) {
+        if (banner == null || !banner.getType().name().endsWith("_BANNER")) {
             return BLACK;
         }
 
-        BannerMeta meta = (BannerMeta) banner.getItemMeta();
-        List<Pattern> patterns = meta.getPatterns();
-        if (meta == null || patterns.isEmpty()) return BLACK;
+        String materialName = banner.getType().name();
+        String colorName = materialName.replace("_BANNER", "");
 
-        return patterns.getFirst().getColor();
+        try {
+            return DyeColor.valueOf(colorName);
+        } catch (IllegalArgumentException e) {
+            return BLACK;
+        }
     }
 
     public static void clearEnchants(ItemStack itemStack) {
