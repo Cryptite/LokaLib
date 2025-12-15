@@ -117,6 +117,14 @@ public class ConfigFile {
         return parseFloat(get(key, defaultValue));
     }
 
+    public double getDouble(String key) {
+        return Double.parseDouble(get(key, 0d));
+    }
+
+    public double getDouble(String key, Double defaultValue) {
+        return Double.parseDouble(get(key, defaultValue));
+    }
+
     public Boolean getBool(String key) {
         return Boolean.parseBoolean(get(key, false));
     }
