@@ -20,6 +20,12 @@ public class StringChunk {
         this.z = c.getZ();
     }
 
+    public StringChunk(Location l) {
+        this.world = l.getWorld();
+        this.x = l.getBlockX() >> 4;
+        this.z = l.getBlockZ() >> 4;
+    }
+
     public StringChunk(String args) {
         String[] argsSplit = args.split(",");
         this.world = Bukkit.getWorld(argsSplit[0]);
