@@ -321,12 +321,11 @@ public class PlayerUtil {
         ItemStack offHand = p.getInventory().getItemInOffHand();
 
         if (ignoreCount) {
-            inHand = inHand.asOne();
-            offHand = offHand.asOne();
+            return inHand.isSimilar(item) || offHand.isSimilar(item);
+        } else {
+            return inHand.equals(item) || offHand.equals(item);
         }
 
-        return (inHand != null && inHand.equals(item))
-                || offHand != null && offHand.equals(item);
     }
 
     public static boolean isHolding(Player p, Material m) {
