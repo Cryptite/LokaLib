@@ -5,13 +5,16 @@ import com.destroystokyo.paper.profile.ProfileProperty;
 import com.lokamc.LokaLib;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ClientInformation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.network.ServerGamePacketListenerImpl;
+import net.minecraft.server.players.NameAndId;
 import net.minecraft.util.ProblemReporter;
+import net.minecraft.world.level.storage.TagValueInput;
 import net.minecraft.world.level.storage.ValueInput;
 import org.bukkit.*;
 import org.bukkit.block.Block;
@@ -188,10 +191,12 @@ public class PlayerUtil {
         OfflinePlayer player = Bukkit.getOfflinePlayer(uuid);
         GameProfile profile = new GameProfile(player.getUniqueId(), player.getName());
         MinecraftServer server = ((CraftServer) Bukkit.getServer()).getServer();
+        CompoundTag load = server.getPlayerList().playerIo.load(new NameAndId(profile)).orElse(null);
+        ValueInput valueInput = TagValueInput.create(ProblemReporter.DISCARDING, server.registryAccess(), load);
+
         ServerPlayer entity = new ServerPlayer(server, server.overworld(), profile, ClientInformation.createDefault());
-        ValueInput load = server.getPlayerList().playerIo.load(entity, ProblemReporter.DISCARDING).orElse(null);
         CraftPlayer craftPlayer = entity.getBukkitEntity();
-        entity.load(load);
+        entity.load(valueInput);
         return craftPlayer;
     }
 
@@ -462,7 +467,7 @@ public class PlayerUtil {
 
     public static GameProfile getGameProfile(String url) {
         GameProfile profile = new GameProfile(UUID.randomUUID(), UUID.randomUUID().toString());
-        profile.getProperties().put("textures", new Property("textures", url));
+        profile.properties().put("textures", new Property("textures", url));
         return profile;
     }
 
