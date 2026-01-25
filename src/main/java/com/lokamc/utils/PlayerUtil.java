@@ -309,7 +309,7 @@ public class PlayerUtil {
         return p.getInventory().firstEmpty() == -1;
     }
 
-    public static boolean isHolding(Player p, Set<Material> items) {
+    public static boolean isHolding(Player p, Collection<Material> items) {
         for (Material item : items) {
             if (isHolding(p, item)) return true;
         }
