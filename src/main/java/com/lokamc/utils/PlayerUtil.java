@@ -251,6 +251,17 @@ public class PlayerUtil {
         }
     }
 
+    public static @Nullable HoldingResult getHolding(Player p, Collection<Material> materials) {
+        if (p == null) return null;
+
+        for (Material m : materials) {
+            HoldingResult result = getHolding(p, m);
+            if (result != null) return result;
+        }
+
+        return null;
+    }
+
     public static @Nullable HoldingResult getHolding(Player p, Material... materials) {
         return getHolding(p, null, materials);
     }
