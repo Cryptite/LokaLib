@@ -178,18 +178,18 @@ public class PlayerUtil {
         return false;
     }
 
-    public static void loadPlayer(Plugin plugin, UUID uuid, Consumer<Player> consumer) {
+    public static void loadPlayer(Plugin plugin, UUID uuid, String name, Consumer<Player> consumer) {
         Player p = Bukkit.getPlayer(uuid);
         if (p != null && p.isOnline()) {
             consumer.accept(p);
         } else {
-            CompletableFuture.runAsync(() -> consumer.accept(loadOfflinePlayer(uuid)), Bukkit.getScheduler().getMainThreadExecutor(plugin));
+            CompletableFuture.runAsync(() -> consumer.accept(loadOfflinePlayer(uuid, name)), Bukkit.getScheduler().getMainThreadExecutor(plugin));
         }
     }
 
-    public static Player loadOfflinePlayer(UUID uuid) {
+    public static Player loadOfflinePlayer(UUID uuid, String name) {
         OfflinePlayer player = Bukkit.getOfflinePlayer(uuid);
-        GameProfile profile = new GameProfile(player.getUniqueId(), player.getName());
+        GameProfile profile = new GameProfile(player.getUniqueId(), name);
         MinecraftServer server = ((CraftServer) Bukkit.getServer()).getServer();
         CompoundTag load = server.getPlayerList().playerIo.load(new NameAndId(profile)).orElse(null);
         ValueInput valueInput = TagValueInput.create(ProblemReporter.DISCARDING, server.registryAccess(), load);
