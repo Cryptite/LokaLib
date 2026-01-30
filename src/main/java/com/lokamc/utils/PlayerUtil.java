@@ -191,12 +191,15 @@ public class PlayerUtil {
         OfflinePlayer player = Bukkit.getOfflinePlayer(uuid);
         GameProfile profile = new GameProfile(player.getUniqueId(), name);
         MinecraftServer server = ((CraftServer) Bukkit.getServer()).getServer();
-        CompoundTag load = server.getPlayerList().playerIo.load(new NameAndId(profile)).orElse(null);
-        ValueInput valueInput = TagValueInput.create(ProblemReporter.DISCARDING, server.registryAccess(), load);
 
         ServerPlayer entity = new ServerPlayer(server, server.overworld(), profile, ClientInformation.createDefault());
         CraftPlayer craftPlayer = entity.getBukkitEntity();
-        entity.load(valueInput);
+
+        CompoundTag load = server.getPlayerList().playerIo.load(new NameAndId(profile)).orElse(null);
+        if (load != null) {
+            ValueInput valueInput = TagValueInput.create(ProblemReporter.DISCARDING, server.registryAccess(), load);
+            entity.load(valueInput);
+        }
         return craftPlayer;
     }
 
