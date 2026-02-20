@@ -199,10 +199,11 @@ public class BookUtil {
         if (book.getType() == WRITTEN_BOOK) return book;
 
         ItemStack writtenBook = new ItemStack(WRITTEN_BOOK);
-        if (book.getItemMeta() instanceof BookMeta bookMeta) {
-            bookMeta.title(Component.text("Unknown"));
-            bookMeta.author(Component.text("Unknown"));
-            writtenBook.setItemMeta(bookMeta);
+        if (book.getItemMeta() instanceof BookMeta bookMeta && writtenBook.getItemMeta() instanceof BookMeta newMeta) {
+            newMeta.title(Component.text("Unknown"));
+            newMeta.author(Component.text("Unknown"));
+            newMeta.pages(bookMeta.pages());
+            writtenBook.setItemMeta(newMeta);
         }
 
         return writtenBook;
