@@ -6,6 +6,8 @@ import com.lokamc.utils.LocationUtil;
 import com.sk89q.worldedit.WorldEditException;
 import com.sk89q.worldedit.world.block.BlockStateHolder;
 import io.papermc.paper.block.fluid.FluidData;
+import io.papermc.paper.math.BlockPosition;
+import io.papermc.paper.math.Position;
 import org.bukkit.ChunkSnapshot;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -483,5 +485,9 @@ public class StringBlock extends StringLocation implements Comparable<StringBloc
 
     public <T extends BlockStateHolder<T>> void setBlockStateHolder(T block) {
         this.blockStateHolder = block;
+    }
+
+    public BlockPosition toBlockPosition() {
+        return Position.block(this);
     }
 }
