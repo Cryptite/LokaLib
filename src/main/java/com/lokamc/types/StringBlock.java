@@ -131,7 +131,7 @@ public class StringBlock extends StringLocation implements Comparable<StringBloc
     }
 
     public ItemStack getItemStack() {
-        return new ItemStack(blockData.getMaterial());
+        return ItemStack.of(blockData.getMaterial());
     }
 
     public void addOnSetConsumer(Runnable runnable) {

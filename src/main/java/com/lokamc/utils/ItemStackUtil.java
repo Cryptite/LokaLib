@@ -56,7 +56,7 @@ public class ItemStackUtil {
     }
 
     public static ItemStack createItemStack(Material material, String displayName, int customModelData) {
-        return createItemStack(new ItemStack(material), displayName, customModelData);
+        return createItemStack(ItemStack.of(material), displayName, customModelData);
     }
 
     public static ItemStack createItemStack(ItemStack itemStack, String displayName) {
@@ -83,7 +83,7 @@ public class ItemStackUtil {
     }
 
     public static ItemStack createItemStack(Material material, Component displayName, int customModelData) {
-        return createItemStack(new ItemStack(material), displayName, customModelData);
+        return createItemStack(ItemStack.of(material), displayName, customModelData);
     }
 
     public static ItemStack createItemStack(ItemStack itemStack, Component displayName) {
@@ -118,14 +118,14 @@ public class ItemStackUtil {
     }
 
     public static String getFriendlyName(Material m) {
-        return getFriendlyName(new ItemStack(m));
+        return getFriendlyName(ItemStack.of(m));
     }
 
     public static String getFriendlyName(ItemStack item) {
         if (item == null) return "???";
 
         ItemMeta meta = item.getItemMeta();
-        if (meta == null) return new ItemStack(item.getType()).getI18NDisplayName();
+        if (meta == null) return ItemStack.of(item.getType()).getI18NDisplayName();
 
         String displayName = meta.getDisplayName();
 
@@ -390,7 +390,7 @@ public class ItemStackUtil {
         }
 
         for (Component component : lore) {
-            currentLore.add(component.decoration(TextDecoration.ITALIC, false));
+            currentLore.add(component.decorationIfAbsent(TextDecoration.ITALIC, TextDecoration.State.FALSE));
         }
 
         if (meta != null) {
@@ -422,7 +422,7 @@ public class ItemStackUtil {
         if (meta.hasLore()) currentLore.addAll(meta.lore());
 
         for (Component component : lore) {
-            currentLore.add(component.decoration(TextDecoration.ITALIC, false));
+            currentLore.add(component.decorationIfAbsent(TextDecoration.ITALIC, TextDecoration.State.FALSE));
         }
 
         meta.lore(currentLore);
@@ -770,7 +770,7 @@ public class ItemStackUtil {
     }
 
     public static ItemStack getPotion(PotionData data, boolean splash) {
-        ItemStack potion = new ItemStack(splash ? Material.SPLASH_POTION : Material.POTION);
+        ItemStack potion = ItemStack.of(splash ? Material.SPLASH_POTION : Material.POTION);
         PotionMeta meta = (PotionMeta) potion.getItemMeta();
         meta.setBasePotionData(data);
         potion.setItemMeta(meta);
@@ -786,14 +786,15 @@ public class ItemStackUtil {
 
     public static void clearInventory(Player p) {
         p.getInventory().clear();
-        p.getInventory().setHelmet(new ItemStack(Material.AIR));
-        p.getInventory().setBoots(new ItemStack(Material.AIR));
-        p.getInventory().setChestplate(new ItemStack(Material.AIR));
-        p.getInventory().setLeggings(new ItemStack(Material.AIR));
+        ItemStack air = ItemStack.of(Material.AIR);
+        p.getInventory().setHelmet(air);
+        p.getInventory().setBoots(air);
+        p.getInventory().setChestplate(air);
+        p.getInventory().setLeggings(air);
     }
 
     public static ItemStack getPlayerSkull(OfflinePlayer skullOwner, String displayName) {
-        ItemStack skull = new ItemStack(Material.PLAYER_HEAD);
+        ItemStack skull = ItemStack.of(Material.PLAYER_HEAD);
         SkullMeta skullMeta = (SkullMeta) skull.getItemMeta();
         skullMeta.setOwningPlayer(skullOwner);
         skullMeta.setDisplayName(ChatColor.RESET + displayName);
@@ -802,7 +803,7 @@ public class ItemStackUtil {
     }
 
     public static ItemStack getPlayerSkull(PlayerProfile profile, String displayName) {
-        ItemStack skull = new ItemStack(Material.PLAYER_HEAD);
+        ItemStack skull = ItemStack.of(Material.PLAYER_HEAD);
         SkullMeta skullMeta = (SkullMeta) skull.getItemMeta();
         skullMeta.setPlayerProfile(profile);
         skullMeta.setDisplayName(ChatColor.RESET + displayName);
@@ -852,7 +853,7 @@ public class ItemStackUtil {
     }
 
     public static ItemStack getMendingBook() {
-        ItemStack book = new ItemStack(Material.ENCHANTED_BOOK);
+        ItemStack book = ItemStack.of(Material.ENCHANTED_BOOK);
         EnchantmentStorageMeta meta = (EnchantmentStorageMeta) book.getItemMeta();
         meta.addStoredEnchant(Enchantment.MENDING, 1, true);
         book.setItemMeta(meta);
@@ -913,7 +914,7 @@ public class ItemStackUtil {
     }
 
     public static ItemStack getColoredLeatherArmor(Material m, Color color) {
-        ItemStack item = new ItemStack(m);
+        ItemStack item = ItemStack.of(m);
         LeatherArmorMeta lam = (LeatherArmorMeta) item.getItemMeta();
         lam.setColor(color);
         item.setItemMeta(lam);
@@ -925,7 +926,7 @@ public class ItemStackUtil {
     }
 
     public static ItemStack getShieldFromBanner(ItemStack sourceItem, ItemStack banner) {
-        ItemStack shield = sourceItem != null ? sourceItem : new ItemStack(Material.SHIELD);
+        ItemStack shield = sourceItem != null ? sourceItem : ItemStack.of(Material.SHIELD);
         if (banner == null) return shield;
 
         ItemMeta meta = shield.getItemMeta();

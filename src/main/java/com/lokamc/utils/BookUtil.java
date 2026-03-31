@@ -198,7 +198,7 @@ public class BookUtil {
     public static ItemStack getShowableBook(ItemStack book) {
         if (book.getType() == WRITTEN_BOOK) return book;
 
-        ItemStack writtenBook = new ItemStack(WRITTEN_BOOK);
+        ItemStack writtenBook = ItemStack.of(WRITTEN_BOOK);
         if (book.getItemMeta() instanceof BookMeta bookMeta && writtenBook.getItemMeta() instanceof BookMeta newMeta) {
             newMeta.title(Component.text("Unknown"));
             newMeta.author(Component.text("Unknown"));

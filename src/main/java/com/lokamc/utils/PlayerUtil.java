@@ -441,9 +441,9 @@ public class PlayerUtil {
     }
 
     public static ItemStack getHeadByUrl(String url) {
-        if (url == null) return new ItemStack(Material.BARRIER);
+        if (url == null) return ItemStack.of(Material.BARRIER);
 
-        ItemStack head = new ItemStack(Material.PLAYER_HEAD, 1);
+        ItemStack head = ItemStack.of(Material.PLAYER_HEAD, 1);
         if (url.isEmpty()) return head;
 
         head.setItemMeta(getSkullMeta(url));
@@ -453,7 +453,7 @@ public class PlayerUtil {
     public static SkullMeta getSkullMeta(String url) {
         if (url == null || url.isEmpty()) return null;
 
-        ItemStack head = new ItemStack(Material.PLAYER_HEAD);
+        ItemStack head = ItemStack.of(Material.PLAYER_HEAD);
         SkullMeta headMeta = (SkullMeta) head.getItemMeta();
         PlayerProfile profile = Bukkit.createProfile(UUID.randomUUID());
         profile.setProperty(new ProfileProperty("textures", url));
@@ -463,9 +463,9 @@ public class PlayerUtil {
     }
 
     public static ItemStack getHeadByProfile(GameProfile profile) {
-        if (profile == null) return new ItemStack(Material.BARRIER);
+        if (profile == null) return ItemStack.of(Material.BARRIER);
 
-        ItemStack head = new ItemStack(Material.PLAYER_HEAD, 1);
+        ItemStack head = ItemStack.of(Material.PLAYER_HEAD, 1);
         SkullMeta headMeta = (SkullMeta) head.getItemMeta();
         Field profileField;
         try {

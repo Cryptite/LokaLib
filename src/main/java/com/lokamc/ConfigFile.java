@@ -217,7 +217,7 @@ public class ConfigFile {
 
     public ItemStack getItem(String key, Material defaultMaterial) {
         ItemStack item = getItem(key);
-        return item != null ? item : new ItemStack(defaultMaterial);
+        return item != null ? item : ItemStack.of(defaultMaterial);
     }
 
     @Deprecated
