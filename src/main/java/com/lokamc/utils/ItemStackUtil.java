@@ -118,7 +118,11 @@ public class ItemStackUtil {
     }
 
     public static String getFriendlyName(Material m) {
-        return getFriendlyName(ItemStack.of(m));
+        if (m.asItemType() != null) {
+            return getFriendlyName(ItemStack.of(m));
+        }
+
+        return capitalize(m.toString().toLowerCase().replace("_", " "));
     }
 
     public static String getFriendlyName(ItemStack item) {
