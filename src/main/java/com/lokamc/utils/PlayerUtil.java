@@ -204,11 +204,15 @@ public class PlayerUtil {
     }
 
     public static boolean hasEmptyInventory(Player p) {
-        for (ItemStack item : p.getInventory().getContents()) {
-            if (item != null)
-                return false;
+        PlayerInventory inv = p.getInventory();
+        for (ItemStack item : inv.getContents()) {
+            if (item != null && !item.isEmpty()) return false;
         }
-        return true;
+        for (ItemStack item : inv.getArmorContents()) {
+            if (item != null && !item.isEmpty()) return false;
+        }
+
+        return inv.getItemInOffHand().isEmpty() && p.getItemOnCursor().isEmpty();
     }
 
     public static int getEmptyInventorySlots(Player p) {
