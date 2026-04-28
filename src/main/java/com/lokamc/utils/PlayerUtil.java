@@ -5,6 +5,7 @@ import com.destroystokyo.paper.profile.ProfileProperty;
 import com.lokamc.LokaLib;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
+import io.netty.channel.EventLoop;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
@@ -41,6 +42,7 @@ import org.jetbrains.annotations.Nullable;
 import java.lang.reflect.Field;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.RejectedExecutionException;
 import java.util.function.Consumer;
 
 import static net.minecraft.world.entity.player.Player.MAX_HEALTH;
@@ -48,17 +50,54 @@ import static net.minecraft.world.food.FoodConstants.MAX_FOOD;
 import static net.minecraft.world.food.FoodConstants.MAX_SATURATION;
 
 public class PlayerUtil {
+
+    /**
+     * Dispatches scoreboard/team packets through the recipient's Netty channel {@link EventLoop}.
+     *
+     * <p>Scoreboard objective and team packets are state-mutating on the client. If an
+     * {@code ADD} and {@code REMOVE} for the same name are enqueued from different threads
+     * (e.g. a sync send on the main thread plus an async send from an arbitrary worker),
+     * they can hit the player's connection in the wrong order. The client then throws
+     * {@code IllegalArgumentException: An objective with the name '...' already exists!}
+     * (or the team-equivalent) and disconnects.
+     *
+     * <p>Each connection's Netty {@code EventLoop} is single-threaded and FIFO, so routing
+     * every send through it gives free per-player ordering while preserving cross-player
+     * parallelism — the server's {@code EventLoopGroup} pools threads across many channels,
+     * so this does not gate all sends behind one thread.
+     */
     public static void sendPacket(Player p, Packet<ClientGamePacketListener> packet) {
         sendPacket(p, packet, null);
     }
 
     public static void sendPacket(Player p, Packet<ClientGamePacketListener> packet, String logExtra) {
+        if (p == null) return;
+
         ServerGamePacketListenerImpl connection = getConnection(p);
-        if (connection != null) {
+        if (connection == null) return;
+
+        EventLoop loop = connection.connection.channel.eventLoop();
+        if (loop.inEventLoop()) {
+            // Fast path: caller is already on the player's I/O thread. No Runnable allocation,
+            // no queue hop, no scalar-replacement bailout from the JIT.
             if (logExtra != null) {
-                LokaLib.log.info(String.format("Sending packet (%s) %s to player %s", logExtra, packet.toString(), p.getName()));
+                LokaLib.log.info(String.format("Sending packet (%s) %s to player %s", logExtra, packet, p.getName()));
             }
             connection.send(packet);
+            return;
+        }
+
+        // Cross-thread submission: a heap-allocated task is unavoidable here because the
+        // EventLoop's MPSC queue holds the reference until the I/O thread consumes it.
+        try {
+            loop.execute(() -> {
+                if (logExtra != null) {
+                    LokaLib.log.info(String.format("Sending packet (%s) %s to player %s", logExtra, packet, p.getName()));
+                }
+                connection.send(packet);
+            });
+        } catch (RejectedExecutionException ignored) {
+            // EventLoop shut down (channel closed); send is a no-op.
         }
     }
 
