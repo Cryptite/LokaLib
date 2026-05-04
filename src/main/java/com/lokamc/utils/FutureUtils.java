@@ -13,7 +13,9 @@ import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
+import java.util.logging.Level;
 import java.util.stream.Collectors;
 
 public class FutureUtils {
@@ -27,7 +29,7 @@ public class FutureUtils {
     public static void tryFuture(CompletableFuture<Boolean> future, Runnable onSuccess, Runnable onFailure) {
         future.handle((result, throwable) -> {
             if (throwable != null) {
-                throwable.printStackTrace();
+                LokaLib.log.log(Level.SEVERE, "tryFuture failed", throwable);
                 result = false;
             }
 
@@ -47,7 +49,7 @@ public class FutureUtils {
     public static <T> void tryFuture(CompletableFuture<T> future, Consumer<T> onSuccess, Runnable onFailure) {
         future.handle((result, throwable) -> {
             if (throwable != null) {
-                throwable.printStackTrace();
+                LokaLib.log.log(Level.SEVERE, "tryFuture failed", throwable);
                 result = null;
             }
 
@@ -62,12 +64,12 @@ public class FutureUtils {
 
     public static void tryFuture(Audience audience, CompletableFuture<Boolean> future, Consumer<Player> onSuccess) {
         if (audience instanceof Player p) {
-            tryFuture(p, future, onSuccess, null);
+            tryFuture(p, future, onSuccess, (Consumer<Player>) null);
         }
     }
 
     public static void tryFuture(Player p, CompletableFuture<Boolean> future, Consumer<Player> onSuccess) {
-        tryFuture(p, future, onSuccess, null);
+        tryFuture(p, future, onSuccess, (Consumer<Player>) null);
     }
 
     public static void tryFuture(Audience audience, CompletableFuture<Boolean> future, Consumer<Player> onSuccess, Consumer<Player> onFailure) {
@@ -77,13 +79,17 @@ public class FutureUtils {
     }
 
     public static void tryFuture(Player p, CompletableFuture<Boolean> future, Consumer<Player> onSuccess, Consumer<Player> onFailure) {
+        tryFuture(p, future, onSuccess, onFailure != null ? (player, t) -> onFailure.accept(player) : null);
+    }
+
+    public static void tryFuture(Player p, CompletableFuture<Boolean> future, Consumer<Player> onSuccess, BiConsumer<Player, Throwable> onFailure) {
         future.handle((result, throwable) -> {
             if (throwable != null) {
-                throwable.printStackTrace();
+                LokaLib.log.log(Level.SEVERE, "tryFuture failed for " + p.getName(), throwable);
                 result = false;
             }
 
-            performFuture(p, result, onSuccess, onFailure);
+            performFuture(p, result, throwable, onSuccess, onFailure);
             return null;
         });
     }
@@ -99,23 +105,24 @@ public class FutureUtils {
     }
 
     public static void tryFutureSync(Player p, CompletableFuture<Boolean> future, Consumer<Player> onSuccess, Consumer<Player> onFailure) {
+        BiConsumer<Player, Throwable> failure = onFailure != null ? (player, t) -> onFailure.accept(player) : null;
         future.handleAsync((result, throwable) -> {
                     if (throwable != null) {
-                        throwable.printStackTrace();
+                        LokaLib.log.log(Level.SEVERE, "tryFutureSync failed for " + p.getName(), throwable);
                         result = false;
                     }
 
-                    performFuture(p, result, onSuccess, onFailure);
+                    performFuture(p, result, throwable, onSuccess, failure);
                     return null;
                 },
                 Bukkit.getScheduler().getMainThreadExecutor(LokaLib.instance));
     }
 
-    private static void performFuture(Player p, boolean result, Consumer<Player> onSuccess, Consumer<Player> onFailure) {
+    private static void performFuture(Player p, boolean result, Throwable throwable, Consumer<Player> onSuccess, BiConsumer<Player, Throwable> onFailure) {
         if (result) {
             onSuccess.accept(Bukkit.getPlayer(p.getUniqueId()));
         } else if (onFailure != null) {
-            onFailure.accept(Bukkit.getPlayer(p.getUniqueId()));
+            onFailure.accept(Bukkit.getPlayer(p.getUniqueId()), throwable);
         }
     }
 
