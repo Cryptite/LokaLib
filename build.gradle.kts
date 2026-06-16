@@ -26,7 +26,7 @@ dependencies {
         exclude(group = "com.google.guava")
         exclude(group = "it.unimi.dsi")
     }
-    compileOnly("com.sk89q.worldedit:worldedit-bukkit:7.3.9")
+    compileOnly("com.sk89q.worldedit:worldedit-bukkit:7.4.0")
 }
 
 paperweight.reobfArtifactConfiguration = io.papermc.paperweight.userdev.ReobfArtifactConfiguration.MOJANG_PRODUCTION
