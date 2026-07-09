@@ -141,6 +141,11 @@ public class LocationUtil {
         return container.createQuery().testState(BukkitAdapter.adapt(l), localPlayer, Flags.BUILD);
     }
 
+    public static boolean hasWENoMobSpawning(Location l) {
+        RegionContainer container = WorldGuard.getInstance().getPlatform().getRegionContainer();
+        return !container.createQuery().testState(BukkitAdapter.adapt(l), null, Flags.MOB_SPAWNING);
+    }
+
     public static boolean inWGRegion(String region, String player) {
         Player p = Bukkit.getPlayerExact(player);
         return inWGRegion(p, region);

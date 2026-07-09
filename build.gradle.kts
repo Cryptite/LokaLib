@@ -60,7 +60,7 @@ tasks.register("copyJar") {
     doLast {
         copy {
             from("build/libs/LokaLib-3.1-all.jar")
-            into("D:/Loka/pts1211/plugins/update")
+            into("C:/Loka/pts1211/plugins/update")
         }
     }
 }
@@ -70,5 +70,35 @@ publishing {
         create<MavenPublication>("maven") {
             from(components["java"])
         }
+    }
+}
+
+// Mirrors copyJar, but uploads the shadow jar via scp run inside WSL2, so it
+// uses the OpenSSH keys / known_hosts / ssh config already set up there.
+// Config via gradle.properties (or -P): deployHost (required), deployUser (root),
+// deployPort (22), deployDir (defaults below), deployKey (optional WSL path).
+tasks.register<Exec>("uploadJar") {
+    dependsOn("copyJar")
+    val deployHost = providers.gradleProperty("deployHost")
+    val deployUser = providers.gradleProperty("deployUser").getOrElse("root")
+    val deployPort = providers.gradleProperty("deployPort").getOrElse("22")
+    val deployKey = providers.gradleProperty("deployKey")
+    val jar = file("build/libs/LokaLib-$version-all.jar")
+    val remoteDir = providers.gradleProperty("deployDir")
+        .getOrElse("/usr/local/lokacommon/server/global/plugins/update/")
+
+    doFirst {
+        require(deployHost.isPresent) {
+            "deployHost is not set. Add it to gradle.properties or pass -PdeployHost=<host>."
+        }
+        fun toWslPath(win: String): String {
+            val p = win.replace("\\", "/")
+            return if (p.length >= 2 && p[1] == ':') "/mnt/" + p[0].lowercaseChar() + p.substring(2) else p
+        }
+
+        val keyOpt = if (deployKey.isPresent) "-i '${deployKey.get()}' " else ""
+        val script = "scp -P $deployPort ${keyOpt}-o BatchMode=yes -o StrictHostKeyChecking=accept-new " +
+                "'${toWslPath(jar.absolutePath)}' '$deployUser@${deployHost.get()}:$remoteDir'"
+        commandLine("wsl", "bash", "-lc", script)
     }
 }
