@@ -1,14 +1,20 @@
 plugins {
     `java-library`
     `maven-publish`
-    id("io.papermc.paperweight.userdev") version "2.0.0-beta.19"
+    id("io.papermc.paperweight.userdev") version "2.0.0-beta.21"
     id("xyz.jpenilla.run-paper") version "3.0.2" // Adds runServer and runMojangMappedServer tasks for testing
-    id("com.gradleup.shadow") version "8.3.6" // Changed from io.github.goooler.shadow
+    id("com.gradleup.shadow") version "9.5.1" // Changed from io.github.goooler.shadow
 }
 
 group = "com.lokamc"
-version = "3.1"
+version = "4.0"
 description = "LokaLib helpful utilities"
+
+java {
+    toolchain {
+        languageVersion.set(JavaLanguageVersion.of(25))
+    }
+}
 
 repositories {
     mavenCentral()
@@ -17,7 +23,7 @@ repositories {
 }
 
 dependencies {
-    paperweight.paperDevBundle("1.21.11-R0.1-SNAPSHOT", "fork.test")
+    paperweight.paperDevBundle("26.2-R0.1-SNAPSHOT", "fork.test")
     implementation("commons-io:commons-io:2.14.0")
     implementation("com.github.ben-manes.caffeine:caffeine:3.1.8")
     implementation("org.ocpsoft.prettytime:prettytime:5.0.9.Final")
@@ -26,10 +32,12 @@ dependencies {
         exclude(group = "com.google.guava")
         exclude(group = "it.unimi.dsi")
     }
-    compileOnly("com.sk89q.worldedit:worldedit-bukkit:7.4.0")
+    compileOnly("com.sk89q.worldedit:worldedit-bukkit:7.4.0") {
+        exclude(group = "com.google.code.gson")
+        exclude(group = "com.google.guava")
+        exclude(group = "it.unimi.dsi")
+    }
 }
-
-paperweight.reobfArtifactConfiguration = io.papermc.paperweight.userdev.ReobfArtifactConfiguration.MOJANG_PRODUCTION
 
 tasks.assemble {
     dependsOn(tasks.shadowJar)
@@ -38,7 +46,7 @@ tasks.assemble {
 tasks {
     compileJava {
         options.encoding = Charsets.UTF_8.name()
-        options.release.set(21)
+        options.release.set(25)
     }
     javadoc {
         options.encoding = Charsets.UTF_8.name()
@@ -59,7 +67,7 @@ tasks.register("copyJar") {
     dependsOn("build")
     doLast {
         copy {
-            from("build/libs/LokaLib-3.1-all.jar")
+            from("build/libs/LokaLib-4.0-all.jar")
             into("C:/Loka/pts1211/plugins/update")
         }
     }
