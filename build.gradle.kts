@@ -7,7 +7,7 @@ plugins {
 }
 
 group = "com.lokamc"
-version = "3.1"
+version = "3.2"
 description = "LokaLib helpful utilities"
 
 repositories {
@@ -59,7 +59,7 @@ tasks.register("copyJar") {
     dependsOn("build")
     doLast {
         copy {
-            from("build/libs/LokaLib-3.1-all.jar")
+            from("build/libs/LokaLib-3.2-all.jar")
             into("C:/Loka/pts1211/plugins/update")
         }
     }

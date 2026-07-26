@@ -1,6 +1,9 @@
 package com.lokamc.utils;
 
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.event.ClickEvent;
+import net.kyori.adventure.text.format.TextDecoration;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -10,6 +13,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.regex.Pattern;
 
 import static net.md_5.bungee.api.ChatColor.GRAY;
 import static org.apache.commons.lang3.StringUtils.isNumeric;
@@ -18,9 +22,47 @@ import static org.bukkit.ChatColor.stripColor;
 
 public class StringUtils {
     private static final DecimalFormat numberFormat = new DecimalFormat("#,###,###");
+    private static final LegacyComponentSerializer LEGACY = LegacyComponentSerializer.legacySection();
+    private static final Pattern URL_PATTERN = Pattern.compile("https?://\\S+");
 
     public static String stripComponentColor(Component component) {
         return ChatColor.stripColor(PlainTextComponentSerializer.plainText().serialize(component));
+    }
+
+    /**
+     * Converts a legacy section-formatted ({@code §}) string into a modern Adventure {@link Component}.
+     */
+    public static Component legacyToComponent(String legacy) {
+        if (legacy == null) return Component.empty();
+        return LEGACY.deserialize(legacy);
+    }
+
+    /**
+     * Serializes a {@link Component} back to a legacy section-formatted ({@code §}) string.
+     */
+    public static String componentToLegacy(Component component) {
+        if (component == null) return "";
+        return LEGACY.serialize(component);
+    }
+
+    /**
+     * Flattens a {@link Component} to plain text with all formatting stripped.
+     */
+    public static String componentToPlain(Component component) {
+        if (component == null) return "";
+        return PlainTextComponentSerializer.plainText().serialize(component);
+    }
+
+    /**
+     * Adds {@link ClickEvent#openUrl} click events (and italics) to any {@code http(s)://} URLs found
+     * in the component, mirroring the auto-linking the old FancyMessage did in {@code then(String)}.
+     */
+    public static Component linkify(Component component) {
+        if (component == null) return Component.empty();
+        return component.replaceText(builder -> builder
+                .match(URL_PATTERN)
+                .replacement((match, b) -> b.clickEvent(ClickEvent.openUrl(match.group()))
+                        .decorate(TextDecoration.ITALIC)));
     }
 
     public static String getFormattedNumber(double number) {
