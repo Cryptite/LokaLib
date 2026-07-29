@@ -1,6 +1,8 @@
 package com.lokamc.utils;
 
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.ObjectComponent;
+import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
@@ -26,7 +28,7 @@ public class StringUtils {
     private static final Pattern URL_PATTERN = Pattern.compile("https?://\\S+");
 
     public static String stripComponentColor(Component component) {
-        return ChatColor.stripColor(PlainTextComponentSerializer.plainText().serialize(component));
+        return ChatColor.stripColor(componentToPlain(component));
     }
 
     /**
@@ -42,7 +44,7 @@ public class StringUtils {
      */
     public static String componentToLegacy(Component component) {
         if (component == null) return "";
-        return LEGACY.serialize(component);
+        return LEGACY.serialize(stripObjects(component));
     }
 
     /**
@@ -50,7 +52,47 @@ public class StringUtils {
      */
     public static String componentToPlain(Component component) {
         if (component == null) return "";
-        return PlainTextComponentSerializer.plainText().serialize(component);
+        return PlainTextComponentSerializer.plainText().serialize(stripObjects(component));
+    }
+
+    /**
+     * Removes {@link ObjectComponent}s (player heads, atlas sprites) from the tree.
+     * <p>
+     * They have no textual form, and Adventure's flattener renders them as the literal text
+     * {@code [unknown player head]}, which would otherwise end up in Discord relays and console logs anywhere a
+     * chat format is serialized. The space that separates a head from the name following it is dropped along with
+     * it, so the text reads the same as it did before heads were added to the chat formats.
+     */
+    public static Component stripObjects(Component component) {
+        if (component == null) return Component.empty();
+
+        List<Component> children = component.children();
+        if (children.isEmpty()) {
+            return component instanceof ObjectComponent ? Component.empty() : component;
+        }
+
+        List<Component> kept = new ArrayList<>(children.size());
+        boolean afterObject = false;
+        for (Component child : children) {
+            if (child instanceof ObjectComponent) {
+                afterObject = true;
+                child.children().forEach(nested -> kept.add(stripObjects(nested)));
+                continue;
+            }
+
+            if (afterObject && child instanceof TextComponent text && text.content().startsWith(" ")) {
+                child = text.content(text.content().substring(1));
+            }
+
+            afterObject = false;
+            kept.add(stripObjects(child));
+        }
+
+        if (component instanceof ObjectComponent) {
+            return Component.textOfChildren(kept.toArray(new Component[0]));
+        }
+
+        return component.children(kept);
     }
 
     /**
