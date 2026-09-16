@@ -21,7 +21,7 @@ dependencies {
     implementation("commons-io:commons-io:2.14.0")
     implementation("com.github.ben-manes.caffeine:caffeine:3.1.8")
     implementation("org.ocpsoft.prettytime:prettytime:5.0.9.Final")
-    compileOnly("com.sk89q.worldguard:worldguard-bukkit:7.1.0-SNAPSHOT") {
+    compileOnly("com.sk89q.worldguard:worldguard-bukkit:7.0.14") {
         exclude(group = "com.google.code.gson")
         exclude(group = "com.google.guava")
         exclude(group = "it.unimi.dsi")

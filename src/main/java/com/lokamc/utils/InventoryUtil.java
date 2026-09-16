@@ -67,17 +67,8 @@ public class InventoryUtil {
 
     public static boolean testInventory(Player p, Predicate<ItemStack> predicate) {
         for (ItemStack itemStack : p.getInventory()) {
-            if (itemStack == null) continue;
-
-            if (predicate.test(itemStack)) {
+            if (ItemContents.anyDeep(itemStack, predicate)) {
                 return true;
-            } else if (itemStack.getItemMeta() instanceof CraftMetaBlockState state
-                    && state.getBlockState() instanceof CraftShulkerBox box) {
-                for (ItemStack shulkerItem : box.getInventory()) {
-                    if (shulkerItem != null && predicate.test(shulkerItem)) {
-                        return true;
-                    }
-                }
             }
         }
 
