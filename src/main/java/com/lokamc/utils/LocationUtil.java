@@ -53,9 +53,9 @@ public class LocationUtil {
     public static String coordsToString(com.sk89q.worldedit.math.BlockVector3 point) {
         if (point == null) return null;
 
-        return point.getX() + "," +
-                point.getY() + "," +
-                point.getZ();
+        return point.x() + "," +
+                point.y() + "," +
+                point.z();
     }
 
     public static String coordsToString(StringLocation point) {
@@ -389,8 +389,8 @@ public class LocationUtil {
     public static List<Block> getBlocksFromRegion(World world, CuboidRegion region) {
         BlockVector3 minimumPoint = region.getMinimumPoint();
         BlockVector3 maximumPoint = region.getMaximumPoint();
-        Location l1 = new Location(world, minimumPoint.getX(), minimumPoint.getY(), minimumPoint.getZ());
-        Location l2 = new Location(world, maximumPoint.getX(), maximumPoint.getY(), maximumPoint.getZ());
+        Location l1 = new Location(world, minimumPoint.x(), minimumPoint.y(), minimumPoint.z());
+        Location l2 = new Location(world, maximumPoint.x(), maximumPoint.y(), maximumPoint.z());
         return getBlocksFromRegion(l1, l2);
     }
 
@@ -527,22 +527,22 @@ public class LocationUtil {
     }
 
     public static Location getCenter(World world, ProtectedRegion region) {
-        Location l1 = new Location(world, region.getMaximumPoint().getBlockX(),
-                region.getMaximumPoint().getBlockY(),
-                region.getMaximumPoint().getBlockZ());
-        Location l2 = new Location(world, region.getMinimumPoint().getBlockX(),
-                region.getMinimumPoint().getBlockY(),
-                region.getMinimumPoint().getBlockZ());
+        Location l1 = new Location(world, region.getMaximumPoint().x(),
+                region.getMaximumPoint().y(),
+                region.getMaximumPoint().z());
+        Location l2 = new Location(world, region.getMinimumPoint().x(),
+                region.getMinimumPoint().y(),
+                region.getMinimumPoint().z());
         return getCenter(l1, l2);
     }
 
     public static Location[] getRegionEdges(World world, ProtectedRegion region) {
-        Location l1 = new Location(world, region.getMaximumPoint().getBlockX(),
-                region.getMaximumPoint().getBlockY(),
-                region.getMaximumPoint().getBlockZ());
-        Location l2 = new Location(world, region.getMinimumPoint().getBlockX(),
-                region.getMinimumPoint().getBlockY(),
-                region.getMinimumPoint().getBlockZ());
+        Location l1 = new Location(world, region.getMaximumPoint().x(),
+                region.getMaximumPoint().y(),
+                region.getMaximumPoint().z());
+        Location l2 = new Location(world, region.getMinimumPoint().x(),
+                region.getMinimumPoint().y(),
+                region.getMinimumPoint().z());
         return new Location[]{l1, l2};
     }
 
@@ -575,11 +575,11 @@ public class LocationUtil {
     }
 
     public static Location toLocation(World world, com.sk89q.worldedit.math.BlockVector3 vector) {
-        return new Location(world, vector.getBlockX(), vector.getBlockY(), vector.getBlockZ());
+        return new Location(world, vector.x(), vector.y(), vector.z());
     }
 
     public static Location toLocation(World world, com.sk89q.worldedit.math.Vector3 vector) {
-        return new Location(world, vector.getX(), vector.getY(), vector.getZ());
+        return new Location(world, vector.x(), vector.y(), vector.z());
     }
 
     public static Location toLocation(World world, Vector vector) {

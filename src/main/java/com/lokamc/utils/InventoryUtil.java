@@ -39,7 +39,7 @@ public class InventoryUtil {
     public static boolean testClickedItem(InventoryClickEvent e, Predicate<ItemStack> predicate) {
         ItemStack clicked = null;
         InventoryAction action = e.getAction();
-        if (action == InventoryAction.HOTBAR_MOVE_AND_READD || action == InventoryAction.HOTBAR_SWAP) {
+        if (action == InventoryAction.HOTBAR_SWAP) {
             Inventory clickedInventory = e.getClickedInventory();
             if (e.getHotbarButton() == -1) {
                 clicked = e.getWhoClicked().getInventory().getItemInOffHand();

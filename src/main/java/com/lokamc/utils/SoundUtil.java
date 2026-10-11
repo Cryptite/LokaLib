@@ -6,11 +6,14 @@ import net.kyori.adventure.sound.Sound;
 import net.kyori.adventure.sound.Sound.Source;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.NamespacedKey;
+import org.bukkit.Registry;
 import org.bukkit.World;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 
 import java.util.Collection;
+import java.util.Locale;
 
 import static com.lokamc.utils.LocationUtil.getSphereClosestPoint;
 import static com.lokamc.utils.MathUtil.normalize;
@@ -111,12 +114,24 @@ public class SoundUtil {
         }
     }
 
+    public static org.bukkit.Sound getSound(String name) {
+        NamespacedKey key = NamespacedKey.fromString(name.toLowerCase(Locale.ROOT));
+        org.bukkit.Sound sound = key != null ? Registry.SOUND_EVENT.get(key) : null;
+        if (sound != null) return sound;
+
+        try {
+            return (org.bukkit.Sound) org.bukkit.Sound.class.getField(name).get(null);
+        } catch (NoSuchFieldException | IllegalAccessException e) {
+            throw new IllegalArgumentException("No sound found with the name " + name);
+        }
+    }
+
     public static void playSound(Player p, org.bukkit.Sound sound) {
         playSound(p, sound, 1, 1);
     }
 
     public static void playSound(Player p, org.bukkit.Sound sound, float volume, float pitch) {
-        net.kyori.adventure.sound.Sound adventureSound = net.kyori.adventure.sound.Sound.sound(Key.key(sound.key().asString()), net.kyori.adventure.sound.Sound.Source.MASTER, volume, pitch);
+        net.kyori.adventure.sound.Sound adventureSound = net.kyori.adventure.sound.Sound.sound(Registry.SOUND_EVENT.getKeyOrThrow(sound), net.kyori.adventure.sound.Sound.Source.MASTER, volume, pitch);
         p.playSound(adventureSound, net.kyori.adventure.sound.Sound.Emitter.self());
     }
 }

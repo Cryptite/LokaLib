@@ -55,7 +55,7 @@ public class MaterialSets {
 
     static {
         bypassLOSBlocks.addAll(MaterialTags.PRESSURE_PLATES.getValues());
-        bypassLOSBlocks.addAll(Tag.CARPETS.getValues());
+        bypassLOSBlocks.addAll(Tag.WOOL_CARPETS.getValues());
         bypassLOSBlocks.addAll(MaterialTags.SIGNS.getValues());
         bypassLOSBlocks.addAll(crops);
         bypassLOSBlocks.addAll(plants);

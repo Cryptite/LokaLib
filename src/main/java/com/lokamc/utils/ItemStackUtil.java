@@ -19,7 +19,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.entity.ThrownPotion;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.*;
-import org.bukkit.potion.PotionData;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionType;
 
@@ -165,74 +164,74 @@ public class ItemStackUtil {
     }
 
     public static String getEnchantmentName(Enchantment ench) {
-        switch (ench.getName()) {
-            case "DAMAGE_ALL":
+        switch (ench.getKey().getKey()) {
+            case "sharpness":
                 return "Sharpness";
-            case "DAMAGE_ARTHROPODS":
+            case "bane_of_arthropods":
                 return "Bane Of Arthropods";
-            case "DAMAGE_UNDEAD":
+            case "smite":
                 return "Smite";
-            case "DIG_SPEED":
+            case "efficiency":
                 return "Efficiency";
-            case "DURABILITY":
+            case "unbreaking":
                 return "Unbreaking";
-            case "FIRE_ASPECT":
+            case "fire_aspect":
                 return "Fire Aspect";
-            case "KNOCKBACK":
+            case "knockback":
                 return "Knockback";
-            case "LOOT_BONUS_BLOCKS":
+            case "fortune":
                 return "Fortune";
-            case "LOOT_BONUS_MOBS":
+            case "looting":
                 return "Looting";
-            case "OXYGEN":
+            case "respiration":
                 return "Respiration";
-            case "PROTECTION_ENVIRONMENTAL":
+            case "protection":
                 return "Protection";
-            case "PROTECTION_EXPLOSIONS":
+            case "blast_protection":
                 return "Blast Protection";
-            case "PROTECTION_FALL":
+            case "feather_falling":
                 return "Feather Falling";
-            case "PROTECTION_FIRE":
+            case "fire_protection":
                 return "Fire Protection";
-            case "PROTECTION_PROJECTILE":
+            case "projectile_protection":
                 return "Projectile Protection";
-            case "SILK_TOUCH":
+            case "silk_touch":
                 return "Silk Touch";
-            case "WATER_WORKER":
+            case "aqua_affinity":
                 return "Aqua Affinity";
-            case "ARROW_FIRE":
+            case "flame":
                 return "Flame";
-            case "ARROW_DAMAGE":
+            case "power":
                 return "Power";
-            case "ARROW_KNOCKBACK":
+            case "punch":
                 return "Punch";
-            case "ARROW_INFINITE":
+            case "infinity":
                 return "Infinity";
-            case "MENDING":
+            case "mending":
                 return "Mending";
-            case "SWEEPING_EDGE":
+            case "sweeping_edge":
                 return "Sweeping Edge";
-            case "VANISHING_CURSE":
+            case "vanishing_curse":
                 return "Curse of Vanishing";
-            case "BINDING_CURSE":
+            case "binding_curse":
                 return "Curse of Binding";
-            case "THORNS":
+            case "thorns":
                 return "Thorns";
-            case "DEPTH_STRIDER":
+            case "depth_strider":
                 return "Depth Strider";
-            case "FROST_WALKER":
+            case "frost_walker":
                 return "Frost Walker";
-            case "LUCK":
+            case "luck_of_the_sea":
                 return "Luck of the Sea";
-            case "LURE":
+            case "lure":
                 return "Lure";
-            case "LOYALTY":
+            case "loyalty":
                 return "Loyalty";
-            case "IMPALING":
+            case "impaling":
                 return "Impaling";
-            case "RIPTIDE":
+            case "riptide":
                 return "Riptide";
-            case "CHANNELING":
+            case "channeling":
                 return "Channeling";
             default:
                 return "Unknown";
@@ -770,15 +769,18 @@ public class ItemStackUtil {
     }
 
     public static ItemStack getPotion(PotionType type, boolean splash, boolean extended, boolean upgraded) {
-        return getPotion(new PotionData(type, extended, upgraded), splash);
-    }
-
-    public static ItemStack getPotion(PotionData data, boolean splash) {
         ItemStack potion = ItemStack.of(splash ? Material.SPLASH_POTION : Material.POTION);
         PotionMeta meta = (PotionMeta) potion.getItemMeta();
-        meta.setBasePotionData(data);
+        meta.setBasePotionType(getPotionVariant(type, extended, upgraded));
         potion.setItemMeta(meta);
         return potion;
+    }
+
+    private static PotionType getPotionVariant(PotionType type, boolean extended, boolean upgraded) {
+        if (!upgraded && !extended) return type;
+
+        String prefix = upgraded ? "strong_" : "long_";
+        return Registry.POTION.getOrThrow(NamespacedKey.minecraft(prefix + type.getKey().getKey()));
     }
 
     public static boolean isPotionType(ItemStack potion, PotionType type) {
