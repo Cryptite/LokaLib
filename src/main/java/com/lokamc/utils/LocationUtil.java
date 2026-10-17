@@ -11,6 +11,8 @@ import com.sk89q.worldguard.LocalPlayer;
 import com.sk89q.worldguard.WorldGuard;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import com.sk89q.worldguard.protection.ApplicableRegionSet;
+import com.sk89q.worldguard.protection.FailedLoadRegionSet;
+import com.sk89q.worldguard.protection.PermissiveRegionSet;
 import com.sk89q.worldguard.protection.flags.Flags;
 import com.sk89q.worldguard.protection.managers.RegionManager;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
@@ -249,8 +251,26 @@ public class LocationUtil {
     }
 
     public static ApplicableRegionSet getRegionSet(Location l) {
+        if (!Bukkit.isPrimaryThread()) return getUncachedRegionSet(l);
+
         RegionQuery query = WorldGuard.getInstance().getPlatform().getRegionContainer().createQuery();
         return query.getApplicableRegions(BukkitAdapter.adapt(l));
+    }
+
+    /**
+     * RegionQuery's QueryCache is only flushed by a main-thread task every 2 ticks, so off-main callers must not use
+     * it: while the main thread is busy each async lookup leaks one entry per block position, and on JDK 24+ a virtual
+     * thread that blocks inside the cache's ConcurrentHashMap.compute unmounts while still holding the bin lock,
+     * parking the main thread's next query behind every queued virtual thread (loka-south, 2026-10-15).
+     */
+    private static ApplicableRegionSet getUncachedRegionSet(Location l) {
+        com.sk89q.worldedit.world.World world = BukkitAdapter.adapt(l.getWorld());
+        if (!WorldGuard.getInstance().getPlatform().getGlobalStateManager().get(world).useRegions) {
+            return PermissiveRegionSet.getInstance();
+        }
+
+        RegionManager manager = WorldGuard.getInstance().getPlatform().getRegionContainer().get(world);
+        return manager != null ? manager.getApplicableRegions(BukkitAdapter.asBlockVector(l)) : FailedLoadRegionSet.getInstance();
     }
 
     public static Set<ProtectedRegion> getProtectedRegions(World world, Collection<String> regions) {
