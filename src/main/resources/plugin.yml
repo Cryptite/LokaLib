@@ -2,3 +2,5 @@ name: LokaLib
 main: com.lokamc.LokaLib
 version: 1.0
 api-version: "26.3"
+# LokaCore loads at STARTUP and its FutureUtils calls schedule against LokaLib.instance, so LokaLib has to be enabled first
+load: STARTUP
