@@ -1,6 +1,7 @@
 package com.lokamc.utils;
 
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.ComponentLike;
 import net.kyori.adventure.text.ObjectComponent;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.event.ClickEvent;
@@ -10,11 +11,14 @@ import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.function.Function;
 import java.util.regex.Pattern;
 
 import static net.md_5.bungee.api.ChatColor.GRAY;
@@ -25,7 +29,7 @@ import static org.bukkit.ChatColor.stripColor;
 public class StringUtils {
     private static final DecimalFormat numberFormat = new DecimalFormat("#,###,###");
     private static final LegacyComponentSerializer LEGACY = LegacyComponentSerializer.legacySection();
-    private static final Pattern URL_PATTERN = Pattern.compile("https?://\\S+");
+    private static final Pattern URL_PATTERN = Pattern.compile("https?://\\S*[^\\s.,!?;:'\")\\]]");
 
     public static String stripComponentColor(Component component) {
         return ChatColor.stripColor(componentToPlain(component));
@@ -105,6 +109,34 @@ public class StringUtils {
                 .match(URL_PATTERN)
                 .replacement((match, b) -> b.clickEvent(ClickEvent.openUrl(match.group()))
                         .decorate(TextDecoration.ITALIC)));
+    }
+
+    /**
+     * Replaces each {@code http(s)://} URL in the component with whatever {@code link} builds for it.
+     */
+    public static Component linkify(Component component, Function<String, ? extends ComponentLike> link) {
+        if (component == null) return Component.empty();
+        return component.replaceText(builder -> builder
+                .match(URL_PATTERN)
+                .replacement((match, b) -> link.apply(match.group())));
+    }
+
+    /**
+     * The URL minus scheme and {@code www.} when that fits in {@code maxLength}, otherwise just its real
+     * host, so shortened link text can never claim a different site than the one it opens.
+     */
+    public static String shortenUrl(String url, int maxLength) {
+        String stripped = url.replaceFirst("^https?://(www\\.)?", "");
+        if (stripped.endsWith("/")) stripped = stripped.substring(0, stripped.length() - 1);
+        if (stripped.length() <= maxLength) return stripped;
+
+        try {
+            String host = new URI(url).getHost();
+            if (host != null) return host.replaceFirst("^www\\.", "") + "/…";
+        } catch (URISyntaxException ignored) {
+        }
+
+        return stripped;
     }
 
     public static String getFormattedNumber(double number) {
