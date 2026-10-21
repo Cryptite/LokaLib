@@ -67,9 +67,12 @@ tasks.register("copyJar") {
     dependsOn("build")
     val jar = file("build/libs/LokaLib-$version-all.jar")
     doLast {
-        copy {
-            from(jar)
-            into("//wsl.localhost/Ubuntu/home/cryptite/loka/pts263/plugins/update")
+        // podman (WSL) and native Windows pts263; both pick up plugins/update on boot
+        listOf("//wsl.localhost/Ubuntu/home/cryptite/loka/pts263", "C:/Loka/pts263").forEach { server ->
+            copy {
+                from(jar)
+                into("$server/plugins/update")
+            }
         }
     }
 }
