@@ -23,7 +23,6 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionType;
 
 import java.util.*;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 
@@ -837,6 +836,10 @@ public class ItemStackUtil {
         setSkull(b, profile, null);
     }
 
+    /**
+     * Main thread only, with an already-resolved {@code profile}: the skull state is applied in place, since writing it
+     * from another thread can drop the client update and leave a bare Steve head.
+     */
     public static void setSkull(Block b, PlayerProfile profile, Runnable onComplete) {
         Material head = profile != null ? Material.PLAYER_HEAD : Material.SKELETON_SKULL;
         Rotatable data = ((Rotatable) head.createBlockData());
@@ -847,14 +850,12 @@ public class ItemStackUtil {
 
         if (profile != null) {
             Skull skullState = (Skull) b.getState();
-            CompletableFuture.runAsync(() -> skullState.setPlayerProfile(profile))
-                    .thenRun(() -> {
-                        skullState.update(true, false);
+            skullState.setPlayerProfile(profile);
+            skullState.update(true, false);
 
-                        if (onComplete != null) {
-                            onComplete.run();
-                        }
-                    });
+            if (onComplete != null) {
+                onComplete.run();
+            }
         }
     }
 
