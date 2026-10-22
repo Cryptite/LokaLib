@@ -3,6 +3,7 @@ package com.lokamc.utils;
 import net.kyori.adventure.text.event.ClickCallback;
 import net.kyori.adventure.text.event.ClickEvent;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.Nullable;
 
 import java.time.Duration;
 import java.util.function.Consumer;
@@ -30,22 +31,29 @@ public final class ChatClicks {
     /**
      * A single-use click callback (equivalent to the old {@code expires = true}).
      */
-    public static ClickEvent callback(Consumer<Player> action) {
+    public static ClickEvent callback(@Nullable Consumer<Player> action) {
         return callback(action, false);
     }
 
     /**
+     * Clicking closes whatever screen the link was in (book or chat) before running the action, like the old
+     * command-based callbacks did; 26.x sends callbacks as custom click actions, which the client doesn't close on.
+     * A {@code null} action just closes.
+     *
      * @param reusable {@code true} for an infinitely reusable callback (old {@code expires = false}),
      *                 {@code false} for a single-use callback (old {@code expires = true}).
      */
-    public static ClickEvent callback(Consumer<Player> action, boolean reusable) {
+    public static ClickEvent callback(@Nullable Consumer<Player> action, boolean reusable) {
         ClickCallback.Options options = ClickCallback.Options.builder()
                 .uses(reusable ? ClickCallback.UNLIMITED_USES : 1)
                 .lifetime(reusable ? REUSABLE_LIFETIME : SINGLE_USE_LIFETIME)
                 .build();
         return ClickEvent.callback(audience -> {
             if (audience instanceof Player p) {
-                action.accept(p);
+                p.closeInventory();
+                if (action != null) {
+                    action.accept(p);
+                }
             }
         }, options);
     }
