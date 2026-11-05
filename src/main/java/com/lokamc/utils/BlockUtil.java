@@ -1,6 +1,8 @@
 package com.lokamc.utils;
 
 import com.lokamc.LokaLib;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.NamespacedKey;
@@ -8,6 +10,8 @@ import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.Sign;
+import org.bukkit.block.sign.Side;
+import org.bukkit.block.sign.SignSide;
 import org.bukkit.craftbukkit.entity.CraftItemFrame;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Hanging;
@@ -56,12 +60,41 @@ public class BlockUtil {
         return 0;
     }
 
+    /**
+     * Writes the front of a plugin-managed sign and waxes it so players can't edit it.
+     * A null line keeps its current text.
+     */
+    public static void setSignLines(Sign sign, Component... lines) {
+        SignSide front = sign.getSide(Side.FRONT);
+        for (int i = 0; i < lines.length; i++) {
+            if (lines[i] != null) front.line(i, lines[i]);
+        }
+
+        sign.setWaxed(true);
+        sign.update();
+    }
+
+    public static void setSignLines(Sign sign, String... legacyLines) {
+        Component[] lines = new Component[legacyLines.length];
+        for (int i = 0; i < legacyLines.length; i++) {
+            if (legacyLines[i] != null) lines[i] = LegacyComponentSerializer.legacySection().deserialize(legacyLines[i]);
+        }
+
+        setSignLines(sign, lines);
+    }
+
+    /**
+     * Blanks a sign and hands it back to players by removing the wax from {@link #setSignLines}.
+     */
     public static void clearSign(Block b) {
-        Sign sign = (Sign) b.getState();
-        sign.setLine(0, "");
-        sign.setLine(1, "");
-        sign.setLine(2, "");
-        sign.setLine(3, "");
+        if (!(b.getState() instanceof Sign sign)) return;
+
+        SignSide front = sign.getSide(Side.FRONT);
+        for (int i = 0; i < 4; i++) {
+            front.line(i, Component.empty());
+        }
+
+        sign.setWaxed(false);
         sign.update();
     }
 
