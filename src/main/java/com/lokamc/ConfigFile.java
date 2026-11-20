@@ -10,6 +10,7 @@ import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.inventory.ItemStack;
@@ -21,8 +22,16 @@ import java.io.File;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.text.DateFormat;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.AtomicMoveNotSupportedException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
+import java.nio.file.attribute.PosixFilePermission;
+import java.nio.file.attribute.PosixFilePermissions;
 import java.text.ParseException;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.ReentrantLock;
 
 import static com.lokamc.utils.SerializeInventory.fromBase64ToItem;
@@ -34,12 +43,16 @@ public class ConfigFile {
     private final String fileName;
     public final File file;
     public FileConfiguration fileConfiguration;
-    private final ReentrantLock lock = new ReentrantLock();
+    //Callers make a new ConfigFile per use, so locking and pending saves are shared per file, not per instance
+    private static final Map<String, ReentrantLock> FILE_LOCKS = new ConcurrentHashMap<>();
+    private static final Map<String, String> PENDING_SAVES = new ConcurrentHashMap<>();
+    private final String path;
 
     public ConfigFile(Plugin plugin, String fileName) {
         this.plugin = plugin;
         this.fileName = fileName;
         this.file = new File(plugin.getDataFolder(), fileName);
+        this.path = file.getAbsolutePath();
     }
 
     public byte getByte(String key, byte defaultValue) {
@@ -381,7 +394,25 @@ public class ConfigFile {
     }
 
     public void reloadConfig() {
-        fileConfiguration = YamlConfiguration.loadConfiguration(file);
+        //A save that hasn't reached the disk yet is newer than the file, so read that instead
+        String pending = PENDING_SAVES.get(path);
+        if (pending != null) {
+            YamlConfiguration config = new YamlConfiguration();
+            try {
+                config.loadFromString(pending);
+            } catch (InvalidConfigurationException e) {
+                e.printStackTrace();
+            }
+            fileConfiguration = config;
+        } else {
+            ReentrantLock lock = lockFor(path);
+            lock.lock();
+            try {
+                fileConfiguration = YamlConfiguration.loadConfiguration(file);
+            } finally {
+                lock.unlock();
+            }
+        }
 
         // Look for defaults in the jar
         InputStream defConfigStream = plugin.getResource(fileName);
@@ -403,18 +434,39 @@ public class ConfigFile {
     }
 
     public synchronized void saveSync() {
-        doSave(file, getConfig(), null);
+        PENDING_SAVES.put(path, getConfig().saveToString());
+        writeLatest(null);
     }
 
     public synchronized void save(Runnable onComplete) {
-        final FileConfiguration config = fileConfiguration;
-        Thread.ofVirtual().start(() -> doSave(file, config, onComplete));
+        //Serialized now, on the caller's thread, so later set() calls can't change what this save writes
+        PENDING_SAVES.put(path, getConfig().saveToString());
+        Thread.ofVirtual().start(() -> writeLatest(onComplete));
     }
 
-    private void doSave(File file, FileConfiguration config, Runnable onComplete) {
+    /**
+     * Writes the newest pending save for this path. The text goes to a temp file that is then renamed over the real
+     * one, so a reader on any server sees the whole old file or the whole new one. Writing the file in place
+     * truncated it first, and a reader landing in that gap saw an empty config and saved it back (11-20 tourny.yml).
+     * Saves can finish out of order, so each writes whatever is newest and a later one finding nothing pending skips.
+     */
+    private void writeLatest(Runnable onComplete) {
+        ReentrantLock lock = lockFor(path);
+        Path target = file.toPath();
+        Path temp = null;
         lock.lock();
         try {
-            config.save(file);
+            String data = PENDING_SAVES.get(path);
+            if (data != null) {
+                Path dir = target.toAbsolutePath().getParent();
+                Files.createDirectories(dir);
+                temp = Files.createTempFile(dir, file.getName() + ".", ".tmp");
+                Files.writeString(temp, data, StandardCharsets.UTF_8);
+                copyPermissions(target, temp);
+                moveIntoPlace(temp, target);
+                temp = null;
+                PENDING_SAVES.remove(path, data);
+            }
 
             if (onComplete != null) {
                 onComplete.run();
@@ -422,8 +474,48 @@ public class ConfigFile {
         } catch (Exception ex) {
             ex.printStackTrace();
         } finally {
+            if (temp != null) {
+                try {
+                    Files.deleteIfExists(temp);
+                } catch (Exception ignored) {
+                }
+            }
             lock.unlock();
         }
+    }
+
+    //Windows refuses to replace a file someone has open (local test servers), so retry briefly there
+    private static void moveIntoPlace(Path temp, Path target) throws java.io.IOException, InterruptedException {
+        for (int attempt = 1; ; attempt++) {
+            try {
+                try {
+                    Files.move(temp, target, StandardCopyOption.REPLACE_EXISTING, StandardCopyOption.ATOMIC_MOVE);
+                } catch (AtomicMoveNotSupportedException e) {
+                    Files.move(temp, target, StandardCopyOption.REPLACE_EXISTING);
+                }
+                return;
+            } catch (java.nio.file.AccessDeniedException e) {
+                if (attempt >= 50) throw e;
+
+                Thread.sleep(10);
+            }
+        }
+    }
+
+    //Temp files are created owner-only; keep the file readable the way it was (rw-r--r-- for a new one)
+    private static void copyPermissions(Path from, Path to) {
+        try {
+            Set<PosixFilePermission> perms = Files.exists(from)
+                    ? Files.getPosixFilePermissions(from)
+                    : PosixFilePermissions.fromString("rw-r--r--");
+            Files.setPosixFilePermissions(to, perms);
+        } catch (UnsupportedOperationException | java.io.IOException ignored) {
+            //Not a POSIX filesystem (local Windows test servers)
+        }
+    }
+
+    private static ReentrantLock lockFor(String path) {
+        return FILE_LOCKS.computeIfAbsent(path, p -> new ReentrantLock());
     }
 
     @Override
